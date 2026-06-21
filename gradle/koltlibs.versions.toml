@@ -1,0 +1,99 @@
+[versions]
+# ─────────────────────────────────────────────────────────────────────────────
+# Kolt Android catalog — VERSIONS ONLY.
+#
+# Library coordinates and bundles live in the convention plugin (hardcoded), not
+# here. The plugin reads versions back from this catalog by alias, so you can bump
+# any dependency for a single project WITHOUT changing the plugin version — e.g.
+# raise `composeBom` here and that project gets the newer Compose, others don't.
+#
+# The convention plugins ([plugins] below) wire the actual coordinates.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# App & SDK Versions
+versionCode = "1"
+versionName = "1.0.0"
+minSdk = "26"
+targetSdk = "36"
+compileSdk = "36"
+javaVersion = "21"
+
+# Kolt plugin version — placeholder replaced by the Constants generator at build time.
+# Do NOT hand-edit; run `./gradlew bumpPluginVersion` (see docs/PLUGIN_DEV.md).
+# The runtime libs (utils/logutils/compose-utils/update-utils) are version-pinned by the
+# Kolt BOM, which the convention plugin injects automatically — no version refs needed.
+kolt = "0.1.0.dev-00"
+
+# Classpath & Tooling
+agp = "8.13.1"
+kotlin = "2.3.10"
+ksp = "2.3.6"
+hilt = "2.58"
+kotlinserializeplugin = "2.3.10"
+
+# Core Libraries
+coreKtx = "1.17.0"
+room = "2.7.2"
+kotlinserialize = "1.8.1"
+kotlinxCoroutines = "1.10.1"
+googleServices = "4.4.3"
+
+# Compose & Lifecycle
+lifecycleRuntimeKtx = "2.10.0"
+activityCompose = "1.12.4"
+composeBom = "2026.02.01"
+composeNavigation = "2.9.1"
+composeHiltNavigation = "1.3.0"
+lifecycle = "2.10.0"
+material-icons = "1.7.8"
+
+# Networking & Data
+retrofit = "2.11.0"
+okhttp = "4.12.0"
+loggingInterceptor = "4.11.0"
+gson = "2.11.0"
+chucker = "4.2.0"
+datastore = "1.1.1"
+security = "1.1.0-alpha06"
+tink = "1.15.0"
+work = "2.10.0"
+hiltWork = "1.2.0"
+retrofitSerialization = "2.11.0"
+
+# Image loading
+coil = "2.7.0"
+
+# Tools & Test
+lottie = "6.6.0"
+firebaseBom = "33.14.0"
+firebasecrashlyticsplugin = "3.0.4"
+junit = "4.13.2"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
+mockito = "6.2.3"
+turbine = "1.1.0"
+
+# Publishing & CI
+vanniktechPublish = "0.36.0"
+firebaseAppDistribution = "5.1.1"
+firebasePerf = "1.4.2"
+
+[plugins]
+# Root project plugins only
+google-android-application = { id = "com.android.application", version.ref = "agp" }
+google-android-library = { id = "com.android.library", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinserializeplugin" }
+vanniktech-publish = { id = "com.vanniktech.maven.publish", version.ref = "vanniktechPublish" }
+google-firebase-appdistribution = { id = "com.google.firebase.appdistribution", version.ref = "firebaseAppDistribution" }
+google-firebase-perf = { id = "com.google.firebase.firebase-perf", version.ref = "firebasePerf" }
+google-android-test = { id = "com.android.test", version.ref = "agp" }
+
+# Kolt Convention Plugins
+kolt-application = { id = "io.github.appspiriment.kolt.application", version.ref = "kolt" }
+kolt-library = { id = "io.github.appspiriment.kolt.library", version.ref = "kolt" }
+kolt-library-compose = { id = "io.github.appspiriment.kolt.library-compose", version.ref = "kolt" }
+kolt-library-hilt = { id = "io.github.appspiriment.kolt.library-hilt", version.ref = "kolt" }
+kolt-library-hilt-compose = { id = "io.github.appspiriment.kolt.library-hilt-compose", version.ref = "kolt" }
+kolt-data = { id = "io.github.appspiriment.kolt.data", version.ref = "kolt" }

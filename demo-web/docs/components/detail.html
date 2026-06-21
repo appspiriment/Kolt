@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Component — Kolt Docs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body class="light-mode docs-body">
+    <script>window.docsBasePath = '../';</script>
+    <nav class="docs-sidebar" id="docs-sidebar"></nav>
+    <div class="docs-main">
+        <header class="docs-topbar" id="docs-topbar"></header>
+        <article class="docs-article" id="component-article">
+            <p>Loading…</p>
+        </article>
+    </div>
+    <script type="module">
+        import { getComponentById, CATEGORIES, COMPONENTS } from './data.js';
+
+        const id = new URLSearchParams(window.location.search).get('id');
+        const component = getComponentById(id);
+        const article = document.getElementById('component-article');
+
+        if (!component) {
+            article.innerHTML = `<h1>Component not found</h1><p>No component with id "<code>${id}</code>". <a href="index.html">Back to component catalog</a>.</p>`;
+        } else {
+            const cat = CATEGORIES.find(c => c.id === component.category);
+            document.title = `${component.title} — Kolt`;
+
+            const composableRows = component.composables.map(c => `
+                <tr><td><code>${c.name}</code></td><td>${c.desc}</td><td style="font-family: monospace; font-size: 12px;">${c.path}</td></tr>
+            `).join('');
+
+            const embedSrc = `../../showcase/index.html?embed=1#${component.demoAnchor}`;
+
+            const related = COMPONENTS.filter(c => c.category === component.category && c.id !== component.id);
+            let relatedHtml = '';
+            if (related.length > 0) {
+                relatedHtml = `
+                    <div style="margin-top: 48px; border-top: 1px solid var(--border-color); padding-top: 24px;">
+                        <h3 style="margin-top: 0; font-size: 16px;">Related Components (${cat.label})</h3>
+                        <ul style="list-style: none; padding: 0; margin: 12px 0 0; display: flex; flex-wrap: wrap; gap: 12px 24px; font-size: 14px;">
+                            ${related.map(c => `
+                                <li><a href="detail.html?id=${c.id}" style="text-decoration: none; color: var(--primary-color); font-weight: 500;">${c.title}</a></li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                `;
+            }
+
+            let libraryName = '';
+            let libraryCoordinate = '';
+            let libraryId = '';
+            const firstPath = component.composables[0]?.path || '';
+            if (firstPath.includes('compose-kmp')) {
+                libraryName = 'compose-kmp';
+                libraryCoordinate = 'io.github.appspiriment.kolt:compose-kmp';
+                libraryId = 'compose-kmp';
+            } else if (firstPath.includes('compose-utils')) {
+                libraryName = 'compose-utils';
+                libraryCoordinate = 'io.github.appspiriment.kolt:compose';
+                libraryId = 'compose-utils';
+            } else if (firstPath.includes('update-utils')) {
+                libraryName = 'update-utils';
+                libraryCoordinate = 'io.github.appspiriment.kolt:update-utils';
+                libraryId = 'update-utils';
+            }
+
+            article.innerHTML = `
+                <span class="docs-eyebrow">${cat.icon} ${cat.label}</span>
+                <h1>${component.title}</h1>
+                <p class="docs-source-link">Library: <a href="../utilities/detail.html?id=${libraryId}" style="color: var(--primary-color); text-decoration: none; font-weight: 600;">${libraryName}</a> &nbsp;|&nbsp; Coordinate: <code>${libraryCoordinate}</code></p>
+                <p class="docs-lede">${component.description}</p>
+
+                <h2>Live demo</h2>
+                <div class="docs-embed-frame">
+                    <iframe src="${embedSrc}" loading="lazy"></iframe>
+                </div>
+                <div class="docs-embed-caption">
+                    <span>Embedded from the live showcase — fully interactive.</span>
+                    <a href="../../showcase/index.html#${component.demoAnchor}" target="_blank">Open in showcase ↗</a>
+                </div>
+
+                <h2>Composables</h2>
+                <table class="docs-table">
+                    <tr><th>Name</th><th>Description</th><th>Source</th></tr>
+                    ${composableRows}
+                </table>
+
+                <h2>Usage</h2>
+                <pre><code>${component.usage}</code></pre>
+
+                ${relatedHtml}
+
+                <p style="margin-top: 32px;"><a href="index.html#${component.category}">&larr; Back to ${cat.label}</a></p>
+            `;
+        }
+    </script>
+    <script type="module" src="../assets/docs.js"></script>
+</body>
+</html>

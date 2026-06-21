@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Getting Started — Kolt Docs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body class="light-mode docs-body">
+    <script>window.docsBasePath = '../';</script>
+    <nav class="docs-sidebar" id="docs-sidebar"></nav>
+    <div class="docs-main">
+        <header class="docs-topbar" id="docs-topbar"></header>
+        <article class="docs-article">
+            <span class="docs-eyebrow">Getting Started</span>
+            <h1>Quick Start</h1>
+            <p class="docs-lede">The fastest path to a new Kolt-based project, plus manual wiring for an existing one.</p>
+
+            <h2>Bootstrap script (recommended)</h2>
+            <pre><code># Android-only project
+./scripts/new-project.sh --type android --name MyApp --package com.example.myapp
+
+# KMP project
+./scripts/new-project.sh --type kmp --name MyApp --package com.example.myapp
+
+# Interactive (prompts for values)
+./scripts/new-project.sh</code></pre>
+            <p>Produces a complete project with Gradle files, wrapper, source dirs, and all steering docs. Then:</p>
+            <pre><code>cd MyApp &amp;&amp; ./gradlew :app:assembleDebug   # first build scaffolds theme XMLs</code></pre>
+
+            <h2>What just happened</h2>
+            <p>Running the bootstrap script sets up a ready-to-build multi-project structure wired with Kolt’s conventions:</p>
+            <ul>
+                <li><strong>Convention Plugins Applied:</strong> The generated modules apply Kolt convention plugins (e.g. <code>kmp.library</code> or <code>android-application</code>) instead of hardcoding compiler settings or third-party versions.</li>
+                <li><strong>Version Catalogs Linked:</strong> The root <code>settings.gradle.kts</code> imports <code>koltlibs</code> and <code>kmplibs</code> catalogs, exposing version aliases to your build files.</li>
+                <li><strong>Directory Structure Scaffolded:</strong> Standard target directories (such as <code>commonMain</code>, <code>androidMain</code>, and <code>iosMain</code> for KMP) are prepared and populated with empty source placeholders.</li>
+                <li><strong>Default Resources Generated:</strong> During the first build, the build plugins dynamically inject default theme resources (like colors and shape styles) into your project.</li>
+            </ul>
+
+            <h2>Manual wiring (existing project / new module)</h2>
+            <pre><code>// settings.gradle.kts
+dependencyResolutionManagement {
+    versionCatalogs {
+        create("koltlibs") {
+            from("io.github.appspiriment.kolt:kolt-catalog:&lt;version&gt;")
+        }
+        // KMP projects also add:
+        create("kmplibs") {
+            from("io.github.appspiriment.kolt:kmp-catalog:&lt;version&gt;")
+        }
+    }
+}</code></pre>
+            <pre><code>// app/build.gradle.kts
+plugins { id("io.github.appspiriment.kolt.application") }
+android { namespace = "com.example.myapp" }</code></pre>
+            <p>First build auto-runs <code>scaffoldKoltResources</code> (theme XMLs) and <code>scaffoldKoltDocs</code> (docs/) — both idempotent, never overwrite on re-run.</p>
+
+            <h2>Where to next</h2>
+            <div class="docs-tile-grid">
+                <a class="docs-tile" href="../plugins/index.html">
+                    <span class="docs-tile-icon">🔌</span>
+                    <h3>Pick a plugin</h3>
+                    <p>Find the right convention plugin for your module type.</p>
+                </a>
+                <a class="docs-tile" href="../components/index.html">
+                    <span class="docs-tile-icon">🧩</span>
+                    <h3>Browse components</h3>
+                    <p>See every Compose/KMP component with a live embedded demo.</p>
+                </a>
+                <a class="docs-tile" href="../architecture/coding-standards.html">
+                    <span class="docs-tile-icon">🏛️</span>
+                    <h3>Read the standards</h3>
+                    <p>The binding MVI + Clean Architecture rules every module follows.</p>
+                </a>
+            </div>
+        </article>
+    </div>
+    <script type="module" src="../assets/docs.js"></script>
+</body>
+</html>

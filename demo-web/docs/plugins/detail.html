@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plugin — Kolt Docs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body class="light-mode docs-body">
+    <script>window.docsBasePath = '../';</script>
+    <nav class="docs-sidebar" id="docs-sidebar"></nav>
+    <div class="docs-main">
+        <header class="docs-topbar" id="docs-topbar"></header>
+        <article class="docs-article" id="plugin-article">
+            <p>Loading…</p>
+        </article>
+    </div>
+    <script type="module">
+        import { getPluginById } from './data.js';
+
+        const id = new URLSearchParams(window.location.search).get('id');
+        const plugin = getPluginById(id);
+        const article = document.getElementById('plugin-article');
+
+        if (!plugin) {
+            article.innerHTML = `<h1>Plugin not found</h1><p>No plugin with id "<code>${id}</code>". <a href="index.html">Back to plugin catalog</a>.</p>`;
+        } else {
+            document.title = `${plugin.title} — Kolt`;
+            const whyExists = `This plugin is designed to configure ${plugin.usedFor.replace(/\.$/, '')}. It automatically integrates ${plugin.wires.replace(/\.$/, '')}, eliminating manual Gradle configuration overhead.`;
+            article.innerHTML = `
+                <span class="docs-eyebrow">${plugin.family} Plugin</span>
+                <h1>${plugin.title}</h1>
+                <p class="docs-source-link">${plugin.pluginId}</p>
+                <p class="docs-lede">${plugin.summary}</p>
+
+                <div style="background: rgba(125, 125, 125, 0.05); border-left: 4px solid var(--primary-color); padding: 16px; margin: 24px 0; border-radius: 4px;">
+                    <h3 style="margin-top: 0; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--primary-color);">Why this plugin exists</h3>
+                    <p style="margin: 8px 0 0; line-height: 1.6; font-size: 14px;">${whyExists}</p>
+                </div>
+
+                <h2>What it wires</h2>
+                <p>${plugin.wires}</p>
+
+                <h2>When to use it</h2>
+                <p>${plugin.usedFor}</p>
+
+                <h2>Apply it</h2>
+                <pre><code>${plugin.snippet}</code></pre>
+
+                <h2>DSL options</h2>
+                <pre><code>${plugin.dsl}</code></pre>
+
+                <h2>Catalog alias</h2>
+                <p>Reference via the version catalog instead of a literal plugin id:</p>
+                <pre><code>alias(${plugin.id.startsWith('kmp') ? 'kmplibs' : 'koltlibs'}.plugins.${plugin.catalogAlias.replace(/-/g, '.')})</code></pre>
+
+                <p><a href="index.html">&larr; Back to plugin catalog</a></p>
+            `;
+        }
+    </script>
+    <script type="module" src="../assets/docs.js"></script>
+</body>
+</html>

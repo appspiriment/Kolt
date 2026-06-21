@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Keyboard &amp; Dialer Actions — Kolt Docs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body class="light-mode docs-body">
+    <script>
+        window.docsBasePath = '../';
+        window.docsEnableToc = true;
+    </script>
+    <nav class="docs-sidebar" id="docs-sidebar"></nav>
+    <div class="docs-main">
+        <header class="docs-topbar" id="docs-topbar"></header>
+        <article class="docs-article">
+            <span class="docs-eyebrow">Library: compose-utils</span>
+            <h1>Keyboard &amp; Dialer Actions</h1>
+            <p class="docs-lede">Disable soft keyboards dynamically for custom text entries and trigger telephone dialers or pre-formatted email templates directly on Android.</p>
+
+            <h2>1. DisableSoftKeyboard (Keyboard Blocker)</h2>
+            <p>When creating custom input fields (such as a secure PIN code number pad, mathematical calculators, or calendar dropdowns), focusing a Compose <code>TextField</code> triggers the system soft keyboard. This covers your custom inputs and disrupts the layout.</p>
+            <p>Wrap your inputs inside the <code>DisableSoftKeyboard</code> block container to intercept focus callbacks and block the soft keyboard from displaying.</p>
+            
+            <h3>Usage Example</h3>
+            <pre><code>@Composable
+fun CustomPinPadScreen(viewModel: PinViewModel = viewModel()) {
+    Column {
+        // Wrap the standard or custom text fields inside this block:
+        DisableSoftKeyboard {
+            AppsTextField(
+                value = viewModel.enteredPinCode,
+                onValueChange = {},
+                label = "Secure PIN"
+            )
+        }
+
+        // Render your own grid of buttons underneath:
+        PinNumberGrid(
+            onNumberClick = { num -> viewModel.appendPinDigit(num) },
+            onBackspace = { viewModel.removeLastDigit() }
+        )
+    }
+}</code></pre>
+
+            <h2>2. PhoneActionUtils (Dialer &amp; Mailer Intents)</h2>
+            <p>Direct helper extensions on the Android <code>Context</code> layer to launch communication apps with pre-populated fields.</p>
+
+            <h3>Dial a Phone Number</h3>
+            <p><strong><code>Context.dialNumber(phone: String)</code></strong> constructs and launches an intent with the action <code>Intent.ACTION_DIAL</code>. It loads the dialer app and pre-fills the number, requiring the user to tap the call button (does not require call permissions).</p>
+            <pre><code>val context = LocalContext.current
+
+AppsButton(
+    text = "Call Support".toUiText(),
+    onClick = {
+        context.dialNumber("+18005550199")
+    }
+)</code></pre>
+
+            <h3>Send a Formatted Email</h3>
+            <p><strong><code>Context.sendEmail(to: String, subject: String, body: String)</code></strong> launches an email client intent (pre-filling target address, subject lines, and body blocks):</p>
+            <pre><code>AppsButton(
+    text = "Send App Feedback".toUiText(),
+    onClick = {
+        context.sendEmail(
+            to = "support@appspiriment.io",
+            subject = "Feedback - Kolt monorepo",
+            body = "Hi team,\n\nI have the following feedback..."
+        )
+    }
+)</code></pre>
+        </article>
+    </div>
+    <script type="module" src="../assets/docs.js"></script>
+</body>
+</html>

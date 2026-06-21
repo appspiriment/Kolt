@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AsyncState &amp; Flow Utilities — Kolt Docs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body class="light-mode docs-body">
+    <script>
+        window.docsBasePath = '../';
+        window.docsEnableToc = true;
+    </script>
+    <nav class="docs-sidebar" id="docs-sidebar"></nav>
+    <div class="docs-main">
+        <header class="docs-topbar" id="docs-topbar"></header>
+        <article class="docs-article">
+            <span class="docs-eyebrow">Library: utils</span>
+            <h1>AsyncState &amp; Flow Utilities</h1>
+            <p class="docs-lede">Standardize async operations, lifecycle-aware flow caching, debouncing, and automated state collection inside your ViewModels and repository flows.</p>
+
+            <h2>1. AsyncState Machine</h2>
+            <p>The <code>AsyncState</code> sealed class provides a structured state machine to model asynchronous data fetching. It replaces multiple booleans (like <code>isLoading</code>, <code>isError</code>) with a single, type-safe value.</p>
+            
+            <h3>Class Definition</h3>
+            <pre><code>sealed class AsyncState&lt;out T&gt; {
+    data object Idle : AsyncState&lt;Nothing&gt;()
+    data object Loading : AsyncState&lt;Nothing&gt;()
+    data class Success&lt;T&gt;(val data: T) : AsyncState&lt;T&gt;()
+    data class Error(val throwable: Throwable) : AsyncState&lt;Nothing&gt;()
+}</code></pre>
+
+            <h3>Core API Usage</h3>
+            <p>View models expose <code>AsyncState</code>, which UI components (like <code>AsyncStateBox</code>) collect and render automatically:</p>
+            <pre><code>// viewModel (commonMain)
+class DashboardViewModel : ViewModel() {
+    private val _userState = MutableStateFlow&lt;AsyncState&lt;User&gt;&gt;(AsyncState.Idle)
+    val userState: StateFlow&lt;AsyncState&lt;User&gt;&gt; = _userState
+
+    fun loadUser() {
+        _userState.value = AsyncState.Loading
+        try {
+            val user = repo.fetchUser()
+            _userState.value = AsyncState.Success(user)
+        } catch (e: Exception) {
+            _userState.value = AsyncState.Error(e)
+        }
+    }
+}</code></pre>
+
+            <h2>2. Flow Lifecycle Extensions</h2>
+            <p>Exposed through <code>FlowUtils.kt</code>, these extension functions optimize flow sharing across your application so threads and resources are only active when needed.</p>
+
+            <h3><code>stateInWhileSubscribed</code></h3>
+            <p>Converts a cold flow into a hot <code>StateFlow</code> that caches its value but stops collecting from upstream sources 5 seconds (5000ms) after the last UI collector detaches. This survives device rotation while freeing background DB connections during app suspension.</p>
+            <pre><code>val hotStateFlow: StateFlow&lt;AsyncState&lt;Data&gt;&gt; = coldFlow
+    .stateInWhileSubscribed(
+        scope = viewModelScope,
+        initialValue = AsyncState.Idle
+    )</code></pre>
+
+            <h3><code>shareInWhileSubscribed</code></h3>
+            <p>Converts a cold flow into a hot <code>SharedFlow</code> (ideal for one-shot event emitters) using the same 5-second timeout subscription policy.</p>
+            <pre><code>val eventFlow: SharedFlow&lt;SystemEvent&gt; = rawEventFlow
+    .shareInWhileSubscribed(scope = viewModelScope)</code></pre>
+
+            <h2>3. Debouncing &amp; Collecting</h2>
+            <h3><code>debounceAndCollect</code></h3>
+            <p>Shorthand operator combining Flow debouncing (rate limiting) with lifecycle collection. Extremely useful for implementing search inputs or dynamic sliders to prevent server flooding.</p>
+            <pre><code>// commonMain search input flow
+queryFlow.debounceAndCollect(
+    timeoutMillis = 400L,
+    scope = coroutineScope
+) { query ->
+    // Executed only after 400ms of user typing silence
+    runSearchQuery(query)
+}</code></pre>
+
+            <h2>4. Flow Collection State Wrappers</h2>
+            <p>To reduce coroutine boilerplate inside screens or presenters, Kolt offers automated state collectors that stream flow updates directly into multiple target StateFlow registers.</p>
+
+            <h3><code>collectState</code></h3>
+            <p>Launches a collection thread on the target dispatcher (defaults to <code>Dispatchers.Default</code>) and feeds success, loading, or exception results directly into target <code>MutableStateFlow</code> registers or listener lambdas.</p>
+            <pre><code>// Binds flow states directly to View Model state registers:
+repository.getUserFlow()
+    .collectState(
+        scope = viewModelScope,
+        successState = _userState,
+        errorState = _errorMessageState,
+        loadingState = _loadingProgressState,
+        cancelAfterFirst = false // set true to auto-close collection after first Success
+    )</code></pre>
+
+            <h3><code>collectFlows</code></h3>
+            <p>Launches a launched block to collect flow emissions safely, exposing standard <code>onNext</code>, <code>onError</code>, and <code>onLoading</code> listener hooks.</p>
+            <pre><code>repository.getItemsFlow()
+    .collectFlows(
+        scope = viewModelScope,
+        onNext = { items -> processItems(items) },
+        onError = { err -> showErrorDialog(err) },
+        onLoading = { isLoading -> toggleProgress(isLoading) }
+    )</code></pre>
+        </article>
+    </div>
+    <script type="module" src="../assets/docs.js"></script>
+</body>
+</html>

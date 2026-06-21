@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UiImage: Multiplatform Graphic Wrapper — Kolt Docs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body class="light-mode docs-body">
+    <script>
+        window.docsBasePath = '../';
+        window.docsEnableToc = true;
+    </script>
+    <nav class="docs-sidebar" id="docs-sidebar"></nav>
+    <div class="docs-main">
+        <header class="docs-topbar" id="docs-topbar"></header>
+        <article class="docs-article">
+            <span class="docs-eyebrow">Library: compose-kmp</span>
+            <h1>UiImage</h1>
+            <p class="docs-lede">Unify static vectors, traditional platform drawables, runtime painters, and remote HTTP images under a single multiplatform class, loaded smoothly via the Coil engine.</p>
+
+            <h2>1. Overview &amp; Abstracting Graphics</h2>
+            <p>Similar to strings, loading graphic assets inside shared KMP modules is challenging. Different platforms use distinct graphic formats—Android uses resource drawable integer IDs (e.g. <code>R.drawable.avatar</code>) or XML vectors, iOS uses native named assets, and desktop targets often load raw raster images.</p>
+            <p><code>UiImage</code> abstracts these variations. It provides a common API to represent any image source. Additionally, it features built-in support for remote HTTP images, integrating directly with the Coil image-loading engine. ViewModels in <code>commonMain</code> can yield network images with localized resource placeholders and error configurations, which resolve seamlessly when drawn.</p>
+
+            <h2>2. Class Definition &amp; Subclasses</h2>
+            <p><code>UiImage</code> is defined as a sealed class holding the graphic details, an accessibility content description, and an optional color overlay tint.</p>
+
+            <pre><code>package io.github.appspiriment.kolt.composekmp.wrappers
+
+sealed class UiImage(
+    open val description: String?,
+    open val tint: UiColor?
+) {
+    abstract fun setDescription(contentDescription: String?): UiImage
+    abstract fun setTint(tint: UiColor? = null): UiImage
+    
+    // ... subclasses
+}</code></pre>
+
+            <table class="docs-table">
+                <thead>
+                    <tr>
+                        <th>Subclass</th>
+                        <th>Parameters</th>
+                        <th>Description &amp; Use Cases</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong><code>ImageVectorIcon</code></strong></td>
+                        <td><code>imageVector: ImageVector</code></td>
+                        <td>Wraps a Compose-native vector asset. Highly useful for standard material icon packs.</td>
+                    </tr>
+                    <tr>
+                        <td><strong><code>DrawableResourceIcon</code></strong></td>
+                        <td><code>resId: Int</code></td>
+                        <td>Wraps a traditional Android drawable resource. Resolves dynamically through the local context.</td>
+                    </tr>
+                    <tr>
+                        <td><strong><code>VectorResourceIcon</code></strong></td>
+                        <td><code>resId: Int</code></td>
+                        <td>Wraps an XML vector drawable file. Resolves into an <code>ImageVector</code> inside the UI.</td>
+                    </tr>
+                    <tr>
+                        <td><strong><code>DrawableIcon</code></strong></td>
+                        <td><code>drawable: Any</code></td>
+                        <td>Wraps a generic platform drawable object (such as an Android <code>android.graphics.drawable.Drawable</code>).</td>
+                    </tr>
+                    <tr>
+                        <td><strong><code>PainterIcon</code></strong></td>
+                        <td><code>painter: Painter</code></td>
+                        <td>Wraps a resolved Compose <code>Painter</code>. Useful for custom canvas drawing operations.</td>
+                    </tr>
+                    <tr>
+                        <td><strong><code>RemoteImage</code></strong></td>
+                        <td><code>model: Any?</code><br><code>placeholder: UiImage?</code><br><code>error: UiImage?</code><br><code>fallback: UiImage?</code><br><code>crossfade: Boolean</code><br><code>memoryCacheKey: String?</code><br><code>diskCacheKey: String?</code><br><code>allowHardware: Boolean</code></td>
+                        <td>Loads an image asynchronously via Coil. The <code>model</code> parameter accepts anything Coil understands (URLs, local File objects, ByteArrays, etc.). Custom <code>UiImage</code> instances can be wired for loading states, error fallbacks, and custom cache keys.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>3. Fluent Chaining Methods</h2>
+            <p>Every <code>UiImage</code> subclass implements functional chaining methods to modify its accessibility description or color tint at the call-site without losing the underlying resource details:</p>
+
+            <pre><code>val originalIcon = uiVectorResource(R.drawable.ic_check)
+
+// Apply tint and description dynamically:
+val styledIcon = originalIcon
+    .setDescription("Item Checked")
+    .setTint(Kolt.colors.success.toUiColor())</code></pre>
+
+            <h2>4. Factory Functions</h2>
+            <p>Construct <code>UiImage</code> references in shared or platform source sets using these concise factory APIs:</p>
+
+            <pre><code>// 1. Static resources:
+imageVector.toUiImage()                         // ImageVector -> UiImage.ImageVectorIcon
+uiImageResource(R.drawable.avatar_placeholder)  // Int drawable ID -> UiImage.DrawableResourceIcon
+uiVectorResource(R.drawable.ic_logo_vector)     // Int XML vector -> UiImage.VectorResourceIcon
+painter.toUiImage()                            // Painter -> UiImage.PainterIcon
+
+// 2. Coil-backed remote URLs:
+uiImageFromUrl(
+    url = "https://example.com/profile.jpg",
+    placeholder = uiImageResource(R.drawable.placeholder_user),
+    error = uiImageResource(R.drawable.error_connection)
+)
+
+// 3. Generic Coil loader (accepts files, URIs, byte arrays, etc.):
+uiImageRemote(
+    model = fileObject,
+    crossfade = true,
+    memoryCacheKey = "user_cached_avatar"
+)</code></pre>
+
+            <h2>5. Resolving in UI Composables</h2>
+            <p>To render a <code>UiImage</code> on a screen, call the following Composable extension functions:</p>
+            <ul>
+                <li><strong><code>UiImage.getPainter(): Painter</code></strong>: Resolves the image source and returns a Compose-ready <code>Painter</code>. If it is a <code>RemoteImage</code>, it handles asynchronous HTTP fetching, caching, crossfading, and displaying placeholder/error states automatically.</li>
+                <li><strong><code>UiImage.getImageVector(): ImageVector?</code></strong>: Extract the underlying <code>ImageVector</code> directly (applicable only to vector icons). Returns <code>null</code> for raster images or remote URLs.</li>
+            </ul>
+
+            <h2>6. Complete Code Example</h2>
+            <p>The following example defines a remote contact avatar card with a local vector placeholder fall-back.</p>
+
+            <h3>1. ViewModel (commonMain)</h3>
+            <pre><code>import io.github.appspiriment.kolt.composekmp.wrappers.UiImage
+import io.github.appspiriment.kolt.composekmp.wrappers.uiImageFromUrl
+import io.github.appspiriment.kolt.composekmp.wrappers.uiVectorResource
+
+data class ContactUiState(
+    val displayName: String,
+    val avatar: UiImage
+)
+
+class ContactViewModel : ViewModel() {
+    val contactState = ContactUiState(
+        displayName = "Arun Shankar",
+        avatar = uiImageFromUrl(
+            url = "https://avatars.githubusercontent.com/u/123456",
+            placeholder = uiVectorResource(R.drawable.ic_contact_placeholder),
+            error = uiVectorResource(R.drawable.ic_contact_error_fallback)
+        )
+    )
+}</code></pre>
+
+            <h3>2. Composable View (commonMain UI)</h3>
+            <pre><code>import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import io.github.appspiriment.kolt.composekmp.wrappers.getPainter
+
+@Composable
+fun ContactCard(viewModel: ContactViewModel) {
+    val state = viewModel.contactState
+
+    Row(modifier = Modifier.padding(16.dp)) {
+        Image(
+            painter = state.avatar.getPainter(),
+            contentDescription = state.avatar.description ?: "User Profile Avatar",
+            modifier = Modifier.size(64.dp)
+        )
+        Text(text = state.displayName, style = Kolt.typography.bodyLarge)
+    }
+}</code></pre>
+        </article>
+    </div>
+    <script type="module" src="../assets/docs.js"></script>
+</body>
+</html>

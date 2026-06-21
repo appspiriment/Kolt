@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>System Permissions &amp; Photo Pickers — Kolt Docs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body class="light-mode docs-body">
+    <script>
+        window.docsBasePath = '../';
+        window.docsEnableToc = true;
+    </script>
+    <nav class="docs-sidebar" id="docs-sidebar"></nav>
+    <div class="docs-main">
+        <header class="docs-topbar" id="docs-topbar"></header>
+        <article class="docs-article">
+            <span class="docs-eyebrow">Library: compose-utils</span>
+            <h1>System Permissions &amp; Photo Pickers</h1>
+            <p class="docs-lede">Request Android system permissions inline in your Composables and trigger the system Photo Picker with custom selection limits.</p>
+
+            <h2>1. PermissionHandler (Runtime Permissions)</h2>
+            <p>Handling Android runtime permissions usually requires registering an activity result launcher, checking states, managing rationales, and handling permission request callbacks. Kolt wraps this inside a single, clean Composable component.</p>
+            
+            <h3>Core API</h3>
+            <pre><code>@Composable
+fun PermissionHandler.Request(
+    permissions: List&lt;String&gt;,
+    onGranted: () -&gt; Unit,
+    onDenied: (deniedPermissions: List&lt;String&gt;) -&gt; Unit
+)</code></pre>
+
+            <h3>Usage Example</h3>
+            <p>Place the <code>PermissionHandler.Request</code> inside your Composable tree. Trigger its execution by conditionally mounting it when permissions are required:</p>
+            <pre><code>@Composable
+fun CameraFeature(viewModel: FeatureViewModel = viewModel()) {
+    val requestPermission by viewModel.permissionRequested.collectAsState()
+
+    if (requestPermission) {
+        PermissionHandler.Request(
+            permissions = listOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO),
+            onGranted = {
+                // Executed when all requested permissions are approved
+                viewModel.onPermissionGranted()
+                openCameraRecorder()
+            },
+            onDenied = { deniedList ->
+                // Executed if one or more permissions are rejected
+                viewModel.onPermissionDenied(deniedList)
+                showFallbackMessage()
+            }
+        )
+    }
+}</code></pre>
+
+            <h2>2. PhotoPicker Launcher</h2>
+            <p>Launches the official system Photo Picker interface (which doesn't require requesting storage permissions on modern Android versions). It retrieves media Uri coordinates to read or upload files.</p>
+
+            <h3>Core API</h3>
+            <pre><code>@Composable
+fun rememberPhotoPickerLauncher(
+    onResult: (uris: List&lt;Uri&gt;) -&gt; Unit
+): PhotoPickerLauncher</code></pre>
+
+            <h3>Usage Example</h3>
+            <pre><code>@Composable
+fun ProfileAvatarEdit(viewModel: AvatarViewModel = viewModel()) {
+    // 1. Initialise the launcher with a result callback
+    val pickerLauncher = rememberPhotoPickerLauncher { uris ->
+        if (uris.isNotEmpty()) {
+            val selectedPhotoUri = uris.first()
+            viewModel.updateAvatar(selectedPhotoUri)
+        }
+    }
+
+    // 2. Trigger picker from buttons or click modifiers
+    AppsButton(
+        text = "Select Profile Photo".toUiText(),
+        onClick = {
+            // Limits selection to a single photo
+            pickerLauncher.launch(maxItems = 1) 
+        }
+    )
+    
+    AppsButton(
+        text = "Select Gallery Images".toUiText(),
+        onClick = {
+            // Allows selecting up to 8 items in the picker
+            pickerLauncher.launch(maxItems = 8) 
+        }
+    )
+}</code></pre>
+        </article>
+    </div>
+    <script type="module" src="../assets/docs.js"></script>
+</body>
+</html>

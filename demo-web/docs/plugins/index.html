@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plugins — Kolt Docs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body class="light-mode docs-body">
+    <script>window.docsBasePath = '../';</script>
+    <nav class="docs-sidebar" id="docs-sidebar"></nav>
+    <div class="docs-main">
+        <header class="docs-topbar" id="docs-topbar"></header>
+        <article class="docs-article">
+            <span class="docs-eyebrow">Plugins</span>
+            <h1>Convention Plugin Catalog</h1>
+            <p class="docs-lede">12 Gradle convention plugins, shipped from <code>build-logic/conventions</code> and applied from source inside this repo. All plugins share one version (<code>version.properties → MAJOR.dev-XX</code>). Applied through the <code>koltlibs</code> catalog (Android) or <code>kmplibs</code> catalog (KMP).</p>
+
+            <h2>Plugin Selection Reference</h2>
+            <p>Choosing the right plugin ensures that your module only imports the dependencies and Gradle configurations it actually needs, keeping build times fast. Use this quick reference to find the standard plugin for your module type:</p>
+            <table class="docs-table">
+                <tr><th>Module type</th><th>Plugin to use</th></tr>
+                <tr><td>Android app (host)</td><td><code>application</code></td></tr>
+                <tr><td>Android feature / UI</td><td><code>library-hilt-compose</code></td></tr>
+                <tr><td>Android domain (no UI, no DI)</td><td><code>library</code></td></tr>
+                <tr><td>Android data layer</td><td><code>data</code> + <code>dataLayer {}</code></td></tr>
+                <tr><td>KMP shared (VM + domain)</td><td><code>kmp.library-koin</code></td></tr>
+                <tr><td>KMP feature (CMP UI)</td><td><code>kmp.library-koin-compose</code></td></tr>
+                <tr><td>KMP data layer</td><td><code>kmp.data</code> + <code>kmpDataLayer {}</code></td></tr>
+                <tr><td>KMP app host</td><td><code>kmp.application</code></td></tr>
+            </table>
+
+            <h2>Android plugins <span style="font-size:12px; color:var(--text-muted); font-weight:400;">— catalog: koltlibs</span></h2>
+            <table class="docs-table" id="android-plugins-table"></table>
+
+            <h2>KMP plugins <span style="font-size:12px; color:var(--text-muted); font-weight:400;">— catalog: kmplibs</span></h2>
+            <table class="docs-table" id="kmp-plugins-table"></table>
+
+            <h2>Quick-start</h2>
+            <pre><code>plugins { id("io.github.appspiriment.kolt.application") }
+
+android { namespace = "com.example.myapp" }</code></pre>
+            <p>First build auto-runs <code>scaffoldKoltResources</code> (theme XMLs) and <code>scaffoldKoltDocs</code> (docs/) — both idempotent, never overwrite on re-run.</p>
+        </article>
+    </div>
+    <script type="module">
+        import { PLUGINS } from './data.js';
+
+        function renderTable(elId, family) {
+            const el = document.getElementById(elId);
+            const rows = PLUGINS.filter(p => p.family === family).map(p => `
+                <tr>
+                    <td><a href="detail.html?id=${p.id}">${p.pluginId}</a></td>
+                    <td><code>${p.catalogAlias}</code></td>
+                    <td>${p.summary}</td>
+                </tr>
+            `).join('');
+            el.innerHTML = `<tr><th>Plugin ID</th><th>Catalog alias</th><th>Summary</th></tr>${rows}`;
+        }
+        renderTable('android-plugins-table', 'Android');
+        renderTable('kmp-plugins-table', 'KMP');
+    </script>
+    <script type="module" src="../assets/docs.js"></script>
+</body>
+</html>

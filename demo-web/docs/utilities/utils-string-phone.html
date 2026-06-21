@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>String, Phone &amp; Validation Utilities — Kolt Docs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body class="light-mode docs-body">
+    <script>
+        window.docsBasePath = '../';
+        window.docsEnableToc = true;
+    </script>
+    <nav class="docs-sidebar" id="docs-sidebar"></nav>
+    <div class="docs-main">
+        <header class="docs-topbar" id="docs-topbar"></header>
+        <article class="docs-article">
+            <span class="docs-eyebrow">Library: utils</span>
+            <h1>String, Phone &amp; Validation Utilities</h1>
+            <p class="docs-lede">Implement client-side form validation, international phone formatting, character constraints, password strength meters, and card verification inside common business logic.</p>
+
+            <h2>1. String Extensions</h2>
+            <p>Direct Kotlin property extensions on <code>String</code> that simplify day-to-day text formatting operations:</p>
+            <ul>
+                <li><strong><code>String.capitalizeWords()</code></strong>: Capitalizes the first character of each word in the string.
+                    <pre><code>"kotlin multiplatform developer".capitalizeWords() // returns "Kotlin Multiplatform Developer"</code></pre>
+                </li>
+            </ul>
+
+            <h2>2. Validation Utilities</h2>
+            <p>Simple regex-based validators that return a <code>Boolean</code> flag:</p>
+            <ul>
+                <li><strong><code>String.isValidEmail()</code></strong>: Checks if the input matches a standard email format (trims whitespace automatically).</li>
+                <li><strong><code>String.isValidPhone()</code></strong>: Checks if the phone number string contains valid character sets (digits, spaces, dashes, +, parentheses).</li>
+                <li><strong><code>String.isValidUrl()</code></strong>: Case-insensitive URL validation. Supports standard <code>http</code>, <code>https</code>, and <code>ftp</code> schemes.</li>
+                <li><strong><code>String.isValidIndianPinCode()</code></strong>: Validates Indian 6-digit postal PIN codes. Ensures it does not start with 0.</li>
+                <li><strong><code>String.isValidUsZipCode()</code></strong>: Validates US 5-digit zip codes (with support for optional <code>+4</code> extension).</li>
+            </ul>
+            <pre><code>val email = "arun@appspiriment.io"
+if (email.isValidEmail()) {
+    proceedLogin()
+}</code></pre>
+
+            <h2>3. String Length Checks</h2>
+            <ul>
+                <li><strong><code>String.hasMinLength(min: Int)</code></strong>: Returns true if the string length is greater than or equal to <code>min</code>.</li>
+                <li><strong><code>String.hasMaxLength(max: Int)</code></strong>: Returns true if the string length is less than or equal to <code>max</code>.</li>
+                <li><strong><code>String.hasLengthInRange(min: Int, max: Int)</code></strong>: Checks if the string length is within the range <code>[min, max]</code>.</li>
+            </ul>
+
+            <h2>4. Character Validation Helpers</h2>
+            <p>Quickly confirm input characters without complex loop scripts:</p>
+            <ul>
+                <li><strong><code>String.hasOnlyLetters()</code></strong>: True if all characters are alphabetic.</li>
+                <li><strong><code>String.hasOnlyDigits()</code></strong>: True if all characters are numeric digits.</li>
+                <li><strong><code>String.hasOnlyAlphanumeric()</code></strong>: True if all characters are letters or digits.</li>
+                <li><strong><code>String.hasNoSpecialChars()</code></strong>: True if characters are alphanumeric or space characters (no punctuation).</li>
+            </ul>
+
+            <h2>5. Password Strength Meter</h2>
+            <p>Security validation helpers for user onboarding flows:</p>
+            <ul>
+                <li><strong><code>String.hasUppercase()</code></strong>: True if the string contains at least one uppercase letter.</li>
+                <li><strong><code>String.hasLowercase()</code></strong>: True if the string contains at least one lowercase letter.</li>
+                <li><strong><code>String.hasDigit()</code></strong>: True if the string contains at least one digit.</li>
+                <li><strong><code>String.hasSpecialChar()</code></strong>: True if the string contains a non-alphanumeric special character.</li>
+                <li><strong><code>String.passwordStrength()</code></strong>: Returns a score from <code>0</code> (weakest) to <code>4</code> (strongest). It checks: length &ge; 8 (1 point), has uppercase (1 point), has both lowercase and digit (1 point), and has special characters (1 point).</li>
+            </ul>
+            <pre><code>val score = passwordInput.passwordStrength()
+when (score) {
+    0, 1 -> showStatus("Weak Password", Color.Red)
+    2, 3 -> showStatus("Medium Password", Color.Yellow)
+    4 -> showStatus("Strong Password", Color.Green)
+}</code></pre>
+
+            <h2>6. Credit Card Luhn Verification</h2>
+            <p>Implements Luhn’s algorithm (mod 10 checksum) to validate credit/debit card numbers offline. Ignores spaces and dashes automatically, returning true if the structural digit sequence is valid:</p>
+            <pre><code>val cardNumber = "4992-7398-716" // mock card input
+if (cardNumber.isValidCreditCard()) {
+    processPayment()
+} else {
+    showError("Invalid Credit Card Number")
+}</code></pre>
+
+            <h2>7. Phone Number Utilities</h2>
+            <p>Managed via the <code>PhoneNumberUtils</code> helper object in common code:</p>
+            <ul>
+                <li><strong><code>PhoneNumberUtils.isValid(phone: String)</code></strong>: Checks if the phone number string conforms to standard length and digit properties.</li>
+                <li><strong><code>PhoneNumberUtils.format(phone: String)</code></strong>: Standardizes numbers for display (adds clean group separators like spaces and country indicators).</li>
+            </ul>
+            <pre><code>// Usage example
+val rawPhone = "+919876543210"
+val isValid = PhoneNumberUtils.isValid(rawPhone)
+val displayVal = if (isValid) PhoneNumberUtils.format(rawPhone) else rawPhone // e.g. "+91 98765-43210"</code></pre>
+        </article>
+    </div>
+    <script type="module" src="../assets/docs.js"></script>
+</body>
+</html>

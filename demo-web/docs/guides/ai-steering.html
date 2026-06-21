@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Agent Steering &amp; Readiness — Kolt Docs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body class="light-mode docs-body">
+    <script>
+        window.docsBasePath = '../';
+        window.docsEnableToc = true;
+    </script>
+    <nav class="docs-sidebar" id="docs-sidebar"></nav>
+    <div class="docs-main">
+        <header class="docs-topbar" id="docs-topbar"></header>
+        <article class="docs-article">
+            <span class="docs-eyebrow">Guides</span>
+            <h1>AI Agent Steering &amp; Readiness</h1>
+            <p class="docs-lede">Learn how Kolt is built from the ground up to be "AI-Agent-Ready" and how you can use its context templates to steer AI coding assistants.</p>
+
+            <h2>Overview</h2>
+            <p>Modern developers frequently pair-program with agentic AI models (such as Google Gemini, Anthropic Claude, Cursor, and GitHub Copilot). However, large KMP codebases with complex Gradle build logic often confuse AI models, leading to compilation issues, build cache pollution, and incorrect platform imports.</p>
+            <p><strong>Kolt solves this by design.</strong> Every project bootstrapped with Kolt includes standardized AI context files. These templates instantly align an AI agent's reasoning with the codebase structure, coding guidelines, build commands, and platform constraints.</p>
+
+            <h2>Core Principles of Kolt's AI-Readiness</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 24px 0 32px;">
+                <div style="background: var(--surface-color); border: 1px solid var(--border-color); padding: 20px; border-radius: 12px;">
+                    <h3 style="margin-top:0; font-size:16px;">🔌 Classloader Isolation</h3>
+                    <p style="font-size:13.5px; line-height:1.5; color:var(--text-muted); margin-bottom:0;">Convention Gradle plugins and Vanniktech publishing are strictly separated. AI agents can easily reason about dependencies without triggering configuration-time classpath collisions.</p>
+                </div>
+                <div style="background: var(--surface-color); border: 1px solid var(--border-color); padding: 20px; border-radius: 12px;">
+                    <h3 style="margin-top:0; font-size:16px;">📑 Declarative Versioning</h3>
+                    <p style="font-size:13.5px; line-height:1.5; color:var(--text-muted); margin-bottom:0;">No duplicated version numbers. All versions are read dynamically from TOML catalogs and generated into static class Constants, preventing agents from adding invalid dependencies.</p>
+                </div>
+                <div style="background: var(--surface-color); border: 1px solid var(--border-color); padding: 20px; border-radius: 12px;">
+                    <h3 style="margin-top:0; font-size:16px;">🧠 Context Auto-Discovery</h3>
+                    <p style="font-size:13.5px; line-height:1.5; color:var(--text-muted); margin-bottom:0;">Standardized roots like <code>AGENTS.md</code> and <code>CLAUDE.md</code> are auto-discovered by LLM agents, ensuring they respect naming conventions, package layout, and testing protocols without manual input.</p>
+                </div>
+                <div style="background: var(--surface-color); border: 1px solid var(--border-color); padding: 20px; border-radius: 12px;">
+                    <h3 style="margin-top:0; font-size:16px;">📦 Scaffolded Steering</h3>
+                    <p style="font-size:13.5px; line-height:1.5; color:var(--text-muted); margin-bottom:0;">A built-in Gradle task automatically scaffolds steering markdown files into new consumer modules, saving developers from manually copying architecture rules.</p>
+                </div>
+            </div>
+
+            <h2>Downloadable Steering Templates</h2>
+            <p>Download these standard steering files and place them in your repository root or project config directories to instruct your AI assistants:</p>
+
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px;">
+                <div style="display: flex; align-items: center; justify-content: space-between; background: var(--surface-color); padding: 14px 20px; border: 1px solid var(--border-color); border-radius: 8px;">
+                    <div>
+                        <h4 style="margin: 0 0 4px 0; font-size: 14.5px;">CLAUDE.md (Developer Quickstart)</h4>
+                        <p style="margin: 0; font-size: 12.5px; color: var(--text-muted);">Defines primary build commands, test execution shortcuts, and syntax styling guidelines.</p>
+                    </div>
+                    <a href="../assets/steering/CLAUDE.md" download class="btn btn-outline" style="padding: 6px 14px; font-size: 12px; border-radius: 16px;">Download</a>
+                </div>
+                
+                <div style="display: flex; align-items: center; justify-content: space-between; background: var(--surface-color); padding: 14px 20px; border: 1px solid var(--border-color); border-radius: 8px;">
+                    <div>
+                        <h4 style="margin: 0 0 4px 0; font-size: 14.5px;">AGENTS.md (Architecture &amp; Coding Guide)</h4>
+                        <p style="margin: 0; font-size: 12.5px; color: var(--text-muted);">Autorun architectural rules, catalog definitions, and monorepo modular structures.</p>
+                    </div>
+                    <a href="../assets/steering/AGENTS.md" download class="btn btn-outline" style="padding: 6px 14px; font-size: 12px; border-radius: 16px;">Download</a>
+                </div>
+
+                <div style="display: flex; align-items: center; justify-content: space-between; background: var(--surface-color); padding: 14px 20px; border: 1px solid var(--border-color); border-radius: 8px;">
+                    <div>
+                        <h4 style="margin: 0 0 4px 0; font-size: 14.5px;">KOLT.md (Full Monorepo Guidelines)</h4>
+                        <p style="margin: 0; font-size: 12.5px; color: var(--text-muted);">Detailed guide describing convention plugin registry, extensions DSL, and platform variants.</p>
+                    </div>
+                    <a href="../assets/steering/KOLT.md" download class="btn btn-outline" style="padding: 6px 14px; font-size: 12px; border-radius: 16px;">Download</a>
+                </div>
+
+                <div style="display: flex; align-items: center; justify-content: space-between; background: var(--surface-color); padding: 14px 20px; border: 1px solid var(--border-color); border-radius: 8px;">
+                    <div>
+                        <h4 style="margin: 0 0 4px 0; font-size: 14.5px;">CODING_STANDARDS.md (Kotlin &amp; Flow System)</h4>
+                        <p style="margin: 0; font-size: 12.5px; color: var(--text-muted);">Rules for expect/actual structures, coroutine context handlers, flows, and type safety.</p>
+                    </div>
+                    <a href="../assets/steering/CODING_STANDARDS.md" download class="btn btn-outline" style="padding: 6px 14px; font-size: 12px; border-radius: 16px;">Download</a>
+                </div>
+
+                <div style="display: flex; align-items: center; justify-content: space-between; background: var(--surface-color); padding: 14px 20px; border: 1px solid var(--border-color); border-radius: 8px;">
+                    <div>
+                        <h4 style="margin: 0 0 4px 0; font-size: 14.5px;">ARCHITECTURE.md (Data Flow &amp; State System)</h4>
+                        <p style="margin: 0; font-size: 12.5px; color: var(--text-muted);">Detailed guidelines on offline synchronization, repository patterns, and MVI structures.</p>
+                    </div>
+                    <a href="../assets/steering/ARCHITECTURE.md" download class="btn btn-outline" style="padding: 6px 14px; font-size: 12px; border-radius: 16px;">Download</a>
+                </div>
+
+                <div style="display: flex; align-items: center; justify-content: space-between; background: var(--surface-color); padding: 14px 20px; border: 1px solid var(--border-color); border-radius: 8px;">
+                    <div>
+                        <h4 style="margin: 0 0 4px 0; font-size: 14.5px;">TESTING.md (Unit &amp; Coroutine Validation)</h4>
+                        <p style="margin: 0; font-size: 12.5px; color: var(--text-muted);">Guidelines for mocking dependencies, using coroutine test scopes, and Turbine flow testing.</p>
+                    </div>
+                    <a href="../assets/steering/TESTING.md" download class="btn btn-outline" style="padding: 6px 14px; font-size: 12px; border-radius: 16px;">Download</a>
+                </div>
+            </div>
+
+            <h2>How to Scaffold Steering in Your Project</h2>
+            <p>If you have already applied the Kolt Gradle plugins to your project, you can generate all the above steering templates directly in your repository root by running the built-in scaffolding Gradle task:</p>
+            <pre><code>./gradlew scaffoldKoltResources</code></pre>
+            <p>This generates a localized version of the files in your project, populated with your custom version variables and settings. AI agents will automatically pick these up during coding sessions.</p>
+        </article>
+    </div>
+    <script type="module" src="../assets/docs.js"></script>
+</body>
+</html>

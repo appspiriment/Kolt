@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coding Standards — Kolt Docs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body class="light-mode docs-body">
+    <script>
+        window.docsBasePath = '../';
+        window.docsEnableToc = true;
+    </script>
+    <nav class="docs-sidebar" id="docs-sidebar"></nav>
+    <div class="docs-main">
+        <header class="docs-topbar" id="docs-topbar"></header>
+        <article class="docs-article">
+            <span class="docs-eyebrow">Architecture &amp; Standards</span>
+            <h1>Coding Standards — Android / KMP</h1>
+            <p class="docs-lede">Binding for any project that adopts it — overrides tool defaults. Stack: Kotlin, Compose (Multiplatform or Android-only), MVI, Clean Architecture, SOLID. Audience: humans <em>and</em> AI agents — this is the single source of truth.</p>
+
+            <h2>0. The Loop — memorize, never violate</h2>
+            <pre><code>Composable --Intent--&gt; ViewModel.onIntent(i)
+                          ├─ reduce(state,i) -&gt; newState   PURE. sync. total. no I/O.
+                          ├─ _state.update { newState }     atomic, single call
+                          └─ effect path: _effects.send(e)  Channel, single-pass
+Composable &lt;--state--  StateFlow&lt;State&gt;       (collectAsStateWithLifecycle)
+Composable &lt;--effect-- Flow&lt;Effect&gt;           (Channel.receiveAsFlow, consume once)</code></pre>
+            <p>State flows <strong>down</strong>, Intent flows <strong>up</strong>, <code>Effect</code> is a <strong>one-shot</strong> side channel (navigate/toast/clipboard/haptic) delivered exactly once.</p>
+
+            <h2>1. Universal rules (all layers)</h2>
+            <table class="docs-table">
+                <tr><th>#</th><th>Rule</th></tr>
+                <tr><td>U1</td><td>Every async/fallible API returns a sealed result wrapper or <code>Flow&lt;Result&lt;T&gt;&gt;</code>. Never throw across a layer boundary.</td></tr>
+                <tr><td>U2</td><td>Constructor injection only. No service locators, no stateful <code>object</code> singletons, no <code>GlobalScope</code>.</td></tr>
+                <tr><td>U3</td><td>Depend on interfaces, not impls. Impls are internal/private.</td></tr>
+                <tr><td>U4</td><td>Immutability by default: <code>val</code>, <code>data class</code>, read-only collections in public signatures.</td></tr>
+                <tr><td>U5</td><td>No magic values. Strings/numbers/dimensions &rarr; named constants, string resources, or design tokens.</td></tr>
+                <tr><td>U6</td><td>One public type per file; file name = type name.</td></tr>
+                <tr><td>U7</td><td>No TODO/stub/catch-all <code>else -&gt; {}</code> that swallows a case in production paths.</td></tr>
+                <tr><td>U8</td><td>No secrets/PII in logs. Encrypt sensitive data before persistence or transmission.</td></tr>
+                <tr><td>U9</td><td>Dispatchers via an injected provider. Never hardcode <code>Dispatchers.*</code> in business code.</td></tr>
+            </table>
+
+            <h2>2. SOLID — concrete obligations</h2>
+            <table class="docs-table">
+                <tr><th>Principle</th><th>Obligation</th></tr>
+                <tr><td><strong>S</strong>RP</td><td>One reason to change per class. ViewModel orchestrates; UseCase = one operation; Repository = one aggregate. No god "manager" classes.</td></tr>
+                <tr><td><strong>O</strong>CP</td><td>Extend via new UseCase / new impl / new strategy — not by editing switch-ladders.</td></tr>
+                <tr><td><strong>L</strong>SP</td><td>Every fake/test double must honor the real contract (same result semantics, same ordering).</td></tr>
+                <tr><td><strong>I</strong>SP</td><td>Small role interfaces — consumers depend only on methods they use.</td></tr>
+                <tr><td><strong>D</strong>IP</td><td>High-level code depends on abstractions; impls injected at the composition root.</td></tr>
+            </table>
+
+            <h2>3. Layer specs</h2>
+            <h3>3.1 Domain — pure Kotlin, zero platform deps</h3>
+            <ul>
+                <li><strong>Entities:</strong> immutable data class; value objects over primitives where it prevents bugs.</li>
+                <li><strong>Repository interfaces</strong> live here; impls live in data.</li>
+                <li><strong>Use cases:</strong> one <code>operator fun invoke</code>. Pure business rules.</li>
+            </ul>
+            <pre><code>class GetCartTotalUseCase(private val repo: CartRepository) {
+    suspend operator fun invoke(id: CartId): Result&lt;Money&gt; = repo.total(id)
+}</code></pre>
+
+            <h3>3.2 Data — single source of truth is local; impls internal</h3>
+            <ul>
+                <li><strong>Reads</strong> from the local store, exposed as Flow. UI/use cases never read remote directly.</li>
+                <li><strong>Writes</strong> (offline-capable): local first &rarr; enqueue remote sync.</li>
+                <li><strong>Remote is isolated</strong> — SDK imports live only in the data/remote layer.</li>
+                <li><strong>Mappers</strong> are the DTO&harr;entity boundary; one mapper per entity, one direction pair.</li>
+            </ul>
+
+            <h3>3.3 Presentation — ViewModel</h3>
+            <p>Extends <code>MviViewModel&lt;State, Intent, Effect&gt;</code> from <code>compose-utils</code> (KMP-ready). <code>dispatch(intent)</code> is the single entry point.</p>
+            <pre><code>class CartViewModel(
+    private val getTotal: GetCartTotalUseCase,
+    private val dispatchers: DispatcherProvider,
+) : MviViewModel&lt;CartState, CartIntent, CartEffect&gt;(CartState()) {
+
+    override suspend fun onIntent(intent: CartIntent) = when (intent) {
+        CartIntent.Load -&gt; {
+            updateState { copy(isLoading = true, error = null) }
+            val result = withContext(dispatchers.io) { getTotal(state.value.cartId) }
+            result.fold(
+                onSuccess = { total -&gt; updateState { copy(isLoading = false, total = total) } },
+                onFailure = { err   -&gt; updateState { copy(isLoading = false, error = err) }
+                                       sendEffect(CartEffect.ShowError(err)) },
+            )
+        }
+        is CartIntent.QueryChanged -&gt; updateState { copy(query = intent.q) }
+        is CartIntent.ItemTapped   -&gt; sendEffect(CartEffect.NavigateToItem(intent.id))
+    }
+}</code></pre>
+            <ul>
+                <li><code>updateState { }</code> is the <strong>only</strong> way to change state — atomic via <code>StateFlow.update</code>.</li>
+                <li><code>sendEffect(e)</code> posts to a <code>Channel.BUFFERED</code> — consumed exactly once by the UI.</li>
+                <li><code>onIntent</code> is <strong>total</strong> over the sealed Intent — every branch handled.</li>
+                <li>For screens with no user-driven intents, use <code>MviStateViewModel&lt;State, Effect&gt;</code> instead.</li>
+            </ul>
+
+            <h3>3.4 Presentation — State / Intent / Effect contracts</h3>
+            <pre><code>// State — single immutable source of truth for the screen.
+data class CartState(
+    val isLoading: Boolean = false,
+    val items: List&lt;CartItem&gt; = emptyList(),
+    val query: String = "",
+    val total: Money? = null,
+    val error: AppError? = null,
+) {
+    val visibleItems: List&lt;CartItem&gt; get() = items.filter { it.matches(query) }
+    val isEmpty: Boolean get() = !isLoading &amp;&amp; visibleItems.isEmpty()
+}
+
+// Intent — every user action AND every async result. Sealed.
+sealed interface CartIntent {
+    data object Load : CartIntent
+    data class Loaded(val total: Money) : CartIntent
+    data class QueryChanged(val q: String) : CartIntent
+    data class ItemTapped(val id: ItemId) : CartIntent
+}
+
+// Effect — one-shot only (nav/toast/clipboard/haptic). Channel only.
+sealed interface CartEffect {
+    data class NavigateToItem(val id: ItemId) : CartEffect
+    data class ShowMessage(val text: UiText) : CartEffect
+}</code></pre>
+
+            <h3>3.5 UI — Composable: stateless, dumb</h3>
+            <pre><code>// Route: the ONLY place that touches the ViewModel.
+@Composable
+fun CartRoute(vm: CartViewModel = viewModel(), nav: Navigator) {
+    val state by vm.state.collectAsStateWithLifecycle()
+
+    vm.collectEffects { effect ->
+        when (effect) {
+            is CartEffect.NavigateToItem -&gt; nav.toItem(effect.id)
+            is CartEffect.ShowError      -&gt; snackbarHost.showSnackbar(effect.message)
+        }
+    }
+
+    CartScreen(state, onIntent = vm::dispatch)
+}
+
+// Content: pure UI. State in, Intent out. No VM, no business logic, no I/O.
+@Composable
+fun CartScreen(state: CartState, onIntent: (CartIntent) -&gt; Unit) {
+    LaunchedEffect(Unit) { onIntent(CartIntent.Load) }
+    when {
+        state.isLoading     -&gt; LoadingView()
+        state.error != null -&gt; ErrorView(state.error, onRetry = { onIntent(CartIntent.Load) })
+        else                -&gt; CartList(state.visibleItems, onIntent)
+    }
+}</code></pre>
+            <ul>
+                <li><strong>No business logic in composables</strong> — read finished values off <code>state</code>'s computed props.</li>
+                <li><strong>No ViewModel reach-in below the Route.</strong> Content composables receive <code>state</code> + <code>(Intent) -&gt; Unit</code> only.</li>
+                <li><strong>Hoist state to the max.</strong> No <code>remember { mutableStateOf(...) }</code> holding business/UI state.</li>
+                <li><strong>Stateless + previewable.</strong> Every content composable renders from a hand-built State; add <code>@Preview</code> (light + dark).</li>
+                <li>Colors/type/spacing via theme tokens. No hardcoded hex / magic dp.</li>
+            </ul>
+
+            <h2>4. Naming &amp; style</h2>
+            <ul>
+                <li>Files: <code>{Name}Screen.kt</code>, <code>{Name}ViewModel.kt</code>, <code>{Name}State.kt</code>, <code>{Name}Intent.kt</code>, <code>{Name}Effect.kt</code>, <code>{Name}RepositoryImpl.kt</code>, <code>{Verb}{Noun}UseCase.kt</code>, <code>{Name}Mapper.kt</code>.</li>
+                <li><code>PascalCase</code> types, <code>camelCase</code> members, <code>UPPER_SNAKE</code> consts.</li>
+                <li>Booleans read as predicates (<code>isLoading</code>, <code>hasError</code>, <code>canSubmit</code>).</li>
+                <li>Lint clean (ktlint/detekt/Android lint) — no suppression without an inline justification comment.</li>
+            </ul>
+
+            <h2>5. Testing</h2>
+            <p>See the dedicated <a href="testing.html">Testing</a> page for patterns and coverage targets.</p>
+
+            <h2>6. Pre-commit self-check</h2>
+            <pre><code>[ ] onIntent() total over sealed Intent: every branch handled, no silent else -&gt; Unit
+[ ] updateState { } is the only state mutation; no mutable fields / side-channel writes
+[ ] No business logic / formatting / filtering inside any @Composable
+[ ] State hoisted: no business-state remember{}; derived values are computed get() props
+[ ] dispatch(intent) up, collectEffects { } down; effects consumed exactly once
+[ ] All async returns the result wrapper; errors surface to State; no silent catch
+[ ] Reads from local store; remote/SDK isolated to data layer; backend swappable
+[ ] Sensitive data encrypted before persist; nothing secret/PII logged
+[ ] Constructor DI; interfaces public, impls internal; no GlobalScope
+[ ] Names/files per convention; tokens/resources (no magic values); lint clean
+[ ] Unit test added for onIntent handler / use case</code></pre>
+        </article>
+    </div>
+    <script type="module" src="../assets/docs.js"></script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  compose-utils — Night Theme Colours
+  ════════════════════════════════════════════════════════════════════════════
+  Dark-mode overrides for the same colour tokens defined in
+  values/appspiriment_colors.xml.
+
+  Only tokens that differ in dark mode need to be listed here.
+  Any token you remove falls back to the day-theme value.
+  ════════════════════════════════════════════════════════════════════════════
+-->
+<resources>
+
+    <!-- ── Brand ─────────────────────────────────────────────────────────── -->
+    <color name="primary">#BB86FC</color>
+    <color name="onPrimary">#FFFFFF</color>
+    <color name="secondary">#018786</color>
+    <color name="onSecondary">#FFFFFF</color>
+    <color name="tertiary">#3700B3</color>
+    <color name="onTertiary">#FFFFFF</color>
+
+    <!-- ── Surfaces ───────────────────────────────────────────────────────── -->
+    <color name="mainSurface">#121212</color>
+    <color name="onMainSurface">#DADADA</color>
+    <color name="secondarySurface">#313131</color>
+    <color name="onSecondarySurface">@color/onMainSurface</color>
+    <color name="background">#000000</color>
+    <color name="onBackground">@color/onMainSurface</color>
+
+    <!-- ── Card Containers ────────────────────────────────────────────────── -->
+    <color name="primaryCardContainer">#0C1117</color>
+    <color name="onPrimaryCardContainer">#EAEBEE</color>
+    <color name="onPrimaryCardContainerDimmed">#83888E</color>
+    <color name="secondaryCardContainer">#313131</color>
+    <color name="onSecondaryCardContainer">@color/onMainSurface</color>
+    <color name="tertiaryCardContainer">#313131</color>
+    <color name="onTertiaryCardContainer">@color/onMainSurface</color>
+    <color name="greyCardContainer">#313131</color>
+    <color name="onGreyCardContainer">@color/onMainSurface</color>
+
+    <!-- ── Semantic States ────────────────────────────────────────────────── -->
+    <color name="error">#CF6679</color>
+    <color name="onError">#31060D</color>
+    <color name="errorCardContainer">#ABCF6679</color>
+    <color name="onErrorCardContainer">#ABFFEDDB</color>
+
+    <!-- ── Top App Bar ────────────────────────────────────────────────────── -->
+    <color name="topAppBar">#1E1E1E</color>
+    <color name="onTopAppBar">#F1F1F2</color>
+
+    <!-- ── Typography Helpers ─────────────────────────────────────────────── -->
+    <color name="disabledText">#616161</color>
+    <color name="subText">#BDBDBD</color>
+    <color name="hintText">#8B9096</color>
+    <color name="dividerColor">#99636363</color>
+
+    <!-- ── Accent Text / Titles ───────────────────────────────────────────── -->
+    <color name="accentedBlueTitle">#C694FF</color>
+    <color name="accentedBlackTitle">#C694FF</color>
+    <color name="accentedRedTitle">#BB86FC</color>
+    <color name="accentedBlueText">#AB03DAC6</color>
+    <color name="accentedRedText">#BB86FC</color>
+    <color name="accentedGoldText">#EB8202</color>
+
+    <!-- ── System / Misc ──────────────────────────────────────────────────── -->
+    <color name="scrim">#020202</color>
+    <color name="iconTint">#697075</color>
+    <color name="disabledIconTint">#6A4F90</color>
+    <color name="drawerItem">#BDBDBD</color>
+    <color name="navigationBar">#020202</color>
+    <color name="bi_brand">#C20F2F</color>
+
+</resources>

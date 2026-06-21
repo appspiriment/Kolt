@@ -1,0 +1,8 @@
+- [x] Style the hero logo with glowing theme shadow and scale transitions in `docs.css`.
+- [x] Add the hero logo to `index.html`.
+- [x] Update topbar header brand in `docs.js` with increased sizing and hide/show scroll listener.
+- [x] Use Kolt logo and Kolt name rather than Kotlin logo in KDoc API (`logo-styles.css` and `logo-icon.png`).
+- [x] Finish the AI Steering / AI Ready page (`docs/guides/ai-steering.html`).
+- [x] Highlight in guides overview (`docs/guides/index.html`).
+- [x] Highlight in homepage documentation hub (`index.html`).
+- [x] Run `npm run build` to verify clean build.

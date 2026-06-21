@@ -1,0 +1,48 @@
+# ─── Gradle ───────────────────────────────────────────────────────────────────
+.gradle/
+build/
+**/build/
+.kotlin/
+
+# Gradle wrapper — keep the wrapper scripts and JARs, ignore generated cache
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+!intellij-plugin/gradle/wrapper/gradle-wrapper.jar
+!intellij-plugin/gradle/wrapper/gradle-wrapper.properties
+
+# ─── Local / machine-specific ─────────────────────────────────────────────────
+local.properties
+**/local.properties
+keystore.properties
+signing.properties
+
+# ─── Android Studio / IntelliJ IDEA ───────────────────────────────────────────
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# IntelliJ Platform plugin — auto-managed cache, not a source artifact
+intellij-plugin/.intellijPlatform/
+
+# ─── Kotlin / KMP generated ───────────────────────────────────────────────────
+kotlin-js-store/
+
+# ─── Secrets & signing ────────────────────────────────────────────────────────
+*.jks
+*.keystore
+*.p12
+
+# ─── OS ───────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ─── Logs ─────────────────────────────────────────────────────────────────────
+*.log
+hs_err_pid*.log
+replay_pid*.log
+
+# ─── Local AI developer tools ─────────────────────────────────────────────────
+.claude/
+.gemini/
+

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Build an MVI Screen — Kolt Docs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body class="light-mode docs-body">
+    <script>
+        window.docsBasePath = '../';
+        window.docsEnableToc = true;
+    </script>
+    <nav class="docs-sidebar" id="docs-sidebar"></nav>
+    <div class="docs-main">
+        <header class="docs-topbar" id="docs-topbar"></header>
+        <article class="docs-article">
+            <span class="docs-eyebrow">Guides</span>
+            <h1>Build your first MVI Screen</h1>
+            <p class="docs-lede">Step-by-step tutorial on building a feature screen from scratch using Kolt MVI architecture and components.</p>
+
+            <h2>Introduction</h2>
+            <p>Kolt enforces a clean, unidirectional data flow (UDF) through a standard Model-View-Intent (MVI) pattern. In this guide, we will build a product details screen using real Kolt composables:</p>
+            <ul>
+                <li><code>AppsPageScaffold</code> for page structure and top bar navigation.</li>
+                <li><code>AsyncStateBox</code> to switch layout states dynamically (loading, success, error).</li>
+                <li><code>AppsButton</code> for interactive actions.</li>
+                <li><code>AppsBanner</code> for system notifications and warnings.</li>
+            </ul>
+
+            <h2>1. Define the Contracts</h2>
+            <p>Every screen starts by defining its contracts. Create a contract file containing your <code>State</code>, <code>Intent</code>, and <code>Effect</code> classes:</p>
+            <pre><code>// ProductDetailsContract.kt
+data class ProductDetailsState(
+    val asyncState: AsyncState&lt;Product&gt; = AsyncState.Idle,
+    val isFavorite: Boolean = false,
+    val bannerMessage: String? = null
+)
+
+sealed interface ProductDetailsIntent {
+    data class Load(val productId: String) : ProductDetailsIntent
+    data object ToggleFavorite : ProductDetailsIntent
+    data object ClearBanner : ProductDetailsIntent
+}
+
+sealed interface ProductDetailsEffect {
+    data class ShowToast(val message: String) : ProductDetailsEffect
+    data object NavigateBack : ProductDetailsEffect
+}</code></pre>
+
+            <h2>2. Implement the ViewModel</h2>
+            <p>Extend <code>MviViewModel</code> to manage state updates and side-effects. This keeps state mutation atomic and clean:</p>
+            <pre><code>// ProductDetailsViewModel.kt
+class ProductDetailsViewModel(
+    private val getProductUseCase: GetProductUseCase,
+    private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
+    private val dispatchers: DispatcherProvider
+) : MviViewModel&lt;ProductDetailsState, ProductDetailsIntent, ProductDetailsEffect&gt;(
+    ProductDetailsState()
+) {
+    override suspend fun onIntent(intent: ProductDetailsIntent) = when (intent) {
+        is ProductDetailsIntent.Load -&gt; {
+            updateState { copy(asyncState = AsyncState.Loading) }
+            val result = withContext(dispatchers.io) { getProductUseCase(intent.productId) }
+            result.fold(
+                onSuccess = { product -&gt;
+                    updateState { copy(asyncState = AsyncState.Success(product)) }
+                },
+                onFailure = { error -&gt;
+                    updateState { copy(asyncState = AsyncState.Error(error)) }
+                }
+            )
+        }
+        ProductDetailsIntent.ToggleFavorite -&gt; {
+            val currentState = state.value
+            val currentProductState = currentState.asyncState
+            if (currentProductState is AsyncState.Success) {
+                val nextFavorite = !currentState.isFavorite
+                updateState { copy(isFavorite = nextFavorite) }
+                withContext(dispatchers.io) {
+                    toggleFavoriteUseCase(currentProductState.data.id, nextFavorite)
+                }
+                sendEffect(ProductDetailsEffect.ShowToast(
+                    if (nextFavorite) "Added to Favorites" else "Removed from Favorites"
+                ))
+            }
+        }
+        ProductDetailsIntent.ClearBanner -&gt; {
+            updateState { copy(bannerMessage = null) }
+        }
+    }
+}</code></pre>
+
+            <h2>3. Create the Route Composable</h2>
+            <p>The Route is the entry point that couples the ViewModel to your screen layout. It is the only place in the file that knows about the ViewModel class:</p>
+            <pre><code>// ProductDetailsRoute.kt
+@Composable
+fun ProductDetailsRoute(
+    productId: String,
+    viewModel: ProductDetailsViewModel = hiltViewModel(),
+    onBack: () -> Unit
+) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
+
+    // Trigger initial load
+    LaunchedEffect(productId) {
+        viewModel.dispatch(ProductDetailsIntent.Load(productId))
+    }
+
+    // Collect one-shot side-effects
+    viewModel.collectEffects { effect ->
+        when (effect) {
+            is ProductDetailsEffect.ShowToast -> showToast(effect.message)
+            ProductDetailsEffect.NavigateBack -> onBack()
+        }
+    }
+
+    ProductDetailsScreen(
+        state = state,
+        onIntent = viewModel::dispatch,
+        onBackClick = { viewModel.dispatch(ProductDetailsIntent.NavigateBack) }
+    )
+}</code></pre>
+
+            <h2>4. Write the Stateless Screen</h2>
+            <p>The Screen composable is fully stateless. It relies on the State parameter to render content and emits user actions via the <code>onIntent</code> callback. We use Kolt’s library components here:</p>
+            <pre><code>// ProductDetailsScreen.kt
+@Composable
+fun ProductDetailsScreen(
+    state: ProductDetailsState,
+    onIntent: (ProductDetailsIntent) -> Unit,
+    onBackClick: () -> Unit
+) {
+    AppsPageScaffold(
+        title = AppBarTitle.Text("Details"),
+        navigationMode = NavigationMode.Back,
+        onNavigateBack = onBackClick
+    ) {
+        // Render system alert banner if message is present
+        state.bannerMessage?.let { msg ->
+            AppsBanner(
+                title = "System Alert",
+                message = msg,
+                intent = BannerIntent.Warning,
+                onAction = { onIntent(ProductDetailsIntent.ClearBanner) }
+            )
+        }
+
+        // Automate Loading/Error/Success transitions
+        AsyncStateBox(
+            state = state.asyncState,
+            loading = {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    AppsProgressIndicator.CircularIndeterminate()
+                }
+            },
+            error = { error ->
+                AppsEmptyState(
+                    title = "Failed to load product",
+                    description = error.message ?: "An unexpected error occurred.",
+                    actionLabel = "Try Again",
+                    onAction = { /* dispatch load again if needed */ }
+                )
+            }
+        ) { product ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
+                Text(product.name, style = Kolt.typography.headlineLarge)
+                Spacer(Modifier.height(8.dp))
+                Text(product.description, style = Kolt.typography.bodyMedium)
+                Spacer(Modifier.weight(1f))
+
+                // Action button styled with the primary brand colors
+                AppsButton(
+                    text = if (state.isFavorite) "Remove Favorite" else "Add to Favorites",
+                    buttonStyle = ButtonStyle.primary(),
+                    onClick = { onIntent(ProductDetailsIntent.ToggleFavorite) },
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+    }
+}</code></pre>
+        </article>
+    </div>
+    <script type="module" src="../assets/docs.js"></script>
+</body>
+</html>

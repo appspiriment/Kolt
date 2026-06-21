@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Which Library? — Kolt Docs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body class="light-mode docs-body">
+    <script>window.docsBasePath = '../';</script>
+    <nav class="docs-sidebar" id="docs-sidebar"></nav>
+    <div class="docs-main">
+        <header class="docs-topbar" id="docs-topbar"></header>
+        <article class="docs-article">
+            <span class="docs-eyebrow">Overview</span>
+            <h1>Which library do I need?</h1>
+            <p class="docs-lede">Kolt provides several packages tailored to different architectural and platform requirements. Use the mapping table below to find the correct module for your project.</p>
+
+            <h2>Library &amp; Component Decision Matrix</h2>
+            <table class="docs-table">
+                <thead>
+                    <tr>
+                        <th>What are you trying to do?</th>
+                        <th>Recommended Library / Tool</th>
+                        <th>Module / Coordinates</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Share pure Kotlin helper extensions, collection operations, or simple formatters in common code.</td>
+                        <td><strong><a href="../utilities/detail.html?id=utils">utils</a></strong></td>
+                        <td><code>io.github.appspiriment.kolt:utils</code></td>
+                    </tr>
+                    <tr>
+                        <td>Log messages from common code that automatically route to <code>Logcat</code> on Android and standard console output on iOS/Desktop.</td>
+                        <td><strong><a href="../utilities/detail.html?id=logutils">logutils</a></strong></td>
+                        <td><code>io.github.appspiriment.kolt:logutils</code></td>
+                    </tr>
+                    <tr>
+                        <td>Build shared Compose UI screens using pre-configured styling tokens, G2-continuous card shapes, and custom layouts.</td>
+                        <td><strong><a href="../utilities/detail.html?id=compose-kmp">compose-kmp</a></strong></td>
+                        <td><code>io.github.appspiriment.kolt:compose-kmp</code></td>
+                    </tr>
+                    <tr>
+                        <td>Share Compose screens/layouts, bottom navigation bars, permissions handlers, or photo pickers (Android-only).</td>
+                        <td><strong><a href="../utilities/detail.html?id=compose-utils">compose-utils</a></strong></td>
+                        <td><code>io.github.appspiriment.kolt:compose</code></td>
+                    </tr>
+                    <tr>
+                        <td>Query and prompt device location coordinates (GPS tracking) in common code.</td>
+                        <td><strong><a href="../utilities/detail.html?id=location">location</a></strong> <span class="badge" style="font-size: 10px; background: var(--border-color); padding: 2px 6px; border-radius: 4px;">Coming Soon</span></td>
+                        <td>Speculative / Not published</td>
+                    </tr>
+                    <tr>
+                        <td>Check for update availability and trigger immediate/flexible update flows via Play Store APIs (Android-only).</td>
+                        <td><strong><a href="../utilities/detail.html?id=update-utils">update-utils</a></strong></td>
+                        <td><code>io.github.appspiriment.kolt:update-utils</code></td>
+                    </tr>
+                    <tr>
+                        <td>Implement standard interactive UI pieces like dialog overlays, password fields, wizards, and dropdown menus.</td>
+                        <td><strong><a href="../components/index.html">Components Catalog</a></strong></td>
+                        <td>Various (reference detail pages for paths)</td>
+                    </tr>
+                    <tr>
+                        <td>Standardize Hilt setup, Compose compilation options, and publication settings across all Gradle subprojects.</td>
+                        <td><strong><a href="../plugins/index.html">Convention Plugins</a></strong></td>
+                        <td><code>build-logic</code> conventions</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>Quick Flowchart</h2>
+            <pre><code>Are you styling UI?
+  ├── YES ──► Need custom shapes/buttons? ──► Use compose-kmp
+  │        └── Need Android permissions/picker? ─► Use compose-utils
+  └── NO ───► Need to write logs? ──────────► Use logutils
+        └───► Need date/string helpers? ────► Use utils
+        └───► Need in-app updates? ─────────► Use update-utils</code></pre>
+        </article>
+    </div>
+    <script type="module" src="../assets/docs.js"></script>
+</body>
+</html>

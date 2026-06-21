@@ -1,0 +1,28 @@
+# Internal build catalog for the convention-plugins module (build-logic).
+# Unified on the KMP toolchain baseline (Kotlin 2.3.10 / AGP 8.13.1 / Compose MP 1.8.0).
+# Be careful changing these — they are the API surface the plugins compile against.
+
+[versions]
+javaVersion = "17"     # plugin compilation — must match available JDK on build machine
+agp = "8.13.1"
+kotlin = "2.3.10"
+ksp = "2.3.6"
+composeMultiplatform = "1.8.0"
+gradlePluginPublish = "1.3.1"
+vanniktechPublish = "0.30.0"
+junit = "4.13.2"
+
+[libraries]
+android-gradle-plugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
+kotlin-gradle-plugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
+ksp-gradle-plugin = { group = "com.google.devtools.ksp", name = "symbol-processing-gradle-plugin", version.ref = "ksp" }
+compose-compiler-gradle-plugin = { group = "org.jetbrains.kotlin", name = "compose-compiler-gradle-plugin", version.ref = "kotlin" }
+compose-multiplatform-gradle-plugin = { group = "org.jetbrains.compose", name = "compose-gradle-plugin", version.ref = "composeMultiplatform" }
+# The vanniktech maven-publish plugin is applied by the io.github.appspiriment.kolt.publish convention
+# plugin so it shares build-logic's single classloader with AGP/KGP (see AppspirimentPublishConventionPlugin).
+vanniktech-maven-publish = { group = "com.vanniktech", name = "gradle-maven-publish-plugin", version.ref = "vanniktechPublish" }
+junit-test = { group = "junit", name = "junit", version.ref = "junit" }
+
+[plugins]
+gradle-plugin-publish = { id = "com.gradle.plugin-publish", version.ref = "gradlePluginPublish" }
+vanniktech-maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "vanniktechPublish" }

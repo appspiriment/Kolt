@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architecture — Kolt Docs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body class="light-mode docs-body">
+    <script>
+        window.docsBasePath = '../';
+        window.docsEnableToc = true;
+    </script>
+    <nav class="docs-sidebar" id="docs-sidebar"></nav>
+    <div class="docs-main">
+        <header class="docs-topbar" id="docs-topbar"></header>
+        <article class="docs-article">
+            <span class="docs-eyebrow">Architecture &amp; Standards</span>
+            <h1>Architecture — Android / KMP</h1>
+            <div style="font-size: 11.5px; font-weight: 600; margin-bottom: 16px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">
+                Suggested Reading Order: <strong>Architecture</strong> (this page) &rarr; <a href="coding-standards.html" style="color: var(--primary-color); text-decoration: none;">Coding Standards</a> &rarr; <a href="testing.html" style="color: var(--primary-color); text-decoration: none;">Testing</a>
+            </div>
+            <p class="docs-lede">The shape of how features are built. <a href="coding-standards.html">Coding Standards</a> is the law (what's allowed); this is the shape (how to build it). Read the section for the layer you're touching — you don't need the whole page for a one-line change.</p>
+
+            <h2>1. Layers</h2>
+            <pre><code>UI (Compose)  &rarr;  Presentation (ViewModel/State/Intent/Effect)  &rarr;  Domain (entities, use cases, repo interfaces)
+                                                                       &uarr;
+                                          Data (repo impls, local store, remote, mappers)  &rarr;  Domain</code></pre>
+            <p>Dependencies point <strong>inward</strong>. Domain depends on nothing platform. UI/Data depend on Domain, never the reverse. Features never depend on each other — shared types go to Domain.</p>
+            <table class="docs-table">
+                <tr><th>Layer</th><th>Owns</th><th>Never contains</th></tr>
+                <tr><td>UI</td><td>Stateless composables, theme/tokens</td><td>Business logic, VM below the Route</td></tr>
+                <tr><td>Presentation</td><td>ViewModel, State, Intent, Effect</td><td>I/O, platform SDKs, DB/network</td></tr>
+                <tr><td>Domain</td><td>Entities, value objects, use cases, repo <strong>interfaces</strong></td><td>Android, Compose, DB, network, DI annotations</td></tr>
+                <tr><td>Data</td><td>Repo <strong>impls</strong>, local store, remote, mappers, DTOs</td><td>UI/presentation types</td></tr>
+            </table>
+
+            <h2>2. DI strategy</h2>
+            <ul>
+                <li><strong>Constructor injection everywhere.</strong> No service locators, no static singletons holding state.</li>
+                <li><strong>Composition root</strong> is the only place that knows concrete impls — bind interface &rarr; impl there.</li>
+                <li><strong>Scope deliberately:</strong> singletons for stateless/shared (repos, DB, dispatchers); per-screen for ViewModels.</li>
+                <li><strong>Pick one</strong> per project: Hilt (Android-only), Koin (KMP, DSL), kotlin-inject (KMP, compile-time).</li>
+            </ul>
+            <pre><code>// Domain/data class — DI-agnostic, just a constructor:
+class CartRepositoryImpl(
+    private val local: CartLocalDataSource,
+    private val queue: OfflineMutationQueue,
+    private val dispatchers: DispatcherProvider,
+) : CartRepository
+
+// Composition root binds it (example: Koin)
+single&lt;CartRepository&gt; { CartRepositoryImpl(get(), get(), get()) }</code></pre>
+
+            <h2>3. Offline-first data layer</h2>
+            <p>The single hardest part to get right. The contract: <strong>the app is fully usable with no network, ever.</strong></p>
+            <h3>3.1 The three-tier stack</h3>
+            <pre><code>Repository (data)  ── reads ──&gt;  Local store (Room/SQLDelight)         &larr; single source of truth for the UI
+      │  writes
+      &darr;
+Local store  ──then──&gt;  OfflineMutationQueue.enqueue(mutation)
+                                   │  (background)
+                                   &darr;
+                          SyncEngine drains queue ──&gt; RemoteSyncDataSource (push/pull)
+                                   │
+                                   &darr;  pulled records written back to Local store &rarr; Flow re-emits &rarr; UI updates</code></pre>
+            <h3>3.2 Hard rules</h3>
+            <ul>
+                <li><strong>Every read</strong> comes from the local store as a <code>Flow</code>. No use case / ViewModel / composable ever reads remote.</li>
+                <li><strong>Every write</strong> goes local <strong>first</strong>, then enqueues a <code>SyncMutation</code>. The UI reflects the write instantly.</li>
+                <li><strong>Remote is isolated</strong> behind <code>RemoteSyncDataSource</code>. Swapping backend = new impl + DI rebind, zero other changes.</li>
+                <li><strong>Sync is invisible to upper layers.</strong> Pulled data lands in the local store; the existing Flow emits.</li>
+                <li><strong>Conflicts</strong> resolved in one place (the SyncEngine / a <code>ConflictResolver</code>), by an explicit policy. Never silently in a repository.</li>
+            </ul>
+            <h3>3.3 Behaviour matrix</h3>
+            <table class="docs-table">
+                <tr><th>Scenario</th><th>Behaviour</th></tr>
+                <tr><td>No network ever</td><td>100% functional via local store</td></tr>
+                <tr><td>Write offline</td><td>Saved locally now; queued; UI updates immediately</td></tr>
+                <tr><td>Network returns</td><td>SyncEngine drains queue; remote updated</td></tr>
+                <tr><td>Remote changed elsewhere</td><td>Pulled next cycle; conflict policy applied; local updated</td></tr>
+                <tr><td>Auth expired</td><td>Sync pauses; local CRUD unaffected; resumes after re-auth</td></tr>
+                <tr><td>Backend retired</td><td>Swap <code>RemoteSyncDataSource</code>; local data untouched</td></tr>
+            </table>
+            <p><em>If a project has no remote backend, drop the queue/sync tier — the local store is simply the source of truth. Everything above the repository is identical.</em></p>
+
+            <h2>4. Layer wiring (end-to-end, one feature)</h2>
+            <pre><code>Composable(state, onIntent)
+   └─ onIntent(Intent) ─&gt; ViewModel
+                            ├─ reduce(state,intent) &rarr; state          (pure)
+                            └─ handleSideEffects &rarr; UseCase(params)    (async)
+                                                      └─ Repository (interface)
+                                                            └─ Local store (read Flow / write+enqueue)
+   result re-enters ViewModel as a new Intent ─&gt; reduce &rarr; state ─&gt; StateFlow ─&gt; Composable recomposes
+   one-shot Effect ─&gt; Channel ─&gt; HandleEffects (nav/toast)</code></pre>
+            <p>One vertical slice per feature: <code>Screen + ViewModel + State + Intent + Effect</code> in presentation; <code>UseCase</code>s in domain; <code>RepositoryImpl + DataSource + Mapper</code> in data.</p>
+
+            <h2>5. Android-only vs KMP — the deltas (same architecture)</h2>
+            <p>The architecture is identical. Only the <strong>mechanism</strong> differs:</p>
+            <table class="docs-table">
+                <tr><th>Concern</th><th>Android-only</th><th>KMP</th></tr>
+                <tr><td>Layer boundary</td><td>Packages or Gradle modules</td><td>Gradle modules (<code>:domain</code>, <code>:data</code>, <code>:feature:*</code>)</td></tr>
+                <tr><td>Platform code</td><td>Direct</td><td><code>expect/actual</code> in commonMain + androidMain/iosMain</td></tr>
+                <tr><td>Local store</td><td>Room</td><td>SQLDelight (or Room KMP)</td></tr>
+                <tr><td>DI</td><td>Hilt or Koin</td><td>Koin or kotlin-inject</td></tr>
+                <tr><td>ViewModel</td><td><code>androidx.lifecycle.ViewModel</code></td><td>Same — shared in commonMain</td></tr>
+                <tr><td>Dispatchers.IO</td><td>available</td><td>available on JVM/Android/Native; abstract via <code>DispatcherProvider</code></td></tr>
+            </table>
+
+            <h2>6. Abstractions catalog — reuse, do NOT rewrite</h2>
+            <p>Every project provides these in its <code>:core:common</code> (KMP) / <code>core</code> package. <strong>Extend them; never reimplement.</strong> An agent that writes its own MVI base, result type, or use-case base is in violation — find the existing one first.</p>
+            <table class="docs-table">
+                <tr><th>Type</th><th>Purpose</th></tr>
+                <tr><td><code>MviViewModel&lt;S,I,E&gt;</code></td><td>MVI base: state StateFlow, effect Channel, pure reduce, onIntent</td></tr>
+                <tr><td><code>UiState / UiIntent / UiEffect</code></td><td>Marker interfaces for the contracts</td></tr>
+                <tr><td><code>AppResult&lt;T&gt; / AppError</code></td><td>Sealed result + error for every async/fallible call</td></tr>
+                <tr><td><code>UseCase&lt;P,R&gt; / FlowUseCase&lt;P,R&gt;</code></td><td>Single-shot / streaming business operation, dispatcher-bound</td></tr>
+                <tr><td><code>DispatcherProvider</code></td><td>Injectable dispatchers (io / default / main)</td></tr>
+                <tr><td><code>safeCall / safeFlow</code></td><td>Wrap I/O into AppResult</td></tr>
+                <tr><td><code>OfflineMutationQueue, SyncMutation, RemoteSyncDataSource</code></td><td>Offline-first sync contracts</td></tr>
+            </table>
+
+            <h2>7. Error handling</h2>
+            <ul>
+                <li>Every async/fallible call returns <code>AppResult&lt;T&gt;</code> (or <code>Flow&lt;AppResult&lt;T&gt;&gt;</code>). No exceptions cross layer boundaries.</li>
+                <li>Errors are <strong>state</strong>, not crashes — a failure becomes a visible <code>state.error</code>, never a silent swallow.</li>
+                <li>Every error state has a <strong>recovery path</strong> (a retry Intent). No dead ends.</li>
+                <li>Map low-level exceptions to a small <code>AppError</code> set (Network, Storage, NotFound, Validation, Unauthorized, Unknown) at the data boundary.</li>
+            </ul>
+
+            <h2>8. Performance</h2>
+            <ul>
+                <li><strong>State stability:</strong> State is an immutable data class of stable types. Avoid unstable raw <code>List</code>/recreated lambdas.</li>
+                <li><strong>Derived values</strong> are computed <code>get()</code> props or <code>derivedStateOf</code> — never recomputed inline in composition.</li>
+                <li><strong>Lazy lists:</strong> always provide stable keys; avoid allocating in the item lambda.</li>
+                <li><strong>Collect state at the Route</strong>; pass slices down so unrelated changes don't recompose whole subtrees.</li>
+                <li><strong>No work in composition</strong> — no I/O, sorting, filtering, or Dispatchers launches in a composable body.</li>
+                <li><strong>Coroutines:</strong> correct dispatcher, structured concurrency only, cancel with lifecycle.</li>
+            </ul>
+
+            <p><em>Laws &rarr; <a href="coding-standards.html">Coding Standards</a>. Tests &rarr; <a href="testing.html">Testing</a>.</em></p>
+        </article>
+    </div>
+    <script type="module" src="../assets/docs.js"></script>
+</body>
+</html>

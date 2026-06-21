@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sankara_smrithi">Sankara Smrithi</string>
+    <string name="sankara_smrithi_malayalam">ശങ്കര സ്മൃതി</string>
+
+    <string name="permissions_required_title">Permissions Required</string>
+    <string name="permissions_needed_message">Please grant the above mentioned permissions, otherwise the functionalities may not work properly.</string>
+    <string name="permissions_generic_title">This app requires certain permissions to function correctly.</string>
+    <string name="all_day_schedule_tile">All day event</string>
+    <string name="grant_permission">Grant Permissions</string>
+    <string name="permissions_denied_permanantly_message">Some permissions were permanently denied.\nPlease enable them in settings.</string>
+    <string name="open_settings">Open App Settings</string>
+    <string name="permission_required">We need some permissions to enable this action.</string>
+    <string name="cancel">Cancel</string>
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="remove_photo">Delete</string>
+    <string name="field_required">* Required field</string>
+    <string name="invalid_email_format">Invalid email address</string>
+    <string name="invalid_phone_number">Invalid phone number</string>
+    <string name="no_special_characters_allowed">No special characters allowed</string>
+    <string name="something_went_wrong">Something went wrong. Please try again.</string>
+    <string name="show_more">Show more</string>
+    <string name="show_less">Show less</string>
+    <string name="hide_password">Hide password</string>
+    <string name="show_password">Show password</string>
+    <string name="search">Search</string>
+    <string name="clear_search">Clear search</string>
+</resources>

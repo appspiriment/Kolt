@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IntelliJ / Android Studio Plugin — Kolt Docs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body class="light-mode docs-body">
+    <script>
+        window.docsBasePath = '../';
+        window.docsEnableToc = true;
+    </script>
+    <nav class="docs-sidebar" id="docs-sidebar"></nav>
+    <div class="docs-main">
+        <header class="docs-topbar" id="docs-topbar"></header>
+        <article class="docs-article">
+            <span class="docs-eyebrow">Guides</span>
+            <h1>IntelliJ / Android Studio Plugin</h1>
+            <p class="docs-lede">The Kolt Project Wizard plugin adds a <strong>Kolt</strong> entry to the New Project wizard in Android Studio and IntelliJ IDEA, scaffolding a fully wired Kolt project in seconds.</p>
+
+            <h2>What it creates</h2>
+            <p>When you select <strong>File → New Project → Kolt</strong>, fill in three fields (Project Name, Package name, Project type), and click Create, the wizard generates a ready-to-build project structure:</p>
+            <pre><code>&lt;ProjectName&gt;/
+  settings.gradle.kts      ← koltlibs + kmplibs catalogs wired, modules included
+  build.gradle.kts          ← plugins declared apply false
+  gradle.properties         ← AndroidX flags, POM metadata, kotlin.code.style
+  gradlew + gradle/wrapper/ ← immediately buildable, no setup required
+  app/
+    build.gradle.kts        ← convention plugin applied, namespace set
+    src/main/kotlin/&lt;pkg&gt;/
+    src/main/res/           ← (Android only)
+  shared/                   ← (KMP only)
+    build.gradle.kts        ← kmp.library-koin-compose applied
+    src/commonMain/kotlin/&lt;pkg&gt;/
+    src/androidMain/kotlin/&lt;pkg&gt;/
+    src/iosMain/kotlin/&lt;pkg&gt;/
+  CLAUDE.md                 ← AI-agent steering stub (fill in project facts)
+  AGENTS.md                 ← AI-agent steering stub (fill in project facts)
+  docs/
+    CODING_STANDARDS.md     ← binding coding rules (plugin-owned, auto-updates)
+    ARCHITECTURE.md         ← layering, DI, offline-first patterns
+    TESTING.md              ← test patterns, fakes, coverage targets
+    KOLT.md                 ← plugin &amp; library API reference</code></pre>
+            <p>The first <code>./gradlew :app:assembleDebug</code> run auto-scaffolds the Compose theme XML resources into <code>src/main/res/</code>.</p>
+
+            <h2>Build the plugin locally</h2>
+            <p>The IntelliJ plugin lives in <code>intellij-plugin/</code>, which is a <strong>standalone Gradle build</strong> — not part of the main UtilsLibs composite build.</p>
+            <pre><code># Enter the plugin directory
+cd intellij-plugin
+
+# Run a sandboxed IDE instance with the plugin installed (for manual testing)
+./gradlew runIde
+
+# Build the distributable ZIP
+./gradlew buildPlugin
+# Output: build/distributions/kolt-intellij-plugin-1.0.0.zip</code></pre>
+
+            <h2>Install from disk</h2>
+            <p>To install the locally built plugin into your Android Studio or IntelliJ IDEA installation:</p>
+            <ol>
+                <li>Run <code>./gradlew buildPlugin</code> inside <code>intellij-plugin/</code>.</li>
+                <li>Open Android Studio or IntelliJ IDEA.</li>
+                <li>Go to <strong>Settings → Plugins → ⚙ → Install Plugin from Disk…</strong></li>
+                <li>Select <code>build/distributions/kolt-intellij-plugin-1.0.0.zip</code>.</li>
+                <li>Restart the IDE.</li>
+                <li>Go to <strong>File → New Project</strong> and look for <strong>Kolt</strong> in the left panel.</li>
+            </ol>
+
+            <h2>Using the wizard</h2>
+            <p>After installing, the wizard presents three fields:</p>
+            <table class="docs-table">
+                <thead>
+                    <tr>
+                        <th>Field</th>
+                        <th>Example</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Project Name</strong></td>
+                        <td><code>MyApp</code></td>
+                        <td>Used as the root directory name and Gradle project name</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Package Name</strong></td>
+                        <td><code>com.example.myapp</code></td>
+                        <td>Applied to <code>namespace</code> and source directories</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Project Type</strong></td>
+                        <td><code>Android</code> or <code>KMP</code></td>
+                        <td>Selects the <code>android-project</code> or <code>kmp-project</code> template</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>Click <strong>Create</strong>. The IDE opens the generated project, which is immediately buildable.</p>
+
+            <h2>How templates stay current</h2>
+            <p>The wizard bundles its project templates from <code>build-logic/conventions/src/steering-templates/</code> at plugin build time. This is the <strong>same source</strong> used by the <code>scripts/new-project.sh</code> CLI script — there is no duplication. Editing the templates in that directory and rebuilding the plugin ensures both tools stay in sync.</p>
+            <p>The <code>docs/</code> files inside every generated project (<code>CODING_STANDARDS.md</code>, <code>KOLT.md</code>, etc.) are <strong>plugin-owned</strong> — they are automatically overwritten whenever the consumer project updates its Kolt plugin version, so AI agents in downstream projects always read current rules.</p>
+
+            <h2>Target IDE versions</h2>
+            <p>The plugin is configured to target <strong>Android Studio Meerkat (2024.3.1)</strong> and later.</p>
+            <p>To target IntelliJ IDEA Community instead, change one line in <code>intellij-plugin/build.gradle.kts</code>:</p>
+            <pre><code>// Change:
+androidStudio("2024.3.1.14")
+// To:
+ideaCommunity("2024.3.1")</code></pre>
+
+            <h2>Publish to JetBrains Marketplace</h2>
+            <p>To distribute the plugin publicly via the JetBrains Marketplace:</p>
+            <ol>
+                <li>Obtain a <a href="https://plugins.jetbrains.com/author/me/tokens" target="_blank" rel="noopener">JetBrains Marketplace token</a>.</li>
+                <li>Set the environment variable: <code>export PUBLISH_TOKEN=&lt;your-token&gt;</code></li>
+                <li>Sign the plugin (requires a certificate — see JetBrains Marketplace signing documentation).</li>
+                <li>Run: <code>./gradlew publishPlugin</code></li>
+            </ol>
+
+            <h2>Related</h2>
+            <div class="docs-tile-grid">
+                <a class="docs-tile" href="starter-projects.html">
+                    <span class="docs-tile-icon">📁</span>
+                    <h3>Starter Project Templates</h3>
+                    <p>Use the CLI script to bootstrap a new project from the same templates this plugin uses.</p>
+                </a>
+                <a class="docs-tile" href="../getting-started/index.html">
+                    <span class="docs-tile-icon">🚀</span>
+                    <h3>Getting Started</h3>
+                    <p>Manual wiring guide for adding Kolt to an existing project.</p>
+                </a>
+            </div>
+        </article>
+    </div>
+    <script type="module" src="../assets/docs.js"></script>
+</body>
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Collection &amp; Formatting Utilities — Kolt Docs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body class="light-mode docs-body">
+    <script>
+        window.docsBasePath = '../';
+        window.docsEnableToc = true;
+    </script>
+    <nav class="docs-sidebar" id="docs-sidebar"></nav>
+    <div class="docs-main">
+        <header class="docs-topbar" id="docs-topbar"></header>
+        <article class="docs-article">
+            <span class="docs-eyebrow">Library: utils</span>
+            <h1>Collection &amp; Formatting Utilities</h1>
+            <p class="docs-lede">Perform type-safe collection manipulations, clean metric representations, compact sizing strings, ordinals, and localized currencies.</p>
+
+            <h2>1. Collection / List Operations</h2>
+            <p>Modifiers on lists that avoid index bounds issues and simplify mutability in state flows:</p>
+            <ul>
+                <li><strong><code>List&lt;T&gt;.moveItem(fromIndex: Int, toIndex: Int)</code></strong>: Re-orders an item in a list safely, returning a new immutable list. Useful for drag-and-drop lists.</li>
+                <li><strong><code>List&lt;T&gt;.replaceFirst(predicate: (T) -> Boolean, transform: (T) -> T)</code></strong>: Replaces the first matching item in a list using a transform function, returning a new copy of the list. Useful for modifying an item in an MVI state.</li>
+            </ul>
+            <pre><code>// Moving items in a list:
+val items = listOf("A", "B", "C")
+val reordered = items.moveItem(fromIndex = 2, toIndex = 0) // ["C", "A", "B"]
+
+// Replacing a list item in state:
+val updatedUsers = users.replaceFirst(
+    predicate = { it.id == activeId },
+    transform = { it.copy(isOnline = true) }
+)</code></pre>
+
+            <h2>2. Compact Large Numbers</h2>
+            <p>Converts large integers or longs into compact labels (e.g. for user view counts, download statistics, or likes count):</p>
+            <ul>
+                <li><strong><code>Long.toCompactString()</code></strong> (also available for <code>Int</code>):
+                    <ul>
+                        <li><code>1_200.toCompactString()</code> &rarr; <code>"1.2K"</code></li>
+                        <li><code>1_500_000.toCompactString()</code> &rarr; <code>"1.5M"</code></li>
+                        <li><code>2_300_000_000.toCompactString()</code> &rarr; <code>"2.3B"</code></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h2>3. Number Formatting with Comma Separators</h2>
+            <p>Formats numerical values into English-locale thousands-separated strings:</p>
+            <ul>
+                <li><strong><code>Int.toFormattedString()</code></strong> / <strong><code>Long.toFormattedString()</code></strong> / <strong><code>Double.toFormattedString(decimals = 2)</code></strong>:
+                    <ul>
+                        <li><code>1000.toFormattedString()</code> &rarr; <code>"1,000"</code></li>
+                        <li><code>10500.50.toFormattedString(decimals = 1)</code> &rarr; <code>"10,500.5"</code></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h2>4. File Sizes Formatting</h2>
+            <p>Converts raw byte counts into readable storage sizes (using binary 1024-byte boundaries):</p>
+            <ul>
+                <li><strong><code>Long.toFileSizeString()</code></strong> (also available for <code>Int</code>):
+                    <ul>
+                        <li><code>0.toFileSizeString()</code> &rarr; <code>"0 B"</code></li>
+                        <li><code>1024.toFileSizeString()</code> &rarr; <code>"1 KB"</code></li>
+                        <li><code>1_572_864.toFileSizeString()</code> &rarr; <code>"1.5 MB"</code></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h2>5. English Ordinal Suffixes</h2>
+            <ul>
+                <li><strong><code>Int.toOrdinal()</code></strong>: Adds structural suffixes (st, nd, rd, th) to numbers:
+                    <ul>
+                        <li><code>1.toOrdinal()</code> &rarr; <code>"1st"</code></li>
+                        <li><code>2.toOrdinal()</code> &rarr; <code>"2nd"</code></li>
+                        <li><code>11.toOrdinal()</code> &rarr; <code>"11th"</code></li>
+                        <li><code>21.toOrdinal()</code> &rarr; <code>"21st"</code></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h2>6. Percentage Strings</h2>
+            <ul>
+                <li><strong><code>Double.toPercentString(decimals: Int = 1)</code></strong>:
+                    <ul>
+                        <li><code>0.425.toPercentString()</code> &rarr; <code>"42.5%"</code></li>
+                        <li><code>1.0.toPercentString()</code> &rarr; <code>"100%"</code></li>
+                    </ul>
+                </li>
+                <li><strong><code>Int.toPercentString(total: Int, decimals: Int = 1)</code></strong>: Calculates ratio automatically:
+                    <ul>
+                        <li><code>42.toPercentString(total = 100)</code> &rarr; <code>"42%"</code></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h2>7. Duration Formatting</h2>
+            <p>Converts duration counts in seconds to duration text segments:</p>
+            <ul>
+                <li><strong><code>Long.toDurationString()</code></strong> (also available for <code>Int</code>):
+                    <ul>
+                        <li><code>65.toDurationString()</code> &rarr; <code>"1m 5s"</code></li>
+                        <li><code>3661.toDurationString()</code> &rarr; <code>"1h 1m"</code></li>
+                    </ul>
+                </li>
+            </ul>
+
+            <h2>8. Android Localized Currency Formatting</h2>
+            <p>Exposed on Android targets in <code>FormatUtils.kt</code>, formatting currency values based on standard ISO codes:</p>
+            <pre><code>// androidMain only
+val costInDollars = FormatUtils.formatCurrency(amount = 299.99, currencyCode = "USD") // "$299.99"
+val costInRupees = FormatUtils.formatCurrency(amount = 5000.0, currencyCode = "INR")  // "₹5,000.00"</code></pre>
+
+            <h2>9. Android Context &amp; Intent Extensions</h2>
+            <p>Extensions on <code>Context</code> that wrap standard Android operations:</p>
+            <ul>
+                <li><strong><code>context.launchPlayStorePage(packageName: String)</code></strong>: Fires a market intent to launch the Play Store details page for an application. Falls back to a browser URL intent if the Play Store app is unavailable.</li>
+                <li><strong><code>context.isNetworkAvailable()</code></strong>: Checks connectivity status using <code>ConnectivityManager</code> (requires <code>ACCESS_NETWORK_STATE</code> permission). Returns <code>true</code> if mobile, Wi-Fi, or ethernet routes are connected.</li>
+            </ul>
+        </article>
+    </div>
+    <script type="module" src="../assets/docs.js"></script>
+</body>
+</html>

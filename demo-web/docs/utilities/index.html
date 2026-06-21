@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Libraries — Kolt Docs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body class="light-mode docs-body">
+    <script>window.docsBasePath = '../';</script>
+    <nav class="docs-sidebar" id="docs-sidebar"></nav>
+    <div class="docs-main">
+        <header class="docs-topbar" id="docs-topbar"></header>
+        <article class="docs-article">
+            <span class="docs-eyebrow">Libraries</span>
+            <h1>Runtime Libraries</h1>
+            <p class="docs-lede">The five runtime libraries underneath every plugin and component — logging, common extensions, geolocation, the Compose theme system, and in-app updates.</p>
+            <div class="docs-tile-grid" id="utility-tiles"></div>
+        </article>
+    </div>
+    <script type="module">
+        import { UTILITIES } from './data.js';
+        const grid = document.getElementById('utility-tiles');
+        grid.innerHTML = UTILITIES.map(u => `
+            <a class="docs-tile" href="detail.html?id=${u.id}">
+                <span class="docs-tile-icon">🛠️</span>
+                <h3>${u.title}</h3>
+                <p>${u.summary}</p>
+            </a>
+        `).join('');
+    </script>
+    <script type="module" src="../assets/docs.js"></script>
+</body>
+</html>

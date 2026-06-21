@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UiText: Multiplatform Text Wrapper — Kolt Docs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body class="light-mode docs-body">
+    <script>
+        window.docsBasePath = '../';
+        window.docsEnableToc = true;
+    </script>
+    <nav class="docs-sidebar" id="docs-sidebar"></nav>
+    <div class="docs-main">
+        <header class="docs-topbar" id="docs-topbar"></header>
+        <article class="docs-article">
+            <span class="docs-eyebrow">Library: compose-kmp</span>
+            <h1>UiText</h1>
+            <p class="docs-lede">Represent platform-dependent text resources—such as raw strings, XML resource IDs, quantity plurals, and rich annotated strings—as unified models in common, platform-agnostic business logic.</p>
+
+            <h2>1. Overview &amp; Why It Is Needed</h2>
+            <p>In Kotlin Multiplatform (KMP), business logic (ViewModels, repositories, and interactors) lives in the <code>commonMain</code> source set. However, resources like localized string XML files (e.g. <code>strings.xml</code>) are highly platform-dependent. Referencing Android resource integer IDs (e.g., <code>R.string.error_message</code>) directly in common code breaks compilation for iOS, Desktop, and Web targets.</p>
+            <p><code>UiText</code> solves this issue by acting as an abstraction barrier. ViewModels represent text as instances of the <code>UiText</code> sealed class and deliver them to the UI layer. Only inside the Composable tree (where a platform <code>Context</code> or localization manager is active) is the <code>UiText</code> resolved into a native platform string.</p>
+
+            <h2>2. Class Definition &amp; Subclasses</h2>
+            <p><code>UiText</code> is structured as a sealed class with five specialized subclasses that cover all standard text formatting requirements.</p>
+
+            <pre><code>package io.github.appspiriment.kolt.composekmp.wrappers
+
+sealed class UiText {
+    companion object {
+        val Empty: UiText = DynamicString("")
+    }
+    
+    // ... subclasses
+}</code></pre>
+
+            <table class="docs-table">
+                <thead>
+                    <tr>
+                        <th>Subclass</th>
+                        <th>Parameters</th>
+                        <th>Description &amp; Use Cases</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong><code>DynamicString</code></strong></td>
+                        <td><code>val value: String</code></td>
+                        <td>Wraps a hardcoded raw string. Useful for server-provided content, input values, and temporary debug messages.</td>
+                    </tr>
+                    <tr>
+                        <td><strong><code>StringResource</code></strong></td>
+                        <td><code>val resId: Int</code><br><code>vararg val args: Any</code></td>
+                        <td>Wraps an XML string resource ID. Accepts optional format arguments (e.g. <code>%s</code> placeholders), which themselves can be raw values or other nested <code>UiText</code> instances.</td>
+                    </tr>
+                    <tr>
+                        <td><strong><code>PluralResource</code></strong></td>
+                        <td><code>val resId: Int</code><br><code>val quantity: Int</code><br><code>vararg val args: Any</code></td>
+                        <td>Wraps a quantity (plurals) string resource. Resolves correct grammatical forms dynamically based on locale definitions.</td>
+                    </tr>
+                    <tr>
+                        <td><strong><code>StringArrayResource</code></strong></td>
+                        <td><code>val resId: Int</code></td>
+                        <td>Wraps a string array resource ID. Useful for populating selection dropdowns, spinner lists, or static option tabs.</td>
+                    </tr>
+                    <tr>
+                        <td><strong><code>DynamicAnnotatedString</code></strong></td>
+                        <td><code>val value: AnnotatedString</code></td>
+                        <td>Wraps a Compose-specific <code>AnnotatedString</code> containing custom character styling, colors, or inline links.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>3. Factory Extensions &amp; Helpers</h2>
+            <p>Kolt provides standard extension functions on top of common Kotlin types to instantly convert values into <code>UiText</code> wrappers with minimal syntax overhead:</p>
+
+            <pre><code>// Convert raw types directly:
+"Hello".toUiText()                // -> UiText.DynamicString
+42.toUiText()                     // -> UiText.DynamicString
+annotatedString.toUiText()        // -> UiText.DynamicAnnotatedString
+
+// Null-safe conversion helpers:
+val message: String? = null
+message.toUiTextOrEmpty()         // -> Returns UiText.Empty (empty DynamicString)
+message.toUiTextOrElse { "Default" }
+
+// Conditional fallbacks:
+message.toUiTextOr { UiText.StringResource(R.string.fallback_label) }</code></pre>
+
+            <h2>4. Resolving inside Composables</h2>
+            <p>Once a <code>UiText</code> object is passed from the ViewModel to the Composable tree, it can be resolved into a native string using platform-aware Composable extension functions:</p>
+
+            <ul>
+                <li><strong><code>UiText.asString(): String</code></strong>: Resolves the wrapper and processes formatting arguments, returning a native <code>String</code>.</li>
+                <li><strong><code>UiText.asStringList(): List&lt;String&gt;</code></strong>: Resolves a string array resource, returning a standard Kotlin list of strings.</li>
+                <li><strong><code>UiText.asAnnotatedString(formatHtml: Boolean = false): AnnotatedString</code></strong>: Resolves the text into a styled <code>AnnotatedString</code>. Setting <code>formatHtml = true</code> automatically parses basic HTML styling tags (such as <code>&lt;b&gt;</code>, <code>&lt;i&gt;</code>, and <code>&lt;u&gt;</code>) into Compose styles.</li>
+            </ul>
+
+            <h2>5. Complete Code Example</h2>
+            <p>This implementation demonstrates a profile state flow that resolves localized placeholders inside a common ViewModel and binds it to a Jetpack Compose screen.</p>
+
+            <h3>1. ViewModel (commonMain)</h3>
+            <pre><code>import io.github.appspiriment.kolt.composekmp.wrappers.UiText
+import io.github.appspiriment.kolt.utils.state.AsyncState
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+
+class UserProfileViewModel : ViewModel() {
+    private val _welcomeState = MutableStateFlow&lt;AsyncState&lt;UiText&gt;&gt;(AsyncState.Idle)
+    val welcomeState: StateFlow&lt;AsyncState&lt;UiText&gt;&gt; = _welcomeState
+
+    fun loadUser(username: String, notificationCount: Int) {
+        _welcomeState.value = AsyncState.Loading
+        
+        // Nested wrapping: format string with a plural string argument
+        val notificationText = UiText.PluralResource(
+            resId = R.plurals.new_notifications,
+            quantity = notificationCount,
+            notificationCount
+        )
+        
+        val greeting = UiText.StringResource(
+            resId = R.string.welcome_greeting,
+            username,
+            notificationText // UiText works as format argument!
+        )
+        
+        _welcomeState.value = AsyncState.Success(greeting)
+    }
+}</code></pre>
+
+            <h3>2. Composable Screen (commonMain UI / androidMain)</h3>
+            <pre><code>import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import io.github.appspiriment.kolt.composekmp.wrappers.asString
+
+@Composable
+fun UserProfileScreen(viewModel: UserProfileViewModel) {
+    val state = viewModel.welcomeState.collectAsState().value
+    
+    when (state) {
+        is AsyncState.Loading -> {
+            Text("Loading welcome message...")
+        }
+        is AsyncState.Success -> {
+            // Resolves the UiText resource and formatting arguments on-the-fly
+            Text(
+                text = state.data.asString(),
+                style = Kolt.typography.headingMedium,
+                color = Kolt.colors.textPrimary
+            )
+        }
+        is AsyncState.Error -> {
+            Text("Failed to load user state: ${state.throwable.message}")
+        }
+        else -> {}
+    }
+}</code></pre>
+        </article>
+    </div>
+    <script type="module" src="../assets/docs.js"></script>
+</body>
+</html>

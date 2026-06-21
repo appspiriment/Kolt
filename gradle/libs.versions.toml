@@ -1,0 +1,10 @@
+# Build-dependency catalog for the runtime library modules under libs/.
+# Plugin ids + common bundles come from the `koltlibs` / `kmplibs` catalogs.
+
+[versions]
+vanniktechPublish = "0.30.0"
+dokka = "1.9.20"
+
+[plugins]
+vanniktech-publish = { id = "com.vanniktech.maven.publish", version.ref = "vanniktechPublish" }
+dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }

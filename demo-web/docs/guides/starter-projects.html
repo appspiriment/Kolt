@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Starter Project Templates — Kolt Docs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body class="light-mode docs-body">
+    <script>
+        window.docsBasePath = '../';
+        window.docsEnableToc = true;
+    </script>
+    <nav class="docs-sidebar" id="docs-sidebar"></nav>
+    <div class="docs-main">
+        <header class="docs-topbar" id="docs-topbar"></header>
+        <article class="docs-article">
+            <span class="docs-eyebrow">Guides</span>
+            <h1>Starter Project Templates</h1>
+            <p class="docs-lede">Kolt ships two ready-to-build project templates — one for Android-only projects and one for Kotlin Multiplatform. Use the CLI bootstrap script or the IntelliJ plugin wizard to generate a new project in seconds.</p>
+
+            <h2>Two ways to bootstrap</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 24px 0 32px;">
+                <div style="background: var(--surface-color); border: 1px solid var(--border-color); padding: 20px; border-radius: 12px;">
+                    <h3 style="margin-top:0; font-size:16px;">🖥️ CLI Script (recommended)</h3>
+                    <p style="font-size:13.5px; line-height:1.5; color:var(--text-muted); margin-bottom:0;">Run <code>scripts/new-project.sh</code> from the UtilsLibs repo with flags or in interactive mode. Works anywhere — CI, local machine, Makefile.</p>
+                </div>
+                <div style="background: var(--surface-color); border: 1px solid var(--border-color); padding: 20px; border-radius: 12px;">
+                    <h3 style="margin-top:0; font-size:16px;">🔌 IntelliJ / Android Studio Plugin</h3>
+                    <p style="font-size:13.5px; line-height:1.5; color:var(--text-muted); margin-bottom:0;">A GUI wizard inside the IDE. Same templates, same output — no terminal required. See the <a href="intellij-plugin.html">IntelliJ Plugin guide</a> for setup.</p>
+                </div>
+            </div>
+
+            <h2>CLI bootstrap script</h2>
+            <p>The script lives at <code>scripts/new-project.sh</code> in the UtilsLibs repo root. It copies the relevant template, substitutes your project name and package, initialises the Gradle wrapper, and opens the directory.</p>
+            <pre><code># Android-only project (non-interactive)
+./scripts/new-project.sh --type android --name MyApp --package com.example.myapp
+
+# KMP project (non-interactive)
+./scripts/new-project.sh --type kmp --name MyApp --package com.example.myapp
+
+# Fully interactive — prompts for all values
+./scripts/new-project.sh</code></pre>
+            <p>Then do your first build to let Kolt scaffold theme resources and steering docs:</p>
+            <pre><code>cd MyApp
+./gradlew :app:assembleDebug   # scaffolds theme XMLs on the first run</code></pre>
+
+            <h2>Template types</h2>
+            <p>The templates live under <code>project-templates/templates/</code> in the repo:</p>
+
+            <h3>android-project</h3>
+            <p>A single-module Android project with a convention plugin applied. Use this when you are building an Android-only app.</p>
+            <pre><code>MyApp/
+  settings.gradle.kts           ← koltlibs catalog imported, :app included
+  build.gradle.kts              ← plugins block (apply false)
+  gradle.properties             ← AndroidX + POM metadata defaults
+  gradlew + gradle/wrapper/
+  app/
+    build.gradle.kts            ← alias(koltlibs.plugins.kolt.application)
+    src/main/
+      kotlin/com/example/myapp/ ← empty package placeholder
+      res/                      ← (theme XMLs scaffolded on first build)
+  CLAUDE.md                     ← fill in project facts (Claude reads this)
+  AGENTS.md                     ← fill in project facts (Gemini reads this)
+  docs/
+    CODING_STANDARDS.md
+    ARCHITECTURE.md
+    TESTING.md
+    KOLT.md</code></pre>
+
+            <h3>kmp-project</h3>
+            <p>A multi-module KMP project with an Android host app and a shared KMP module. Use this when targeting Android + iOS (and optionally Desktop or WASM).</p>
+            <pre><code>MyApp/
+  settings.gradle.kts           ← koltlibs + kmplibs catalogs, :app + :shared included
+  build.gradle.kts
+  gradle.properties
+  gradlew + gradle/wrapper/
+  app/
+    build.gradle.kts            ← alias(kmplibs.plugins.kolt.kmp.application)
+    src/main/kotlin/com/example/myapp/
+    src/main/res/               ← (theme XMLs scaffolded on first build)
+  shared/
+    build.gradle.kts            ← alias(kmplibs.plugins.kolt.kmp.library.koin.compose)
+    src/
+      commonMain/kotlin/com/example/myapp/
+      androidMain/kotlin/com/example/myapp/
+      iosMain/kotlin/com/example/myapp/
+  CLAUDE.md
+  AGENTS.md
+  docs/
+    CODING_STANDARDS.md
+    ARCHITECTURE.md
+    TESTING.md
+    KOLT.md</code></pre>
+
+            <h2>What the docs/ files are</h2>
+            <p>Every generated project includes a <code>docs/</code> folder with four AI-agent steering files. These are <strong>plugin-owned</strong>: whenever the consumer project upgrades the Kolt plugin, running any build re-fetches the latest versions automatically.</p>
+            <table class="docs-table">
+                <thead>
+                    <tr>
+                        <th>File</th>
+                        <th>Purpose</th>
+                        <th>When an agent loads it</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>CODING_STANDARDS.md</code></td>
+                        <td>Binding coding rules — Clean + MVI + SOLID + stateless Compose</td>
+                        <td>Every coding task</td>
+                    </tr>
+                    <tr>
+                        <td><code>ARCHITECTURE.md</code></td>
+                        <td>Layering, DI strategy, offline-first data layer, Android/KMP deltas</td>
+                        <td>When designing or restructuring</td>
+                    </tr>
+                    <tr>
+                        <td><code>TESTING.md</code></td>
+                        <td>Test patterns, reducer/use-case fakes, Turbine, coverage targets</td>
+                        <td>When writing tests</td>
+                    </tr>
+                    <tr>
+                        <td><code>KOLT.md</code></td>
+                        <td>Plugin catalog, DSL options, library APIs, catalog aliases, scaffolding</td>
+                        <td>When using or configuring the Kolt suite</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>The <code>CLAUDE.md</code> and <code>AGENTS.md</code> files are <strong>project-owned</strong>: the plugin only writes them once (when absent) and never overwrites them, so your team can fill in project-specific facts freely.</p>
+
+            <h2>Updating docs/ in an existing project</h2>
+            <p>To refresh the plugin-owned docs to the latest version after a Kolt plugin upgrade, run:</p>
+            <pre><code>./gradlew scaffoldKoltDocs</code></pre>
+            <p>This is also triggered automatically on the first build after a plugin version change. It is safe to re-run — <code>CLAUDE.md</code> and <code>AGENTS.md</code> are never touched.</p>
+            <p>Similarly, to re-generate Compose theme XML resources:</p>
+            <pre><code>./gradlew scaffoldKoltResources</code></pre>
+
+            <h2>How templates stay in sync</h2>
+            <p>The canonical template source lives at <code>project-templates/</code> in this repo. At plugin build time, a <code>generateSteeringTemplates</code> Gradle task copies all template files into the plugin JAR as classpath resources. Both the CLI script and the IntelliJ plugin wizard read from this same source — there is no duplication.</p>
+
+            <h2>Manual copy (no script needed)</h2>
+            <p>You can also copy a template folder directly if you prefer not to run the script:</p>
+            <pre><code># Android project
+cp -r project-templates/templates/android-project/ ../MyNewApp
+cp -r project-templates/docs/ ../MyNewApp/docs
+# then fill in &lt;placeholder&gt; values in CLAUDE.md and AGENTS.md
+
+# KMP project
+cp -r project-templates/templates/kmp-project/ ../MyNewApp
+cp -r project-templates/docs/ ../MyNewApp/docs</code></pre>
+
+            <h2>Related</h2>
+            <div class="docs-tile-grid">
+                <a class="docs-tile" href="intellij-plugin.html">
+                    <span class="docs-tile-icon">🔌</span>
+                    <h3>IntelliJ / Android Studio Plugin</h3>
+                    <p>GUI wizard for creating new Kolt projects directly inside the IDE.</p>
+                </a>
+                <a class="docs-tile" href="../getting-started/index.html">
+                    <span class="docs-tile-icon">🚀</span>
+                    <h3>Getting Started</h3>
+                    <p>Manual wiring guide for adding Kolt to an existing project.</p>
+                </a>
+                <a class="docs-tile" href="ai-steering.html">
+                    <span class="docs-tile-icon">🤖</span>
+                    <h3>AI Agent Steering</h3>
+                    <p>Learn how the docs/ files align AI coding assistants with your codebase.</p>
+                </a>
+            </div>
+        </article>
+    </div>
+    <script type="module" src="../assets/docs.js"></script>
+</body>
+</html>

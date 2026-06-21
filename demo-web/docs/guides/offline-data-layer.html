@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline-First Data Layer — Kolt Docs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body class="light-mode docs-body">
+    <script>
+        window.docsBasePath = '../';
+        window.docsEnableToc = true;
+    </script>
+    <nav class="docs-sidebar" id="docs-sidebar"></nav>
+    <div class="docs-main">
+        <header class="docs-topbar" id="docs-topbar"></header>
+        <article class="docs-article">
+            <span class="docs-eyebrow">Guides</span>
+            <h1>Offline-First Data Layer</h1>
+            <p class="docs-lede">Hands-on architecture guide for implementing a local-first offline-capable data flow using SQLDelight and a synchronization queue.</p>
+
+            <h2>Overview</h2>
+            <p>Under Kolt's coding rules, <strong>the application must remain fully usable even without network connectivity.</strong> To achieve this, repositories expose local database streams as the sole data sources for ViewModels. Operations are performed locally first, and synchronization with a remote backend happens in the background.</p>
+
+            <pre><code>UI / Presentation  ──► Repository Interface (Domain)
+                             │
+                             ▼
+                 Repository Implementation (Data)
+                 ├── Reads: SQLDelight Local Store (Flow)
+                 └── Writes: SQLDelight + OfflineMutationQueue</code></pre>
+
+            <h2>Step 1: SQLDelight Schema Definition</h2>
+            <p>Declare your local schema and query methods in a <code>.sq</code> file inside the Data module. SQLDelight will autogenerate type-safe query APIs:</p>
+            <pre><code>// ProductDb.sq
+CREATE TABLE ProductEntity (
+    id TEXT NOT NULL PRIMARY KEY,
+    name TEXT NOT NULL,
+    price REAL NOT NULL,
+    isSynced INTEGER NOT NULL DEFAULT 0
+);
+
+selectAll:
+SELECT * FROM ProductEntity;
+
+insertProduct:
+INSERT OR REPLACE INTO ProductEntity(id, name, price, isSynced)
+VALUES (?, ?, ?, ?);
+
+markAsSynced:
+UPDATE ProductEntity SET isSynced = 1 WHERE id = ?;</code></pre>
+
+            <h2>Step 2: Define Domain Repository Interface</h2>
+            <p>Declare the repository interface inside your platform-independent <strong>Domain module</strong>. Notice that it works entirely with pure Kotlin types, exposing data streams via standard <code>Flow</code>:</p>
+            <pre><code>// ProductRepository.kt (Domain Module)
+interface ProductRepository {
+    fun streamProducts(): Flow&lt;List&lt;Product&gt;&gt;
+    suspend fun saveProduct(product: Product): AppResult&lt;Unit&gt;
+}</code></pre>
+
+            <h2>Step 3: Repository Implementation (Data Module)</h2>
+            <p>Implement the interface inside your **Data module**, linking the local SQLDelight store and enqueuing offline mutations for remote synchronization:</p>
+            <pre><code>// ProductRepositoryImpl.kt (Data Module)
+class ProductRepositoryImpl(
+    private val dbQueries: ProductDbQueries,
+    private val mutationQueue: OfflineMutationQueue,
+    private val dispatchers: DispatcherProvider
+) : ProductRepository {
+
+    override fun streamProducts(): Flow&lt;List&lt;Product&gt;&gt; = 
+        dbQueries.selectAll()
+            .asFlow()
+            .mapToList(dispatchers.io)
+            .map { entities -&gt; entities.map { it.toDomainModel() } }
+
+    override suspend fun saveProduct(product: Product): AppResult&lt;Unit&gt; = safeCall(dispatchers.io) {
+        // 1. Write locally first to ensure instant UI responsiveness
+        dbQueries.insertProduct(
+            id = product.id,
+            name = product.name,
+            price = product.price,
+            isSynced = 0
+        )
+        
+        // 2. Enqueue the mutation to be synchronized in the background
+        mutationQueue.enqueue(
+            SyncMutation(
+                type = MutationType.UPSERT,
+                payload = product.toJsonString()
+            )
+        )
+    }
+}</code></pre>
+
+            <h2>Step 4: Background Sync Engine</h2>
+            <p>The background <code>SyncEngine</code> runs asynchronously, draining the queue and uploading mutations to the remote source. Once a mutation completes successfully, the item status is marked as synced:</p>
+            <pre><code>// SyncEngine.kt
+class SyncEngine(
+    private val mutationQueue: OfflineMutationQueue,
+    private val remoteSyncSource: RemoteSyncDataSource,
+    private val dbQueries: ProductDbQueries
+) {
+    suspend fun drainQueue() {
+        mutationQueue.streamPendingMutations().collect { mutation -&gt;
+            val success = remoteSyncSource.uploadMutation(mutation)
+            if (success) {
+                // Mark entity as synchronized locally
+                dbQueries.markAsSynced(mutation.entityId)
+                mutationQueue.dequeue(mutation.id)
+            }
+        }
+    }
+}</code></pre>
+        </article>
+    </div>
+    <script type="module" src="../assets/docs.js"></script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bi_brand">#C20F2F</color>
+    <!-- Day Theme Colors -->
+    <color name="primary">#C20F2F</color>
+    <color name="onPrimary">#FFFFFF</color>
+    <color name="scrim">#020202</color>
+    <color name="iconTint">#888E92</color>
+    <color name="disabledIconTint">#5D1D3B</color>
+    <color name="drawerItem">#5F6368</color>
+    <color name="navigationBar">#282828</color>
+    <color name="secondary">#03DAC6</color>
+    <color name="onSecondary">@color/onMainSurface</color>
+    <color name="tertiary">#3700B3</color>
+    <color name="onTertiary">#FFFFFF</color>
+    <color name="mainSurface">#FFFFFF</color>
+    <color name="onMainSurface">#121212</color>
+    <color name="secondarySurface">#EBEBEB</color>
+    <color name="onSecondarySurface">@color/onMainSurface</color>
+    <color name="background">#F3F3F3</color>
+    <color name="onBackground">#1C1B1F</color>
+    <color name="primaryCardContainer">#FFFFFF</color>
+    <color name="onPrimaryCardContainer">@color/onMainSurface</color>
+    <color name="onPrimaryCardContainerDimmed">#5D6364</color>
+    <color name="secondaryCardContainer">#EBEBEB</color>
+    <color name="onSecondaryCardContainer">@color/onMainSurface</color>
+    <color name="tertiaryCardContainer">#EBEBEB</color>
+    <color name="onTertiaryCardContainer">@color/onMainSurface</color>
+    <color name="greyCardContainer">#F1F1F1</color>
+    <color name="onGreyCardContainer">@color/onMainSurface</color>
+
+
+    <color name="error">#B00020</color>
+    <color name="onError">#FFFFFF</color>
+    <color name="errorCardContainer">#ABFFB5B5</color>
+    <color name="onErrorCardContainer">#7E0000</color>
+
+
+    <color name="accentedBlueTitle">#027DDF</color>
+    <color name="accentedBlackTitle">@color/onMainSurface</color>
+    <color name="accentedRedTitle">#ac081d</color>
+
+    <color name="accentedBlueText">#027DDF</color>
+    <color name="accentedRedText">#ac081d</color>
+    <color name="accentedGoldText">#C46F08</color>
+
+    <color name="topAppBar">#C20F2F</color>
+    <color name="onTopAppBar">#FFFFFF</color>
+    <color name="disabledText">#BDBDBD</color>
+    <color name="subText">#757575</color>
+    <color name="hintText">#99121212</color>
+    <color name="dividerColor">#BDBDBD</color>
+
+</resources>

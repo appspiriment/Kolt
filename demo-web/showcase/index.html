@@ -1,0 +1,2335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Compose Components Demo — Kolt</title>
+    <link rel="icon" type="image/png" href="../img/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../src/style.css">
+    <style>
+        body {
+            font-family: 'Roboto', 'Inter', -apple-system, sans-serif !important;
+            font-size: 14px !important;
+            line-height: 1.5 !important;
+            background-color: var(--bg-color) !important;
+            color: var(--text-main) !important;
+        }
+        .sidebar {
+            background-color: var(--surface-color) !important;
+            border-right: 1px solid var(--border-color) !important;
+        }
+        .main-header {
+            background-color: rgba(var(--bg-color-rgb), 0.95) !important;
+            backdrop-filter: blur(8px) !important;
+            -webkit-backdrop-filter: blur(8px) !important;
+            border-bottom: 1px solid var(--border-color) !important;
+        }
+        .showcase-card h3 {
+            font-family: 'Roboto', 'Inter', sans-serif !important;
+            font-size: 18px !important;
+            font-weight: 500 !important;
+            color: var(--title-color) !important;
+        }
+        .card-desc {
+            font-size: 14px !important;
+            line-height: 1.5 !important;
+            margin-bottom: 12px !important;
+            color: var(--text-muted) !important;
+        }
+        .docs-reference-link {
+            transition: color 0.15s ease, opacity 0.15s ease;
+        }
+        .docs-reference-link:hover {
+            opacity: 0.85;
+            color: var(--primary-color) !important;
+            text-decoration: underline !important;
+        }
+    </style>
+</head>
+<body class="light-mode">
+
+    <!-- Dynamic SVG ClipPath container for SmoothCornerShape -->
+    <svg width="0" height="0" style="position: absolute;">
+        <defs>
+            <clipPath id="squircle-clip" clipPathUnits="objectBoundingBox">
+                <path id="squircle-path" d="M 0.5,0 C 0.776,0 1,0.224 1,0.5 C 1,0.776 0.776,1 0.5,1 C 0.224,1 0,0.776 0,0.5 C 0,0.224 0.224,0 0.5,0 Z" />
+            </clipPath>
+        </defs>
+    </svg>
+
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="brand" style="flex-direction: column; align-items: flex-start; gap: 4px; margin-bottom: 24px;">
+                <a href="../index.html" style="display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--text-main);">
+                    <img src="../img/logo.png" alt="Kolt Logo" style="height: 24px; width: auto; object-fit: contain;">
+                    <h1 style="font-size: 20px; font-weight: 700; background: none; -webkit-text-fill-color: initial; margin: 0; padding: 0; letter-spacing: -0.5px;">Kolt</h1>
+                </a>
+                <span style="font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px;">Compose Components Demo</span>
+            </div>
+            
+            <nav class="nav-links">
+                <button class="nav-btn active" data-tab="core-tab">
+                    <span class="icon">📦</span> Core Components
+                </button>
+                <button class="nav-btn" data-tab="inputs-tab">
+                    <span class="icon">🎛️</span> Inputs & Controls
+                </button>
+                <button class="nav-btn" data-tab="indicators-tab">
+                    <span class="icon">🏷️</span> Indicators & Feedback
+                </button>
+                <button class="nav-btn" data-tab="layouts-tab">
+                    <span class="icon">📐</span> Layouts & Containers
+                </button>
+                <button class="nav-btn" data-tab="complex-tab">
+                    <span class="icon">⚡</span> Complex Systems
+                </button>
+            </nav>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="content-area">
+            <!-- Header -->
+            <header class="main-header">
+                <h2 id="page-title">Core Components</h2>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <!-- Color Scheme Dropdown -->
+                    <div class="dropdown-container">
+                        <button class="btn btn-outline header-theme-toggle" id="color-scheme-dropdown" style="padding: 8px 16px; border-radius: 20px; font-size: 13px; display: flex; align-items: center; gap: 8px; background-color: var(--surface-color);">
+                            <span id="active-scheme-dot" style="width: 8px; height: 8px; border-radius: 50%; background-color: var(--primary-color); display: inline-block;"></span>
+                            <span id="active-scheme-name">Material Blue</span>
+                            <span style="font-size: 10px;">▼</span>
+                        </button>
+                        <div class="dropdown-menu" id="color-scheme-menu" style="right: 0; left: auto; min-width: 170px; border-radius: 12px; margin-top: 8px; z-index: 100;">
+                            <div class="dropdown-item" data-scheme="blue" data-label="Material Blue">
+                                <span style="width: 8px; height: 8px; border-radius: 50%; background-color: #1a73e8; display: inline-block; margin-right: 8px;"></span>
+                                Material Blue
+                            </div>
+                            <div class="dropdown-item" data-scheme="green" data-label="Forest Green">
+                                <span style="width: 8px; height: 8px; border-radius: 50%; background-color: #16a34a; display: inline-block; margin-right: 8px;"></span>
+                                Forest Green
+                            </div>
+                            <div class="dropdown-item" data-scheme="purple" data-label="Royal Purple">
+                                <span style="width: 8px; height: 8px; border-radius: 50%; background-color: #7c3aed; display: inline-block; margin-right: 8px;"></span>
+                                Royal Purple
+                            </div>
+                            <div class="dropdown-item" data-scheme="orange" data-label="Amber Orange">
+                                <span style="width: 8px; height: 8px; border-radius: 50%; background-color: #ea580c; display: inline-block; margin-right: 8px;"></span>
+                                Amber Orange
+                            </div>
+                            <div class="dropdown-item" data-scheme="rose" data-label="Rose Crimson">
+                                <span style="width: 8px; height: 8px; border-radius: 50%; background-color: #e11d48; display: inline-block; margin-right: 8px;"></span>
+                                Rose Crimson
+                            </div>
+                            <div class="dropdown-item" data-scheme="graphite" data-label="Apple Graphite">
+                                <span style="width: 8px; height: 8px; border-radius: 50%; background-color: #52525b; display: inline-block; margin-right: 8px;"></span>
+                                Apple Graphite
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <button id="theme-toggle" class="theme-toggle-btn header-theme-toggle">
+                        <span class="theme-icon">🌙</span> <span class="theme-text">Dark Mode</span>
+                    </button>
+                    <div class="platform-badge">Web Showcase</div>
+                </div>
+            </header>
+
+            <div style="background: rgba(26, 115, 232, 0.06); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px 20px; margin-top: 16px; margin-bottom: 8px;">
+                <p style="margin: 0; font-size: 13.5px; line-height: 1.6; color: var(--text-main);">
+                    <strong>ℹ️ Compose Components Demo:</strong> This interactive playground showcases the 24 Compose UI components bundled in the Kolt suite. These components are supplied by the two Compose libraries in the suite: <code>compose-kmp</code> (KMP Compose tokens and squircles) and <code>compose-utils</code> (Android-only scaffolds and dropdowns).
+                </p>
+            </div>
+
+            <!-- 1. CORE COMPONENTS TAB -->
+            <section id="core-tab" class="tab-content active">
+                <div class="parallax-banner" id="banner-core">
+                    <div class="banner-overlay"></div>
+                    <div class="banner-content">
+                        <span class="banner-eyebrow">Kotlin Multiplatform</span>
+                        <h2>Core Components</h2>
+                        <p class="banner-subtitle">Buttons, text helpers, copy actions, highlighted search, and avatar images.</p>
+                    </div>
+                </div>
+                <div class="grid-container">
+                    
+                    <!-- Buttons Showcase Card -->
+                    <div id="demo-buttons-actions" class="showcase-card full-width">
+                        <h3>Buttons & Actions</h3>
+                        <p class="card-desc">Themed button states supporting primary, secondary, icons, images, and text alignments.</p>
+                        
+                        <div class="playground-container">
+                            <button class="config-tab-btn" aria-label="Configure Buttons">
+                                <span class="tab-icon">⚙️</span>
+                                <span class="tab-text">Configure</span>
+                            </button>
+                            <div class="demo-card-front">
+                                <div class="component-group-list" style="width: 100%;">
+                                    <!-- AppsButton -->
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">AppsButton</h4>
+                                            <span class="component-desc">Standard primary filled button</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="btn-group" style="display: flex; gap: 12px; flex-wrap: wrap; width: 100%;">
+                                                <button class="btn btn-primary btn-smooth btn-demo">Primary Active</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- AppsTonalButton -->
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">AppsTonalButton</h4>
+                                            <span class="component-desc">Filled Tonal button style using secondary container colors</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="btn-group" style="display: flex; gap: 12px; flex-wrap: wrap; width: 100%;">
+                                                <button class="btn btn-tonal btn-smooth btn-demo">Tonal Active</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- AppsOutlinedButton -->
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">AppsOutlinedButton</h4>
+                                            <span class="component-desc">Outlined button style using outline borders</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="btn-group" style="display: flex; gap: 12px; flex-wrap: wrap; width: 100%;">
+                                                <button class="btn btn-outline btn-smooth btn-demo">Outlined Active</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- AppsIosButton -->
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">AppsIosButton</h4>
+                                            <span class="component-desc">iOS-style button with smooth opacity fade feedback and multiple style modes</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="btn-group" style="display: flex; gap: 12px; flex-wrap: wrap; width: 100%;">
+                                                <button class="btn btn-ios btn-ios-filled btn-demo">iOS Filled</button>
+                                                <button class="btn btn-ios btn-ios-tinted btn-demo">iOS Tinted</button>
+                                                <button class="btn btn-ios btn-ios-gray btn-demo">iOS Gray</button>
+                                                <button class="btn btn-ios btn-ios-plain btn-demo">iOS Plain</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- AppsIconButton -->
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">AppsIconButton</h4>
+                                            <span class="component-desc">Icon-only clickable triggers without text</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="btn-group" style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+                                                <button class="btn btn-outline btn-circular btn-demo icon-only-btn" title="Notifications">
+                                                    <span>🔔</span>
+                                                </button>
+                                                <button class="btn btn-primary btn-circular btn-demo icon-only-btn" title="Success">
+                                                    <span>✓</span>
+                                                </button>
+                                                <button class="btn btn-outline btn-circular btn-demo icon-only-btn" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" title="Settings">
+                                                    <span>⚙️</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- AppsImageButton -->
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">AppsImageButton</h4>
+                                            <span class="component-desc">Buttons containing aligned leading images/icons with text</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="btn-group" style="display: flex; gap: 12px; flex-wrap: wrap; width: 100%;">
+                                                <button class="btn btn-primary btn-smooth btn-demo icon-text-btn" id="web-image-button">
+                                                    <span class="btn-icon">🏠</span> Primary Image
+                                                </button>
+                                                <button class="btn btn-outline btn-smooth btn-demo icon-text-btn">
+                                                    <span class="btn-icon">📩</span> Outlined Image
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- AppsTextButton & AppsLinkButton -->
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">AppsTextButton & AppsLinkButton</h4>
+                                            <span class="component-desc">Plain text actions and hyperlinked styles</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="btn-group" style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; width: 100%;">
+                                                <a href="#" class="btn-link btn-demo" id="btn-link-demo">Link Button</a>
+                                                <button class="btn btn-text btn-demo">Plain Text</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="config-card-back">
+                                <div class="config-card-content">
+                                    <div class="config-title">Button Settings</div>
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; width: 100%;">
+                                        <div class="config-option">
+                                            <span class="label-text">Enable All Buttons</span>
+                                            <div class="toggle-container">
+                                                <label class="switch-label">
+                                                    <input type="checkbox" id="btn-enable-toggle" checked>
+                                                    <span class="switch-slider"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text" style="align-self: flex-start;">iOS Button Style Mode</span>
+                                            <select id="btn-ios-style-select" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none; cursor: pointer;">
+                                                <option value="all">All Styles (Showcase)</option>
+                                                <option value="btn-ios-filled">Filled Mode Only</option>
+                                                <option value="btn-ios-tinted">Tinted Mode Only</option>
+                                                <option value="btn-ios-gray">Gray Mode Only</option>
+                                                <option value="btn-ios-plain">Plain Mode Only</option>
+                                            </select>
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text" style="align-self: flex-start;">Button Color Intent</span>
+                                            <select id="btn-color-select" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none; cursor: pointer;">
+                                                <option value="default">Default Theme</option>
+                                                <option value="success">Success (Green)</option>
+                                                <option value="warning">Warning (Orange)</option>
+                                                <option value="error">Error (Red)</option>
+                                            </select>
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text" style="align-self: flex-start;">Button Shape Style</span>
+                                            <select id="btn-shape-select" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none; cursor: pointer;">
+                                                <option value="btn-smooth" selected>Smooth (G2 Squircle)</option>
+                                                <option value="pill">Pill (Fully Round)</option>
+                                                <option value="rounded">Rounded Corners (8px)</option>
+                                                <option value="square">Square (Sharp)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Text Helpers & Components -->
+                    <div id="demo-text-helpers-components" class="showcase-card">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <h3>Text Helpers & Components</h3>
+                            <span class="platform-badge" style="background-color: rgba(99, 102, 241, 0.15); color: #6366f1; border-color: rgba(99, 102, 241, 0.25);">KMP</span>
+                        </div>
+                        <p class="card-desc">Specialized text widgets supporting click-to-copy, ellipses with "read more" expansions, and image alignment.</p>
+                        
+                        <div class="playground-container">
+                            <button class="config-tab-btn" aria-label="Configure Text Helpers">
+                                <span class="tab-icon">⚙️</span>
+                                <span class="tab-text">Configure</span>
+                            </button>
+                            <div class="demo-card-front">
+                                <div class="component-group-list" style="width: 100%;">
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">AppsCopyableText</h4>
+                                            <span class="component-desc">Click text block to copy to clipboard</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="copyable-text-container" id="web-copyable-text" data-text="support@appspiriment.com" style="width: fit-content;">
+                                                <span class="text-content">support@appspiriment.com</span>
+                                                <span class="copy-icon" style="font-size: 14px;">📋</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">AppsExpandableText</h4>
+                                            <span class="component-desc">Limits text lines with click to expand toggle</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="expandable-text-container" id="web-expandable-text">
+                                                <p class="text-body collapsed" id="web-expandable-body" style="-webkit-line-clamp: 2;">Appspiriment provides high-quality convention plugins and utility libraries for Kotlin Multiplatform developers. By consolidating build logic, it enables teams to share structured setups easily and upgrade dependencies via standard version catalogs without rebuilding plugins.</p>
+                                                <span class="toggle-btn" id="web-expandable-toggle">Show more</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">AppsImageText</h4>
+                                            <span class="component-desc">Perfectly centered inline icon/image alignment</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="image-text-container" id="web-image-text-container" style="display: flex; align-items: center; gap: 8px;">
+                                                <span class="inline-icon">🏠</span>
+                                                <span class="image-text-content">Appspiriment System Settings</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">KeyValuePairText & PrefixedText</h4>
+                                            <span class="component-desc">Formatted text fields for summary views</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div style="display: flex; flex-direction: column; gap: 4px; font-size: 14px; width: 100%;">
+                                                <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--divider-color); padding: 4px 0;">
+                                                    <span style="color: var(--text-muted);" id="key-val-1-key">Status</span>
+                                                    <span style="font-weight: 600; color: #10b981;" id="key-val-1-val">Active</span>
+                                                </div>
+                                                <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--divider-color); padding: 4px 0;">
+                                                    <span style="color: var(--text-muted);" id="key-val-2-key">Amount</span>
+                                                    <span style="font-weight: 600;" id="key-val-2-val">USD $149.00</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="config-card-back">
+                                <div class="config-card-content">
+                                    <div class="config-title">Text Settings</div>
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; width: 100%;">
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text" style="align-self: flex-start;">Copyable Text Value</span>
+                                            <input type="text" id="copyable-text-input" value="support@appspiriment.com" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none;">
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text" style="align-self: flex-start;">Collapsed Line Limit</span>
+                                            <select id="expandable-text-lines" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none; cursor: pointer;">
+                                                <option value="1">1 Line</option>
+                                                <option value="2" selected>2 Lines</option>
+                                                <option value="3">3 Lines</option>
+                                            </select>
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text" style="align-self: flex-start;">Image/Text Gap</span>
+                                            <div style="display: flex; justify-content: space-between; width: 100%;">
+                                                <span class="label-text" style="font-size: 11px;">Spacing size</span>
+                                                <span id="image-text-gap-val" style="color: var(--primary-color); font-weight: 700; font-size: 13px;">8px</span>
+                                            </div>
+                                            <input type="range" id="image-text-gap" min="4" max="24" value="8" style="width: 100%; accent-color: var(--primary-color);">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Highlight Text Search (AppsHighlightText) -->
+                    <div id="demo-highlight-search-text" class="showcase-card">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <h3>Highlight Search Text</h3>
+                            <span class="platform-badge" style="background-color: rgba(99, 102, 241, 0.15); color: #6366f1; border-color: rgba(99, 102, 241, 0.25);">KMP</span>
+                        </div>
+                        <p class="card-desc">Text view that highlights instances matching the search query. Try typing in the search bar below.</p>
+                        
+                        <div class="playground-container">
+                            <button class="config-tab-btn" aria-label="Configure Search Highlights">
+                                <span class="tab-icon">⚙️</span>
+                                <span class="tab-text">Configure</span>
+                            </button>
+                            <div class="demo-card-front">
+                                <div class="component-group-list" style="width: 100%;">
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">AppsHighlightText</h4>
+                                            <span class="component-desc">Highlighted matching terms inside target text block</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="highlight-playground" style="width: 100%;">
+                                                <p id="highlight-source-text" style="font-size: 14px; line-height: 1.6; color: var(--text-main); margin: 0;">
+                                                    Kotlin Multiplatform (KMP) simplifies cross-platform sharing of business logic. Developers write common code once, and compile to Android, iOS, Desktop, and Web. Appspiriment's convention plugins make KMP project builds consistent.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="config-card-back">
+                                <div class="config-card-content">
+                                    <div class="config-title">Highlight Settings</div>
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; width: 100%;">
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text" style="align-self: flex-start;">Search Term</span>
+                                            <input type="text" id="highlight-search-input" placeholder="Type letters to highlight (e.g. 'kotlin', 'build')..." style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none;">
+                                        </div>
+                                        <div class="config-option">
+                                            <span class="label-text">Case Sensitive Match</span>
+                                            <div class="toggle-container">
+                                                <label class="switch-label">
+                                                    <input type="checkbox" id="highlight-case-toggle">
+                                                    <span class="switch-slider"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text" style="align-self: flex-start;">Highlight Style</span>
+                                            <select id="highlight-style-select" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none; cursor: pointer;">
+                                                <option value="yellow">Yellow Soft (Default)</option>
+                                                <option value="green">Green Glow</option>
+                                                <option value="orange-underline">Orange Underline</option>
+                                                <option value="red-strike">Red Strike-through</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <!-- Images & Avatars -->
+                    <div id="demo-images-avatars" class="showcase-card">
+                        <h3>Images & Avatars</h3>
+                        <p class="card-desc">Images, icons, and initials avatars supporting high-contrast tints.</p>
+                        
+                        <div class="playground-container">
+                            <button class="config-tab-btn" aria-label="Configure Images & Avatars">
+                                <span class="tab-icon">⚙️</span>
+                                <span class="tab-text">Configure</span>
+                            </button>
+                            <div class="demo-card-front">
+                                <div class="component-group-list" style="width: 100%;">
+                                    <!-- AppsIcon -->
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">AppsIcon</h4>
+                                            <span class="component-desc">Standalone static system icon component</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <span class="inline-icon" id="web-avatar-icon" style="font-size: 28px; color: var(--primary-color);">🔔</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- AppsImage -->
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">AppsImage</h4>
+                                            <span class="component-desc">Standalone static graphic image component wrapper</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <span class="inline-icon" style="font-size: 28px;">⚠️</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- AppsAvatar -->
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">AppsAvatar</h4>
+                                            <span class="component-desc">Circular name initials avatar badge</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="apps-avatar" id="web-avatar-preview">AS</div>
+                                        </div>
+                                    </div>
+
+                                    <!-- CircleIconBox -->
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">CircleIconBox</h4>
+                                            <span class="component-desc">Centered icon tile with automatic contrast background</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="circle-icon-box" id="web-circle-icon-box" style="width: 48px; height: 48px;">
+                                                <span style="font-size: 20px;">🏠</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="config-card-back">
+                                <div class="config-card-content">
+                                    <div class="config-title">Avatar & Icon Settings</div>
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; width: 100%;">
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text" style="align-self: flex-start;">Avatar Initials</span>
+                                            <input type="text" id="avatar-initials-input" value="AS" maxlength="3" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none;">
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text" style="align-self: flex-start;">Icon Color Theme</span>
+                                            <select id="avatar-color-select" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none; cursor: pointer;">
+                                                <option value="var(--primary-color)">Primary (Blue)</option>
+                                                <option value="#10b981">Success (Green)</option>
+                                                <option value="#3b82f6">Info (Light Blue)</option>
+                                                <option value="#f59e0b">Warning (Orange)</option>
+                                                <option value="#ef4444">Error (Red)</option>
+                                            </select>
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text" style="align-self: flex-start;">CircleIconBox Size</span>
+                                            <div style="display: flex; justify-content: space-between; width: 100%;">
+                                                <span class="label-text" style="font-size: 11px;">Dimensions</span>
+                                                <span id="avatar-icon-size-val" style="color: var(--primary-color); font-weight: 700; font-size: 13px;">48px</span>
+                                            </div>
+                                            <input type="range" id="avatar-icon-size" min="32" max="80" value="48" style="width: 100%; accent-color: var(--primary-color);">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>            </section>
+
+            <!-- 2. INPUTS & CONTROLS TAB -->
+            <section id="inputs-tab" class="tab-content">
+                <div class="parallax-banner" id="banner-inputs">
+                    <div class="banner-overlay"></div>
+                    <div class="banner-content">
+                        <span class="banner-eyebrow">Interactive Controls</span>
+                        <h2>Inputs & Controls</h2>
+                        <p class="banner-subtitle">Form text fields, password visibility toggles, searches, dropdown menus, sliders, and rating stars.</p>
+                    </div>
+                </div>
+                <div class="grid-container">
+                    
+                    <!-- Themed Form Fields Card -->
+                    <div id="demo-themed-form-fields" class="showcase-card">
+                        <h3>Themed Form Fields</h3>
+                        <p class="card-desc">Premium form text field inputs with full focus borders, clear functionality, and validation feedback.</p>
+                        
+                        <div class="playground-container">
+                            <button class="config-tab-btn" aria-label="Configure Form Fields">
+                                <span class="tab-icon">⚙️</span>
+                                <span class="tab-text">Configure</span>
+                            </button>
+                            <div class="demo-card-front">
+                                <div class="component-group-list" style="width: 100%;">
+                                    <!-- AppsTextField -->
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">AppsTextField</h4>
+                                            <span class="component-desc">Standard text field for single line entries (Active & Disabled)</span>
+                                        </div>
+                                        <div class="component-demo-wrapper" style="flex-direction: column; align-items: stretch; gap: 12px;">
+                                            <div class="input-group">
+                                                <span class="label" style="font-size: 11px;">Active Input</span>
+                                                <input type="text" id="web-standard-field" placeholder="Enter your full name..." class="themed-input">
+                                            </div>
+                                            <div class="input-group">
+                                                <span class="label" style="font-size: 11px;">Floating Label Input</span>
+                                                <div class="apps-input-floating">
+                                                    <div class="floating-input-wrapper">
+                                                        <input type="text" class="floating-input" id="web-floating-field" placeholder=" " style="font-size: 14px;">
+                                                        <span class="floating-label">Enter your full name...</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="input-group">
+                                                <span class="label" style="font-size: 11px;">Disabled Input</span>
+                                                <input type="text" value="Arun Shankar" disabled class="themed-input">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- AppsPasswordTextField -->
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">AppsPasswordTextField</h4>
+                                            <span class="component-desc">Input text with visibility eye action toggle (Active & Disabled)</span>
+                                        </div>
+                                        <div class="component-demo-wrapper" style="flex-direction: column; align-items: stretch; gap: 12px;">
+                                            <div class="input-group">
+                                                <span class="label" style="font-size: 11px;">Interactive Password</span>
+                                                <div class="input-with-action">
+                                                    <input type="password" id="web-password-field" placeholder="Enter password..." class="themed-input">
+                                                    <button class="input-action-btn" id="web-password-toggle" type="button">👁️</button>
+                                                </div>
+                                            </div>
+                                            <div class="input-group">
+                                                <span class="label" style="font-size: 11px;">Disabled Password</span>
+                                                <div class="input-with-action">
+                                                    <input type="password" value="supersecretpassword" disabled class="themed-input">
+                                                    <button class="input-action-btn" disabled type="button" style="opacity: 0.5;">👁️</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- AppsSearchTextField -->
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">AppsSearchTextField</h4>
+                                            <span class="component-desc">Search field with leading lens and trailing clear action</span>
+                                        </div>
+                                        <div class="component-demo-wrapper" style="flex-direction: column; align-items: stretch; gap: 12px;">
+                                            <div class="input-group">
+                                                <span class="label" style="font-size: 11px;">Interactive Search</span>
+                                                <div class="input-with-action search-layout">
+                                                    <span class="search-lead-icon">🔍</span>
+                                                    <input type="text" id="web-search-field" placeholder="Search resources..." class="themed-input search-input">
+                                                    <button class="input-action-btn clear-btn hidden" id="web-search-clear" type="button">×</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- AppsValidatedTextField -->
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">AppsValidatedTextField</h4>
+                                            <span class="component-desc">Input field with validation states (Success & Error feedback)</span>
+                                        </div>
+                                        <div class="component-demo-wrapper" style="flex-direction: column; align-items: stretch; gap: 12px;">
+                                            <div class="input-group">
+                                                <span class="label" style="font-size: 11px;">Interactive Validator</span>
+                                                <input type="email" id="web-validated-field" placeholder="name@domain.com" class="themed-input">
+                                                <span class="validation-feedback" id="web-validated-feedback"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="config-card-back">
+                                <div class="config-card-content">
+                                    <div class="config-title">Form Field Settings</div>
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; width: 100%;">
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text" style="align-self: flex-start;">Custom Placeholder</span>
+                                            <input type="text" id="field-placeholder-input" value="Enter details..." style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none;">
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text" style="align-self: flex-start;">Interactive Validator State</span>
+                                            <select id="field-state-select" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none; cursor: pointer;">
+                                                <option value="none" selected>None (Type to validate)</option>
+                                                <option value="valid">Force Success/Valid</option>
+                                                <option value="invalid">Force Error/Invalid</option>
+                                            </select>
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text" style="align-self: flex-start;">Field Shape Style</span>
+                                            <select id="field-shape-select" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none; cursor: pointer;">
+                                                <option value="rounded" selected>Rounded Corners</option>
+                                                <option value="pill">Pill</option>
+                                                <option value="square">Square</option>
+                                            </select>
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text" style="align-self: flex-start;">Focus Border Color</span>
+                                            <select id="field-border-select" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none; cursor: pointer;">
+                                                <option value="default" selected>Default Theme</option>
+                                                <option value="purple">Purple Accent</option>
+                                                <option value="rose">Rose Accent</option>
+                                                <option value="green">Green Accent</option>
+                                                <option value="blue">Blue Accent</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AppsDropdowns Showcase Card -->
+                    <div id="demo-appsdropdowns-dropdown-selection" class="showcase-card">
+                        <h3>AppsDropdowns (Dropdown Selection)</h3>
+                        <p class="card-desc">Showcases of dropdown widgets: text, icon, floating label, and chip styles.</p>
+                        
+                        <div class="playground-container">
+                            <button class="config-tab-btn" aria-label="Configure Dropdowns">
+                                <span class="tab-icon">⚙️</span>
+                                <span class="tab-text">Configure</span>
+                            </button>
+                            <div class="demo-card-front">
+                                <div class="component-group-list" style="width: 100%;">
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">AppsTextDropDown</h4>
+                                            <span class="component-desc">Outlined button trigger displaying active value</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="dropdown-container">
+                                                <button class="btn btn-outline btn-smooth dropdown-trigger" id="web-text-dropdown">
+                                                    <span class="dropdown-val">Select Option</span>
+                                                    <span>▼</span>
+                                                </button>
+                                                <div class="dropdown-menu" id="web-text-dropdown-menu">
+                                                    <div class="dropdown-item" data-val="Option 1">Option 1</div>
+                                                    <div class="dropdown-item" data-val="Option 2">Option 2</div>
+                                                    <div class="dropdown-item" data-val="Option 3">Option 3</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">AppsIconDropDown</h4>
+                                            <span class="component-desc">Clean settings menu list triggered from an icon button</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="dropdown-container">
+                                                <button class="btn btn-outline btn-circular dropdown-trigger" id="web-icon-dropdown" style="padding: 0; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;" title="Settings">
+                                                    <span>⚙️</span>
+                                                </button>
+                                                <div class="dropdown-menu" id="web-icon-dropdown-menu">
+                                                    <div class="dropdown-item" data-val="Account Profile">Account Profile</div>
+                                                    <div class="dropdown-item" data-val="System Settings">System Settings</div>
+                                                    <div class="dropdown-item" data-val="Logout">Logout</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">AppsDropdown (Floating Label)</h4>
+                                            <span class="component-desc">Text-field design with animated floating label and state chevron</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="apps-dropdown-floating" id="web-floating-dropdown">
+                                                <div class="floating-input-wrapper">
+                                                    <input type="text" class="floating-input" readonly placeholder=" " style="font-size: 14px;">
+                                                    <span class="floating-label">Select Workspace</span>
+                                                    <span class="floating-chevron">▼</span>
+                                                </div>
+                                                <div class="dropdown-menu" id="web-floating-dropdown-menu" style="width: 100%;">
+                                                    <div class="dropdown-item" data-val="Personal Space">Personal Space</div>
+                                                    <div class="dropdown-item" data-val="Appspiriment Team">Appspiriment Team</div>
+                                                    <div class="dropdown-item" data-val="Client Sandbox">Client Sandbox</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">ChipDropDown</h4>
+                                            <span class="component-desc">Pill-shaped filter button selector</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="dropdown-container">
+                                                <button class="btn btn-outline btn-pill dropdown-trigger" id="web-chip-dropdown" style="padding: 6px 14px; font-size: 13px; height: auto;">
+                                                    <span class="dropdown-val">Filters: All</span>
+                                                    <span>▼</span>
+                                                </button>
+                                                <div class="dropdown-menu" id="web-chip-dropdown-menu">
+                                                    <div class="dropdown-item" data-val="Filters: All">All Tasks</div>
+                                                    <div class="dropdown-item" data-val="Filters: Active">Active Tasks</div>
+                                                    <div class="dropdown-item" data-val="Filters: Completed">Completed Tasks</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="config-card-back">
+                                <div class="config-card-content">
+                                    <div class="config-title">Dropdown Settings</div>
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; width: 100%;">
+                                        <div class="config-option">
+                                            <span class="label-text">Disable All Dropdowns</span>
+                                            <div class="toggle-container">
+                                                <label class="switch-label">
+                                                    <input type="checkbox" id="dropdowns-disable-toggle">
+                                                    <span class="switch-slider"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text" style="align-self: flex-start;">Custom Option List (Comma-separated)</span>
+                                            <input type="text" id="dropdowns-items-input" value="Option 1, Option 2, Option 3" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AppsSlider -->
+                    <div id="demo-appsslider-value-controls" class="showcase-card">
+                        <h3>AppsSlider (Value Controls)</h3>
+                        <p class="card-desc">Premium custom slider controls supporting interactive value drags.</p>
+                        
+                        <div class="playground-container">
+                            <button class="config-tab-btn" aria-label="Configure Slider">
+                                <span class="tab-icon">⚙️</span>
+                                <span class="tab-text">Configure</span>
+                            </button>
+                            <div class="demo-card-front">
+                                <div class="component-group-list" style="width: 100%;">
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">AppsSlider</h4>
+                                            <span class="component-desc">Drag active thumb handle to adjust numerical settings</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="apps-slider-container">
+                                                <div class="apps-slider-track">
+                                                    <div class="apps-slider-fill" id="custom-slider-fill"></div>
+                                                </div>
+                                                <div class="slider-tooltip" id="slider-tooltip">50</div>
+                                                <div class="slider-thumb-glow" id="slider-thumb-glow">
+                                                    <div class="slider-thumb"></div>
+                                                </div>
+                                                <input type="range" id="real-slider" min="0" max="100" value="50">
+                                            </div>
+                                            
+                                            <div class="slider-value-display" style="margin-top: 16px;">
+                                                Current Value: <span id="slider-current-val">50</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="config-card-back">
+                                <div class="config-card-content">
+                                    <div class="config-title">Slider Settings</div>
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; width: 100%;">
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text">Minimum Value</span>
+                                            <input type="number" id="slider-min-input" value="0" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none;">
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text">Maximum Value</span>
+                                            <input type="number" id="slider-max-input" value="100" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none;">
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text">Step Size</span>
+                                            <select id="slider-step-select" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none; cursor: pointer;">
+                                                <option value="1" selected>1 (Continuous)</option>
+                                                <option value="5">5</option>
+                                                <option value="10">10</option>
+                                                <option value="25">25</option>
+                                            </select>
+                                        </div>
+                                        <div class="config-option">
+                                            <span class="label-text">Disable Slider</span>
+                                            <div class="toggle-container">
+                                                <label class="switch-label">
+                                                    <input type="checkbox" id="slider-disable-toggle">
+                                                    <span class="switch-slider"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Rating Bar -->
+                    <div id="demo-appsratingbar-star-rating" class="showcase-card">
+                        <h3>AppsRatingBar (Star Rating)</h3>
+                        <p class="card-desc">Interactive star ratings supporting fractional parameters.</p>
+                        
+                        <div class="playground-container">
+                            <button class="config-tab-btn" aria-label="Configure Rating Bar">
+                                <span class="tab-icon">⚙️</span>
+                                <span class="tab-text">Configure</span>
+                            </button>
+                            <div class="demo-card-front">
+                                <div class="component-group-list" style="width: 100%;">
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">Interactive Rating Bar</h4>
+                                            <span class="component-desc">Click/Tap stars to assign a rating value</span>
+                                        </div>
+                                        <div class="component-demo-wrapper" style="display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%;">
+                                            <div class="apps-rating-bar" id="interactive-rating">
+                                                <span class="star" data-value="1">★</span>
+                                                <span class="star" data-value="2">★</span>
+                                                <span class="star" data-value="3">★</span>
+                                                <span class="star" data-value="4">★</span>
+                                                <span class="star" data-value="5">★</span>
+                                            </div>
+                                            <div class="rating-value-display" style="font-size: 14px; font-weight: 600; color: var(--text-muted); margin-top: 8px;">
+                                                Current Rating: <span id="rating-val" style="color:var(--primary-color); font-weight: 700;">3.5</span> / <span id="rating-max-val">5.0</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">Read-only Display</h4>
+                                            <span class="component-desc">Static star rating containing half filled values</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="apps-rating-bar read-only" id="readonly-rating">
+                                                <span class="star filled">★</span>
+                                                <span class="star filled">★</span>
+                                                <span class="star filled">★</span>
+                                                <span class="star half">★</span>
+                                                <span class="star">★</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="config-card-back">
+                                <div class="config-card-content">
+                                    <div class="config-title">Rating Settings</div>
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; width: 100%;">
+                                        <div class="config-option">
+                                            <span class="label-text">Allow Half Selection</span>
+                                            <div class="toggle-container">
+                                                <label class="switch-label">
+                                                    <input type="checkbox" id="rating-half-toggle" checked>
+                                                    <span class="switch-slider"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text">Star Count (Max Value)</span>
+                                            <select id="rating-star-count-select" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none; cursor: pointer;">
+                                                <option value="3">3 Nodes</option>
+                                                <option value="5" selected>5 Nodes</option>
+                                                <option value="7">7 Nodes</option>
+                                                <option value="10">10 Nodes</option>
+                                            </select>
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text">Rating Icon Character</span>
+                                            <select id="rating-char-select" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none; cursor: pointer;">
+                                                <option value="★" selected>★ Star</option>
+                                                <option value="♥">♥ Heart</option>
+                                                <option value="●">● Circle</option>
+                                                <option value="■">■ Square</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- 3. INDICATORS & FEEDBACK TAB -->
+            <section id="indicators-tab" class="tab-content">
+                <div class="parallax-banner" id="banner-indicators">
+                    <div class="banner-overlay"></div>
+                    <div class="banner-content">
+                        <span class="banner-eyebrow">Status & States</span>
+                        <h2>Indicators & Feedback</h2>
+                        <p class="banner-subtitle">Semantic status tags, badge counts, interactive tooltips, progress bars, shimmer skeleton screens, empty state blocks, banners, snackbars, and toasts.</p>
+                    </div>
+                </div>
+                <div class="grid-container">
+                    
+                    <!-- Status Tags -->
+                    <div id="demo-appsstatustag-semantic-tags" class="showcase-card">
+                        <h3>AppsStatusTag (Semantic Tags)</h3>
+                        <p class="card-desc">Pill-shaped badges driven by primary, secondary, and semantic error/warning intents.</p>
+                        
+                        <div class="playground-container">
+                            <button class="config-tab-btn" aria-label="Configure Status Tags">
+                                <span class="tab-icon">⚙️</span>
+                                <span class="tab-text">Configure</span>
+                            </button>
+                            <div class="demo-card-front">
+                                <div class="component-group-list" style="width: 100%;">
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">Active Status Tags</h4>
+                                            <span class="component-desc">Click status pills to trigger dynamic toast feedback</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="status-tags-playground">
+                                                <div class="tag-row" id="status-tag-container" style="display:flex; flex-wrap:wrap; gap:8px;">
+                                                    <span class="status-tag tag-success" data-type="Success">Success</span>
+                                                    <span class="status-tag tag-warning" data-type="Warning">Warning</span>
+                                                    <span class="status-tag tag-error" data-type="Error">Error</span>
+                                                    <span class="status-tag tag-info" data-type="Info">Info</span>
+                                                    <span class="status-tag tag-primary" data-type="Primary">Primary</span>
+                                                    <span class="status-tag tag-neutral" data-type="Neutral">Neutral</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="config-card-back">
+                                <div class="config-card-content">
+                                    <div class="config-title">Tag Settings & Creator</div>
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; width: 100%;">
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text" style="align-self: flex-start;">Tag Label</span>
+                                            <input type="text" id="custom-tag-text" placeholder="Tag label..." value="Active" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none;">
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text" style="align-self: flex-start;">Tag Intent</span>
+                                            <select id="custom-tag-intent" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none; cursor: pointer;">
+                                                <option value="tag-success">Success</option>
+                                                <option value="tag-warning">Warning</option>
+                                                <option value="tag-error">Error</option>
+                                                <option value="tag-info">Info</option>
+                                                <option value="tag-primary">Primary</option>
+                                                <option value="tag-neutral">Neutral</option>
+                                            </select>
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                             <span class="label-text" style="align-self: flex-start;">Shape Style</span>
+                                             <select id="tag-style-select" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none; cursor: pointer;">
+                                                 <option value="tag-pill" selected>Pill (Rounded)</option>
+                                                 <option value="tag-square">Square (Smooth corners)</option>
+                                             </select>
+                                         </div>
+                                         <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                             <span class="label-text" style="align-self: flex-start;">Border Style</span>
+                                             <select id="tag-border-select" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none; cursor: pointer;">
+                                                 <option value="tint" selected>Default Tint</option>
+                                                 <option value="solid">Solid Accent</option>
+                                                 <option value="dashed">Dashed Accent</option>
+                                                 <option value="none">No Border</option>
+                                             </select>
+                                         </div>
+                                        <div class="config-option">
+                                            <span class="label-text">Show Status Icon</span>
+                                            <div class="toggle-container">
+                                                <label class="switch-label">
+                                                    <input type="checkbox" id="tag-icon-toggle">
+                                                    <span class="switch-slider"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="display: flex; gap: 8px; width: 100%; margin-top: 4px;">
+                                        <button class="btn btn-primary" id="add-tag-btn" style="flex: 1; padding: 8px 14px; border-radius: 8px; font-size: 13px;">Add</button>
+                                        <button class="btn btn-outline" id="clear-tags-btn" style="flex: 1; padding: 8px 14px; border-radius: 8px; font-size: 13px;">Reset</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Badge & Tooltip -->
+                    <div id="demo-appsbadge-appstooltip" class="showcase-card">
+                        <h3>AppsBadge & AppsTooltip</h3>
+                        <p class="card-desc">Count indicators and inline help prompts showing on interaction.</p>
+                        
+                        <div class="playground-container">
+                            <button class="config-tab-btn" aria-label="Configure Badge and Tooltip">
+                                <span class="tab-icon">⚙️</span>
+                                <span class="tab-text">Configure</span>
+                            </button>
+                            <div class="demo-card-front" style="min-height: 240px;">
+                                <div class="component-group-list" style="width: 100%;">
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">AppsBadge</h4>
+                                            <span class="component-desc">Notification count pill badge</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="badge-showcase">
+                                                <div class="apps-badge-container">
+                                                    <div class="badge-pill" id="demo-badge-pill">5</div>
+                                                    <div class="badge-base-icon">Inbox</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">AppsTooltip</h4>
+                                            <span class="component-desc">Interactive inline information popups</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="tooltip-showcase">
+                                                <div class="apps-tooltip-trigger tooltip-top" id="demo-tooltip-trigger">
+                                                    <span>Hover / Hold Me</span>
+                                                    <div class="apps-tooltip-bubble" id="demo-tooltip-bubble">Press long to trigger tooltip</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="config-card-back">
+                                <div class="config-card-content">
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; width: 100%;">
+                                        <div>
+                                            <div class="config-title">Badge Config</div>
+                                            <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px; margin-bottom: 12px;">
+                                                <span class="label-text" style="align-self: flex-start;">Badge Count</span>
+                                                <div style="display: flex; gap: 8px; align-items: center; width: 100%;">
+                                                    <button class="btn btn-outline" id="badge-dec-btn" style="flex: 1; padding: 6px; border-radius: 6px; font-size: 12px;">-</button>
+                                                    <input type="number" id="badge-count-input" min="0" max="99" value="5" style="width: 60px; text-align: center; padding: 6px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--surface-color); color: var(--text-main); font-weight: 600; outline: none; font-size: 12px;">
+                                                    <button class="btn btn-outline" id="badge-inc-btn" style="flex: 1; padding: 6px; border-radius: 6px; font-size: 12px;">+</button>
+                                                </div>
+                                            </div>
+                                            <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                                <span class="label-text" style="align-self: flex-start;">Badge Alignment</span>
+                                                <select id="badge-align-select" style="width: 100%; padding: 6px 10px; border-radius: 6px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 12px; outline: none; cursor: pointer;">
+                                                    <option value="top-right" selected>Top Right</option>
+                                                    <option value="top-left">Top Left</option>
+                                                    <option value="bottom-right">Bottom Right</option>
+                                                    <option value="bottom-left">Bottom Left</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="config-title">Tooltip Config</div>
+                                            <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px; margin-bottom: 12px;">
+                                                <span class="label-text" style="align-self: flex-start;">Tooltip Position</span>
+                                                <select id="tooltip-position-select" style="width: 100%; padding: 6px 10px; border-radius: 6px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 12px; outline: none; cursor: pointer;">
+                                                    <option value="tooltip-top">Top</option>
+                                                    <option value="tooltip-bottom">Bottom</option>
+                                                    <option value="tooltip-left">Left</option>
+                                                    <option value="tooltip-right">Right</option>
+                                                </select>
+                                            </div>
+                                            <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px; margin-bottom: 12px;">
+                                                <span class="label-text" style="align-self: flex-start;">Tooltip Message</span>
+                                                <input type="text" id="tooltip-text-input" value="Press long to trigger tooltip" style="width: 100%; padding: 6px 10px; border-radius: 6px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 12px; outline: none;">
+                                            </div>
+                                            <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                                <div style="display: flex; justify-content: space-between; width: 100%;">
+                                                    <span class="label-text">Long-press Hold Delay</span>
+                                                    <span id="tooltip-delay-val" style="color: var(--primary-color); font-weight: 700; font-size: 12px;">500ms</span>
+                                                </div>
+                                                <input type="range" id="tooltip-delay-slider" min="100" max="1500" value="500" step="100" style="width: 100%; accent-color: var(--primary-color);">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Progress Indicators & Loaders -->
+                    <div id="demo-progress-loaders" class="showcase-card">
+                        <h3>Progress & Loaders</h3>
+                        <p class="card-desc">Themed linear progress, circular progress, and indeterminate states.</p>
+                        
+                        <div class="playground-container">
+                            <button class="config-tab-btn" aria-label="Configure Progress & Loaders">
+                                <span class="tab-icon">⚙️</span>
+                                <span class="tab-text">Configure</span>
+                            </button>
+                            <div class="demo-card-front">
+                                <div class="component-group-list" style="width: 100%;">
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">AppsProgressBar</h4>
+                                            <span class="component-desc">Linear progress bar (Determinate value)</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="apps-progress-bar" id="web-progress-bar-container" style="height: 6px;">
+                                                <div class="apps-progress-fill" id="custom-progress-fill" style="width: 50%;"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">AppsCircularProgress</h4>
+                                            <span class="component-desc">Indeterminate circular spinner</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="apps-circular-progress" id="web-circular-progress" style="animation-duration: 1s; width: 32px; height: 32px;"></div>
+                                        </div>
+                                    </div>
+
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">AppsLinearProgress</h4>
+                                            <span class="component-desc">Indeterminate linear loading animation</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="apps-linear-progress-indeterminate" id="web-linear-progress-container" style="height: 4px;">
+                                                <div class="bar" id="web-linear-progress-bar" style="animation-duration: 1.5s;"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="config-card-back">
+                                <div class="config-card-content">
+                                    <div class="config-title">Progress Settings</div>
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; width: 100%;">
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <div style="display: flex; justify-content: space-between; width: 100%;">
+                                                <span class="label-text">Determinate Value</span>
+                                                <span id="progress-val-text" style="color: var(--primary-color); font-weight: 700; font-size: 13px;">50%</span>
+                                            </div>
+                                            <input type="range" id="progress-val-slider" min="0" max="100" value="50" style="width: 100%; accent-color: var(--primary-color);">
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text">Animation Speed</span>
+                                            <select id="progress-speed-select" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none; cursor: pointer;">
+                                                <option value="normal" selected>Normal</option>
+                                                <option value="slow">Slow</option>
+                                                <option value="fast">Fast</option>
+                                            </select>
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <div style="display: flex; justify-content: space-between; width: 100%;">
+                                                <span class="label-text">Bar Thickness</span>
+                                                <span id="progress-thickness-val" style="color: var(--primary-color); font-weight: 700; font-size: 13px;">6px</span>
+                                            </div>
+                                            <input type="range" id="progress-thickness-slider" min="2" max="12" value="6" style="width: 100%; accent-color: var(--primary-color);">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Shimmer skeleton & Empty State -->
+                    <div id="demo-shimmer-skeleton-empty-states" class="showcase-card">
+                        <h3>Shimmer Skeleton & Empty States</h3>
+                        <p class="card-desc">Smooth loading placeholders with moving gradients and clean empty-state templates.</p>
+                        
+                        <div class="playground-container">
+                            <button class="config-tab-btn" aria-label="Configure Shimmer Skeleton">
+                                <span class="tab-icon">⚙️</span>
+                                <span class="tab-text">Configure</span>
+                            </button>
+                            <div class="demo-card-front" style="min-height: 250px;">
+                                <div class="component-group-list" style="width: 100%;">
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">ShimmerBox Loading State</h4>
+                                            <span class="component-desc">Dynamic loading state toggle</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <!-- Shimmer View -->
+                                            <div class="shimmer-playground" id="shimmer-view">
+                                                <div class="shimmer-item">
+                                                    <div class="shimmer-avatar shimmer-anim"></div>
+                                                    <div class="shimmer-lines">
+                                                        <div class="shimmer-line line-long shimmer-anim"></div>
+                                                        <div class="shimmer-line line-short shimmer-anim"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Actual Content View (Hidden by default) -->
+                                            <div class="shimmer-playground" id="actual-content-view" style="display: none; background-color: var(--surface-color);">
+                                                <div class="shimmer-item" style="opacity: 1;">
+                                                    <div class="actual-avatar" style="width: 48px; height: 48px; border-radius: 50%; background: var(--primary-gradient); display: flex; align-items: center; justify-content: center; font-size: 20px;">👤</div>
+                                                    <div class="shimmer-lines">
+                                                        <div class="content-title" style="font-weight: 700; color: var(--text-main); font-size: 15px; text-align: left;">Arun Shankar</div>
+                                                        <div class="content-desc" style="font-size: 13px; color: var(--text-muted); text-align: left;">Lead Mobile Engineer — Appspiriment</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">AppsEmptyState</h4>
+                                            <span class="component-desc">Centered dashboard block template for empty states</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="empty-state-showcase" id="web-empty-state">
+                                                <div class="empty-state-icon" id="web-empty-icon">⚠️</div>
+                                                <h4 id="web-empty-title">No Tasks Found</h4>
+                                                <p id="web-empty-desc">You have completed all items in your workflow.</p>
+                                                <button class="btn btn-outline" id="web-empty-action" style="margin-top: 10px;">Refresh Feed</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="config-card-back">
+                                <div class="config-card-content">
+                                    <div class="config-title">Skeleton & Empty State Settings</div>
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; width: 100%;">
+                                        <div class="config-option">
+                                            <span class="label-text">Loading Shimmer</span>
+                                            <div class="toggle-container">
+                                                <label class="switch-label">
+                                                    <input type="checkbox" id="shimmer-toggle" checked>
+                                                    <span class="switch-slider"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <div style="display: flex; justify-content: space-between; width: 100%;">
+                                                <span class="label-text">Shimmer Speed</span>
+                                                <span id="shimmer-duration-val" style="color: var(--primary-color); font-weight: 700; font-size: 13px;">1.2s</span>
+                                            </div>
+                                            <input type="range" id="shimmer-duration-slider" min="0.5" max="3.0" value="1.2" step="0.1" style="width: 100%; accent-color: var(--primary-color);">
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text">Empty State Icon</span>
+                                            <select id="empty-icon-select" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none; cursor: pointer;">
+                                                <option value="⚠️" selected>⚠️ Warning</option>
+                                                <option value="📂">📂 Folder</option>
+                                                <option value="✉️">✉️ Mail</option>
+                                                <option value="🔍">🔍 Search</option>
+                                            </select>
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text">Empty Title Text</span>
+                                            <input type="text" id="empty-title-input" value="No Tasks Found" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none;">
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text">Empty Desc Text</span>
+                                            <input type="text" id="empty-desc-input" value="You have completed all items in your workflow." style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none;">
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text">Empty Action Button Text</span>
+                                            <input type="text" id="empty-action-input" value="Refresh Feed" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Banners & System Feedback -->
+                    <div id="demo-banners-system-feedback" class="showcase-card full-width">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <h3>Banners & System Feedback</h3>
+                            <span class="platform-badge" style="background-color: rgba(99, 102, 241, 0.15); color: #6366f1; border-color: rgba(99, 102, 241, 0.25);">KMP</span>
+                        </div>
+                        <p class="card-desc">Themed alert banners, system snackbars, and toast alerts.</p>
+                        
+                        <div class="playground-container">
+                            <button class="config-tab-btn" aria-label="Configure Banners & Feedback">
+                                <span class="tab-icon">⚙️</span>
+                                <span class="tab-text">Configure</span>
+                            </button>
+                            <div class="demo-card-front">
+                                <div class="component-group-list" style="width: 100%;">
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">AppsBanner</h4>
+                                            <span class="component-desc">Status alert banner with action triggers</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="apps-banner info" id="demo-banner" style="margin-bottom: 16px;">
+                                                <span class="banner-icon" id="demo-banner-icon">ℹ️</span>
+                                                <div class="banner-body">
+                                                    <h5 id="demo-banner-title">Important System Update</h5>
+                                                    <p id="demo-banner-desc">Your active subscription is terminating in 3 days.</p>
+                                                </div>
+                                                <button class="btn-banner-action" id="banner-toast-btn">Renew Now</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">Toasts & Snackbars</h4>
+                                            <span class="component-desc">Dynamic alerts from the host controller</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="feedback-actions" style="display:flex; gap:12px; flex-wrap:wrap;">
+                                                <button class="btn btn-outline" id="trigger-toast-btn">Trigger System Toast</button>
+                                                <button class="btn btn-outline" id="trigger-snackbar-btn">Trigger Snackbar</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="config-card-back">
+                                <div class="config-card-content">
+                                    <div class="config-title">Feedback & Banner Settings</div>
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; width: 100%;">
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text">Banner Title</span>
+                                            <input type="text" id="banner-title-input" value="Important System Update" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none;">
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text">Banner Message</span>
+                                            <input type="text" id="banner-msg-input" value="Your active subscription is terminating in 3 days." style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none;">
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text">Banner Intent Style</span>
+                                            <select id="banner-intent-select" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none; cursor: pointer;">
+                                                <option value="info" selected>Info (Blue)</option>
+                                                <option value="success">Success (Green)</option>
+                                                <option value="warning">Warning (Orange)</option>
+                                                <option value="error">Error (Red)</option>
+                                            </select>
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text">Snackbar Action Label</span>
+                                            <input type="text" id="snackbar-action-input" value="Undo" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none;">
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text">Snackbar Message</span>
+                                            <input type="text" id="snackbar-msg-input" value="Changes saved successfully." style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- 4. LAYOUTS & CONTAINERS TAB -->
+            <section id="layouts-tab" class="tab-content">
+                <div class="parallax-banner" id="banner-layouts">
+                    <div class="banner-overlay"></div>
+                    <div class="banner-content">
+                        <span class="banner-eyebrow">Layout Structures</span>
+                        <h2>Layouts & Containers</h2>
+                        <p class="banner-subtitle">Dividers, vertical/horizontal spacers, G2 smooth squircle corners, card layouts, accordion collapsible panels, page templates, and drawer sidebars.</p>
+                    </div>
+                </div>
+                <div class="grid-container">
+                    
+                    <!-- Dividers & Spacers -->
+                    <div id="demo-appsdivider-spacers" class="showcase-card full-width">
+                        <h3>AppsDivider & Spacers</h3>
+                        <p class="card-desc">Visual and layout helpers for separating components cleanly.</p>
+                        
+                        <div class="playground-container">
+                            <button class="config-tab-btn" aria-label="Configure Dividers and Spacers">
+                                <span class="tab-icon">⚙️</span>
+                                <span class="tab-text">Configure</span>
+                            </button>
+                            <div class="demo-card-front">
+                                <div class="component-group-list" style="width: 100%;">
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">Divider & Spacer Layout</h4>
+                                            <span class="component-desc">Render separation lines and adjustable spaces</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="divider-showcase" style="width: 100%;">
+                                                <div class="showcase-section" style="margin-bottom: 16px;">
+                                                    <span class="label" style="display:block; margin-bottom: 8px; font-weight:600; font-size:11px;">Horizontal Divider (AppsDivider) + Vertical Spacer</span>
+                                                    <div class="divider-container">
+                                                        <p class="text-block" style="margin:0;">Above Text Block</p>
+                                                        <div class="spacer-visual vertical-spacer" data-height-label="Vertical Spacer (16px)"></div>
+                                                        <div class="apps-divider horizontal" id="demo-horizontal-divider"></div>
+                                                        <div class="spacer-visual vertical-spacer" data-height-label="Vertical Spacer (16px)"></div>
+                                                        <p class="text-block" style="margin:0;">Below Text Block</p>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="showcase-section">
+                                                    <span class="label" style="display:block; margin-bottom: 8px; font-weight:600; font-size:11px;">Vertical Divider + Horizontal Spacers</span>
+                                                    <div class="divider-container row-layout" id="demo-row-layout">
+                                                        <span>Section Left</span>
+                                                        <div class="spacer-visual horizontal-spacer" data-width-label="16px"></div>
+                                                        <div class="apps-divider vertical" id="demo-vertical-divider"></div>
+                                                        <div class="spacer-visual horizontal-spacer" data-width-label="16px"></div>
+                                                        <span>Section Right</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="config-card-back">
+                                <div class="config-card-content">
+                                    <div class="config-title">Divider & Spacer Settings</div>
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; width: 100%;">
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <div style="display: flex; justify-content: space-between; width: 100%;">
+                                                <span class="label-text">Divider Thickness</span>
+                                                <span id="divider-thickness-val" style="color: var(--primary-color); font-weight: 700; font-size: 13px;">1px</span>
+                                            </div>
+                                            <input type="range" id="divider-thickness-slider" min="1" max="10" value="1" style="width: 100%; accent-color: var(--primary-color);">
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text">Divider Color</span>
+                                            <select id="divider-color-select" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none; cursor: pointer;">
+                                                <option value="var(--border-color)">Default</option>
+                                                <option value="var(--primary-color)">Primary</option>
+                                                <option value="#10b981">Success (Green)</option>
+                                                <option value="#f59e0b">Warning (Orange)</option>
+                                                <option value="#ef4444">Error (Red)</option>
+                                            </select>
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <div style="display: flex; justify-content: space-between; width: 100%;">
+                                                <span class="label-text">Spacer Size</span>
+                                                <span id="spacer-size-val" style="color: var(--primary-color); font-weight: 700; font-size: 13px;">16px</span>
+                                            </div>
+                                            <input type="range" id="spacer-size-slider" min="4" max="64" value="16" style="width: 100%; accent-color: var(--primary-color);">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- TextTitledCard/Squircle Card -->
+                    <div id="demo-texttitledcardview-smooth-corners" class="showcase-card">
+                        <h3>TextTitledCardView & Smooth Corners</h3>
+                        <p class="card-desc">Curvature continuity (G2) mathematically blended corners.</p>
+                        
+                        <div class="playground-container">
+                            <button class="config-tab-btn" aria-label="Configure Smooth Corners">
+                                <span class="tab-icon">⚙️</span>
+                                <span class="tab-text">Configure</span>
+                            </button>
+                            <div class="demo-card-front">
+                                <div class="component-group-list" style="width: 100%;">
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">Smooth Corners Playground</h4>
+                                            <span class="component-desc">Compare standard CSS borders against squircle curvatures</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="corner-playground" style="width: 100%;">
+                                                <div class="playground-boxes" style="width: 100%;">
+                                                    <div class="preview-box-container">
+                                                        <span class="label" style="font-size:11px; font-weight:600; display:block; margin-bottom:4px;">Standard Rounded Corners</span>
+                                                        <div id="rounded-preview" class="preview-box rounded-corners"></div>
+                                                    </div>
+                                                    <div class="preview-box-container">
+                                                        <span class="label" style="font-size:11px; font-weight:600; display:block; margin-bottom:4px;">SmoothCornerShape (G2)</span>
+                                                        <div id="squircle-preview" class="preview-box squircle-corners"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="config-card-back">
+                                <div class="config-card-content">
+                                    <div class="config-title">Squircle Corner Settings</div>
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; width: 100%;">
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <div style="display: flex; justify-content: space-between; width: 100%;">
+                                                <span class="label-text">Smoothness</span>
+                                                <span id="smoothness-val" style="color:var(--primary-color); font-weight: 700; font-size: 13px;">55%</span>
+                                            </div>
+                                            <input type="range" id="smoothness-slider" min="0" max="100" value="55" style="width:100%; accent-color:var(--primary-color);">
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <div style="display: flex; justify-content: space-between; width: 100%;">
+                                                <span class="label-text">Corner Radius</span>
+                                                <span id="radius-val" style="color:var(--primary-color); font-weight: 700; font-size: 13px;">24px</span>
+                                            </div>
+                                            <input type="range" id="radius-slider" min="0" max="48" value="24" style="width:100%; accent-color:var(--primary-color);">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Generic TitledCardView -->
+                    <div id="demo-generic-titledcardview" class="showcase-card">
+                        <div class="titled-card-header-slot">
+                            <span class="slot-icon">🏠</span>
+                            <h3>Generic TitledCardView</h3>
+                        </div>
+                        <p class="card-desc">Showcases TitledCardView using the custom title slot directly, allowing custom layouts in the title header block.</p>
+                    </div>
+
+                    <!-- Accordion Card -->
+                    <div id="demo-appsaccordion-collapsible-panels" class="showcase-card">
+                        <h3>AppsAccordion (Collapsible panels)</h3>
+                        <p class="card-desc">Sleek expandable panels utilizing G2 smooth corners.</p>
+                        
+                        <div class="playground-container">
+                            <button class="config-tab-btn" aria-label="Configure Accordion">
+                                <span class="tab-icon">⚙️</span>
+                                <span class="tab-text">Configure</span>
+                            </button>
+                            <div class="demo-card-front">
+                                <div class="component-group-list" style="width: 100%;">
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">Collapsible Panels</h4>
+                                            <span class="component-desc">Click headers below to slide open accordion items</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="accordion-playground" style="width: 100%;">
+                                                <div class="accordion-item" id="accordion-a" style="margin-bottom: 8px;">
+                                                    <div class="accordion-header">
+                                                        <div class="title-group">
+                                                            <span class="acc-title" id="accordion-title-a-text">Click to Expand Panel A</span>
+                                                        </div>
+                                                        <span class="chevron">▼</span>
+                                                    </div>
+                                                    <div class="accordion-body">
+                                                        <div class="accordion-content">
+                                                            This content expands and collapses with a premium ease-in-out height animation. It automatically manages rotation of the end chevron indicator.
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="accordion-item" id="accordion-b">
+                                                    <div class="accordion-header">
+                                                        <div class="title-group">
+                                                            <span class="acc-title" id="accordion-title-b-text">Click to Expand Panel B</span>
+                                                            <span class="acc-subtitle">With subtitle support</span>
+                                                        </div>
+                                                        <span class="chevron">▼</span>
+                                                    </div>
+                                                    <div class="accordion-body">
+                                                        <div class="accordion-content">
+                                                            Panel B contains nested interactive triggers, lists, or custom options.
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="config-card-back">
+                                <div class="config-card-content">
+                                    <div class="config-title">Accordion Settings</div>
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; width: 100%;">
+                                        <div class="config-option">
+                                            <span class="label-text">Single Expand Mode</span>
+                                            <div class="toggle-container">
+                                                <label class="switch-label">
+                                                    <input type="checkbox" id="accordion-single-expand" checked>
+                                                    <span class="switch-slider"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text">Panel A Title</span>
+                                            <input type="text" id="accordion-title-a-input" value="Click to Expand Panel A" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none;">
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text">Panel B Title</span>
+                                            <input type="text" id="accordion-title-b-input" value="Click to Expand Panel B" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Scaffolding Previews -->
+                    <div id="demo-scaffolds-page-structures" class="showcase-card full-width">
+                        <h3>Scaffolds & Page Structures</h3>
+                        <p class="card-desc">Previews of PageScaffold (toolbar + view) and AppsDrawerScaffold (toolbar + sliding navigation drawer).</p>
+                        
+                        <div class="component-group-list">
+                            <div class="component-item-group">
+                                <div class="component-heading">
+                                    <h4 class="component-name">Page & Drawer Scaffold Layouts</h4>
+                                    <span class="component-desc">Toggle the hamburger menu (☰) on the right scaffold to slide open/close the drawer</span>
+                                </div>
+                                <div class="component-demo-wrapper">
+                                    <div style="display: flex; gap: 24px; flex-wrap: wrap;">
+                                        <!-- PageScaffold Mock -->
+                                        <div style="flex: 1; min-width: 280px;">
+                                            <span class="label" style="margin-bottom: 6px; display: block; font-size:11px; font-weight:600;">PageScaffold Structure</span>
+                                            <div class="layout-preview">
+                                                <div class="header-bar" style="justify-content: space-between; width: 100%;">
+                                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                                        <span>☰</span>
+                                                        <span>App Title</span>
+                                                    </div>
+                                                    <span>🔍 ⚙️</span>
+                                                </div>
+                                                <div class="content-wrapper">
+                                                    <div class="main-view">
+                                                        <h4 style="margin-bottom: 6px; font-size:13px; font-weight:600;">Content Viewport</h4>
+                                                        <p>A simple scaffolding structure containing a standard action bar and full content container.</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- AppsDrawerScaffold Mock -->
+                                        <div style="flex: 1; min-width: 280px;">
+                                            <span class="label" style="margin-bottom: 6px; display: block; font-size:11px; font-weight:600;">AppsDrawerScaffold Structure (Interactive)</span>
+                                            <div class="layout-preview" id="drawer-scaffold-preview">
+                                                <div class="header-bar" style="width: 100%;">
+                                                    <button class="btn btn-text" id="toggle-preview-drawer" style="padding: 0; font-size: 16px; margin-right: 8px; background: transparent; border: none; color: var(--text-main); cursor: pointer;">☰</button>
+                                                    <span>App Workspace</span>
+                                                </div>
+                                                <div class="content-wrapper" style="position: relative; width: 100%;">
+                                                    <!-- Sidebar Drawer -->
+                                                    <div class="drawer-sidebar" id="preview-sidebar" style="width: 140px; transition: var(--transition-smooth); background-color: var(--surface-hover); overflow: hidden; display: flex; flex-direction: column;">
+                                                        <span style="font-size: 12px; font-weight: 600; padding: 4px 8px; width: 100%; text-align: left; color: var(--primary-color);">Menu</span>
+                                                        <span style="font-size: 11px; padding: 4px 12px; width: 100%; text-align: left; cursor: pointer; color: var(--text-main);">🏠 Home</span>
+                                                        <span style="font-size: 11px; padding: 4px 12px; width: 100%; text-align: left; cursor: pointer; color: var(--text-muted);">📊 Profile</span>
+                                                        <span style="font-size: 11px; padding: 4px 12px; width: 100%; text-align: left; cursor: pointer; color: var(--text-muted);">⚙️ Settings</span>
+                                                    </div>
+                                                    <div class="main-view" style="flex-grow: 1;">
+                                                        <h4 style="margin-bottom: 6px; font-size:13px; font-weight:600;">Main content container</h4>
+                                                        <p>Toggle the hamburger menu (☰) above to slide open/close the navigation drawer.</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- 5. COMPLEX & INTERACTIVE SYSTEMS TAB -->
+            <section id="complex-tab" class="tab-content">
+                <div class="parallax-banner" id="banner-complex">
+                    <div class="banner-overlay"></div>
+                    <div class="banner-content">
+                        <span class="banner-eyebrow">Complex Flow Systems</span>
+                        <h2>Complex Systems</h2>
+                        <p class="banner-subtitle">Swipeable context actions, async state boxes, pull-to-refresh feeds, step wizard flow progress indicators, native dialog sheets, and in-app update prompt controllers.</p>
+                    </div>
+                </div>
+                <div class="grid-container">
+                    
+                    <!-- Swipeable Actions (SwipeableActionsBox) -->
+                    <div id="demo-swipeableactionsbox-list-item-gestures" class="showcase-card full-width">
+                        <h3>SwipeableActionsBox (List Item Gestures)</h3>
+                        <p class="card-desc">Swipe left or right on list items to reveal context-specific actions (e.g. Archive, Delete).</p>
+                        
+                        <div class="playground-container">
+                            <button class="config-tab-btn" aria-label="Configure Swipeable Actions">
+                                <span class="tab-icon">⚙️</span>
+                                <span class="tab-text">Configure</span>
+                            </button>
+                            <div class="demo-card-front">
+                                <div class="component-group-list" style="width: 100%;">
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">Swipe Actions Preview</h4>
+                                            <span class="component-desc">Drag the card items below horizontally to reveal green or red actions</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="swipe-list" style="display: flex; flex-direction: column; gap: 12px; width: 100%;">
+                                                <!-- Swipe Item 1 -->
+                                                <div class="swipe-item-wrapper" style="position: relative; overflow: hidden; border-radius: 12px; height: 72px; width: 100%; border: 1px solid var(--border-color); background-color: var(--surface-color);">
+                                                    <div class="swipe-background swipe-left-bg" style="position: absolute; top:0; left:0; right:0; bottom:0; display:flex; align-items:center; padding: 0 24px; justify-content: flex-start; background-color: #10b981; color: white; font-weight: 600; opacity: 0; transition: opacity 0.1s;">
+                                                        <span class="swipe-left-content">📥 Archive</span>
+                                                    </div>
+                                                    <div class="swipe-background swipe-right-bg" style="position: absolute; top:0; left:0; right:0; bottom:0; display:flex; align-items:center; padding: 0 24px; justify-content: flex-end; background-color: #ef4444; color: white; font-weight: 600; opacity: 0; transition: opacity 0.1s;">
+                                                        <span class="swipe-right-content">🗑️ Delete</span>
+                                                    </div>
+                                                    <div class="swipe-foreground" style="position: absolute; top:0; left:0; right:0; bottom:0; background-color: var(--surface-color); display: flex; align-items: center; padding: 0 16px; transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1); cursor: grab; user-select: none;">
+                                                        <div style="display: flex; flex-direction: column;">
+                                                            <span style="font-weight: 600; font-size: 14px;">Review KMP Convention Setup</span>
+                                                            <span style="font-size: 12px; color: var(--text-muted);">From: Arun Shankar</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Swipe Item 2 -->
+                                                <div class="swipe-item-wrapper" style="position: relative; overflow: hidden; border-radius: 12px; height: 72px; width: 100%; border: 1px solid var(--border-color); background-color: var(--surface-color);">
+                                                    <div class="swipe-background swipe-left-bg" style="position: absolute; top:0; left:0; right:0; bottom:0; display:flex; align-items:center; padding: 0 24px; justify-content: flex-start; background-color: #10b981; color: white; font-weight: 600; opacity: 0; transition: opacity 0.1s;">
+                                                        <span class="swipe-left-content">📥 Archive</span>
+                                                    </div>
+                                                    <div class="swipe-background swipe-right-bg" style="position: absolute; top:0; left:0; right:0; bottom:0; display:flex; align-items:center; padding: 0 24px; justify-content: flex-end; background-color: #ef4444; color: white; font-weight: 600; opacity: 0; transition: opacity 0.1s;">
+                                                        <span class="swipe-right-content">🗑️ Delete</span>
+                                                    </div>
+                                                    <div class="swipe-foreground" style="position: absolute; top:0; left:0; right:0; bottom:0; background-color: var(--surface-color); display: flex; align-items: center; padding: 0 16px; transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1); cursor: grab; user-select: none;">
+                                                        <div style="display: flex; flex-direction: column;">
+                                                            <span style="font-weight: 600; font-size: 14px;">Publish BOM to Maven Central</span>
+                                                            <span style="font-size: 12px; color: var(--text-muted);">From: Appspiriment Release Bot</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="config-card-back">
+                                <div class="config-card-content">
+                                    <div class="config-title">Swipe Settings</div>
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; width: 100%;">
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text">Left Swipe Action Text</span>
+                                            <input type="text" id="swipe-left-label" value="Archive" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none;">
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text">Left Swipe Icon</span>
+                                            <select id="swipe-left-icon" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none; cursor: pointer;">
+                                                <option value="📥" selected>📥 Inbox / Archive</option>
+                                                <option value="✓">✓ Check</option>
+                                                <option value="⭐️">⭐️ Star</option>
+                                                <option value="👍">👍 Thumbs Up</option>
+                                            </select>
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text">Right Swipe Action Text</span>
+                                            <input type="text" id="swipe-right-label" value="Delete" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none;">
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text">Right Swipe Icon</span>
+                                            <select id="swipe-right-icon" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none; cursor: pointer;">
+                                                <option value="🗑️" selected>🗑️ Trash / Delete</option>
+                                                <option value="❌">❌ Close</option>
+                                                <option value="⚠️">⚠️ Warning</option>
+                                                <option value="🔒">🔒 Lock</option>
+                                            </select>
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <div style="display: flex; justify-content: space-between; width: 100%;">
+                                                <span class="label-text">Action Trigger Threshold</span>
+                                                <span id="swipe-threshold-val" style="color: var(--primary-color); font-weight: 700; font-size: 13px;">70px</span>
+                                            </div>
+                                            <input type="range" id="swipe-threshold-slider" min="40" max="120" value="70" style="width: 100%; accent-color: var(--primary-color);">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AsyncStateBox State Machine -->
+                    <div id="demo-asyncstatebox-state-machine" class="showcase-card full-width">
+                        <h3>AsyncStateBox State Machine</h3>
+                        <p class="card-desc">Renders dedicated slots depending on Idle, Loading, Success, or Error states of async operations.</p>
+                        
+                        <div class="playground-container">
+                            <button class="config-tab-btn" aria-label="Configure Async State Box">
+                                <span class="tab-icon">⚙️</span>
+                                <span class="tab-text">Configure</span>
+                            </button>
+                            <div class="demo-card-front">
+                                <div class="component-group-list" style="width: 100%;">
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">Async Viewport State Controller</h4>
+                                            <span class="component-desc">Displays correct slot depending on operational status</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="async-state-playground" style="width: 100%;">
+                                                <div class="async-box-viewport" id="async-viewport" style="width: 100%;">
+                                                    <!-- Idle Content -->
+                                                    <div class="async-state-content active" id="state-idle">
+                                                        <span class="state-label">State: Idle</span>
+                                                        <p class="state-desc">Select different states in the configuration card to transition...</p>
+                                                    </div>
+                                                    <!-- Loading Content -->
+                                                    <div class="async-state-content" id="state-loading">
+                                                        <div class="apps-circular-progress"></div>
+                                                        <p class="state-desc">Fetching dashboard data...</p>
+                                                    </div>
+                                                    <!-- Success Content -->
+                                                    <div class="async-state-content" id="state-success">
+                                                        <span class="success-icon">✓</span>
+                                                        <p class="state-desc" id="async-success-desc">Successfully fetched dashboard data!</p>
+                                                    </div>
+                                                    <!-- Error Content -->
+                                                    <div class="async-state-content" id="state-error">
+                                                        <span class="error-icon">⚠️</span>
+                                                        <p class="state-desc error-text" id="async-error-desc">Failed to fetch data due to timeout.</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="config-card-back">
+                                <div class="config-card-content">
+                                    <div class="config-title">Async State Settings</div>
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; width: 100%;">
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text" style="align-self: flex-start;">Select Active State</span>
+                                            <div class="async-controls" style="display:flex; gap:8px;">
+                                                <button class="btn btn-outline btn-smooth async-state-btn active" data-state="idle" id="async-btn-idle">Idle</button>
+                                                <button class="btn btn-outline btn-smooth async-state-btn" data-state="loading" id="async-btn-loading">Loading</button>
+                                                <button class="btn btn-outline btn-smooth async-state-btn" data-state="success" id="async-btn-success">Success</button>
+                                                <button class="btn btn-outline btn-smooth async-state-btn" data-state="error" id="async-btn-error">Error</button>
+                                            </div>
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text">Custom Success Message</span>
+                                            <input type="text" id="async-success-input" value="Successfully fetched dashboard data!" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none;">
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text">Custom Error Message</span>
+                                            <input type="text" id="async-error-input" value="Failed to fetch data due to timeout." style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SmartPullToRefreshBox Mock -->
+                    <div id="demo-smartpulltorefreshbox" class="showcase-card full-width">
+                        <h3>SmartPullToRefreshBox</h3>
+                        <p class="card-desc">Draggable viewport triggering suspending reload actions.</p>
+                        
+                        <div class="playground-container">
+                            <button class="config-tab-btn" aria-label="Configure Pull To Refresh">
+                                <span class="tab-icon">⚙️</span>
+                                <span class="tab-text">Configure</span>
+                            </button>
+                            <div class="demo-card-front">
+                                <div class="component-group-list" style="width: 100%;">
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">Pull to Refresh Feed</h4>
+                                            <span class="component-desc">Drag down list below to trigger refreshing spinner</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="pull-refresh-playground" style="width: 100%;">
+                                                <div class="pull-refresh-box" id="pull-refresh-demo-box">
+                                                    <div class="pull-refresh-indicator" id="pull-refresh-indicator">
+                                                        <span class="refresh-spinner"></span>
+                                                        <span class="indicator-text">Pull to refresh</span>
+                                                    </div>
+                                                    <div class="refresh-feed" id="refresh-feed-content">
+                                                        <div class="feed-item">💡 Drag down here to reload simulation data...</div>
+                                                        <div class="feed-item">✓ Database connection stable</div>
+                                                        <div class="feed-item">✓ Remote repository sync: OK</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="config-card-back">
+                                <div class="config-card-content">
+                                    <div class="config-title">Pull-To-Refresh Settings</div>
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; width: 100%;">
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <div style="display: flex; justify-content: space-between; width: 100%;">
+                                                <span class="label-text">Pull Resistance</span>
+                                                <span id="pull-resistance-val" style="color: var(--primary-color); font-weight: 700; font-size: 13px;">Damping: 5</span>
+                                            </div>
+                                            <input type="range" id="pull-resistance-slider" min="1" max="10" value="5" style="width: 100%; accent-color: var(--primary-color);">
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <div style="display: flex; justify-content: space-between; width: 100%;">
+                                                <span class="label-text">Simulated Reload Delay</span>
+                                                <span id="pull-delay-val" style="color: var(--primary-color); font-weight: 700; font-size: 13px;">1.5s</span>
+                                            </div>
+                                            <input type="range" id="pull-delay-slider" min="500" max="4000" value="1500" step="500" style="width: 100%; accent-color: var(--primary-color);">
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text">Simulation Outcome</span>
+                                            <select id="pull-outcome-select" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none; cursor: pointer;">
+                                                <option value="success" selected>Success (Feed Appends Item)</option>
+                                                <option value="error">Error (Triggers Toast Alert)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- AppsStepper (Wizard Flows) -->
+                    <div id="demo-appsstepper-wizard-flows" class="showcase-card">
+                        <h3>AppsStepper (Wizard Flows)</h3>
+                        <p class="card-desc">Flow-based progress layouts with node pulsing and transition lines.</p>
+                        
+                        <div class="playground-container">
+                            <button class="config-tab-btn" aria-label="Configure Stepper">
+                                <span class="tab-icon">⚙️</span>
+                                <span class="tab-text">Configure</span>
+                            </button>
+                            <div class="demo-card-front">
+                                <div class="component-group-list" style="width: 100%;">
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">Interactive Wizard Node Steps</h4>
+                                            <span class="component-desc">Toggle back and next step buttons to slide active nodes</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="stepper-playground" style="width: 100%;">
+                                                <div class="stepper-container" id="horizontal-stepper">
+                                                    <div class="stepper-progress-bg">
+                                                        <div class="stepper-progress-fill" id="step-progress-bar"></div>
+                                                    </div>
+                                                    
+                                                    <div class="step-node completed" data-step="0">
+                                                        <div class="node-circle">✓</div>
+                                                        <span class="node-label">Verification</span>
+                                                    </div>
+                                                    <div class="step-node active" data-step="1">
+                                                        <div class="node-circle">2</div>
+                                                        <span class="node-label">Payment</span>
+                                                    </div>
+                                                    <div class="step-node" data-step="2">
+                                                        <div class="node-circle">3</div>
+                                                        <span class="node-label">Confirm</span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="active-step-details" style="margin-top: 16px; text-align: center;">
+                                                    <p id="active-step-desc" style="margin: 0 0 4px 0;">Current step task: Add payment details</p>
+                                                    <span class="step-indicator" id="step-indicator-text">Step 2 of 3</span>
+                                                </div>
+
+                                                <div class="stepper-controls" style="margin-top: 16px; display: flex; justify-content: center; gap: 12px;">
+                                                    <button class="btn btn-outline" id="prev-step-btn">Back</button>
+                                                    <button class="btn btn-primary" id="next-step-btn">Next</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="config-card-back">
+                                <div class="config-card-content">
+                                    <div class="config-title">Stepper Settings</div>
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; width: 100%;">
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text">Total Step Nodes</span>
+                                            <select id="stepper-count-select" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none; cursor: pointer;">
+                                                <option value="3" selected>3 Steps</option>
+                                                <option value="4">4 Steps</option>
+                                                <option value="5">5 Steps</option>
+                                            </select>
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text">Layout Direction</span>
+                                            <select id="stepper-layout-select" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none; cursor: pointer;">
+                                                <option value="horizontal" selected>Horizontal</option>
+                                                <option value="vertical">Vertical</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Overlay prompts -->
+                    <div id="demo-native-overlay-controllers" class="showcase-card">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <h3>Native Overlay Controllers</h3>
+                            <span class="platform-badge" style="background-color: rgba(99, 102, 241, 0.15); color: #6366f1; border-color: rgba(99, 102, 241, 0.25);">KMP</span>
+                        </div>
+                        <p class="card-desc">Simulated native viewports and bottom sheet cards.</p>
+                        
+                        <div class="playground-container">
+                            <button class="config-tab-btn" aria-label="Configure Overlays">
+                                <span class="tab-icon">⚙️</span>
+                                <span class="tab-text">Configure</span>
+                            </button>
+                            <div class="demo-card-front">
+                                <div class="component-group-list" style="width: 100%;">
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">Overlays & Sheets</h4>
+                                            <span class="component-desc">Trigger dialogs and sheet controllers — available on all KMP targets</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="android-playground" style="display: flex; gap: 12px; flex-wrap: wrap; width: 100%;">
+                                                <button class="btn btn-primary" id="trigger-dialog-btn" style="flex:1;">Show Dialog</button>
+                                                <button class="btn btn-outline" id="trigger-sheet-btn" style="flex:1;">Show Sheet</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="config-card-back">
+                                <div class="config-card-content">
+                                    <div class="config-title">Overlay Settings</div>
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; width: 100%;">
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text">Dialog Title</span>
+                                            <input type="text" id="overlay-dialog-title" value="G2 Smooth Dialog" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none;">
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text">Dialog Body Message</span>
+                                            <input type="text" id="overlay-dialog-msg" value="This dialog uses the custom SmoothCornerShape(12px) for G2 continuous corners. It's now available in compose-kmp — working across Android, iOS, Desktop, and Web." style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none;">
+                                        </div>
+                                        <div class="config-option">
+                                            <span class="label-text">Sheet Close Cross Icon</span>
+                                            <div class="toggle-container">
+                                                <label class="switch-label">
+                                                    <input type="checkbox" id="overlay-sheet-close-toggle" checked>
+                                                    <span class="switch-slider"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <div style="display: flex; justify-content: space-between; width: 100%;">
+                                                <span class="label-text">Dialog Corner Radius</span>
+                                                <span id="overlay-radius-val" style="color:var(--primary-color); font-weight: 700; font-size: 13px;">12px</span>
+                                            </div>
+                                            <input type="range" id="overlay-radius-slider" min="0" max="40" value="12" style="width:100%; accent-color:var(--primary-color);">
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <div style="display: flex; justify-content: space-between; width: 100%;">
+                                                <span class="label-text">Dialog Corner Smoothness</span>
+                                                <span id="overlay-smoothness-val" style="color:var(--primary-color); font-weight: 700; font-size: 13px;">55%</span>
+                                            </div>
+                                            <input type="range" id="overlay-smoothness-slider" min="0" max="100" value="55" style="width:100%; accent-color:var(--primary-color);">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Firebase In-App Update Dialog (update-utils) -->
+                    <div id="demo-in-app-updates-update-utils" class="showcase-card">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <h3>In-App Updates (update-utils)</h3>
+                            <span class="platform-badge" style="background-color: rgba(239, 68, 68, 0.15); color: #ef4444; border-color: rgba(239, 68, 68, 0.25);">Android Only</span>
+                        </div>
+                        <p class="card-desc">Simulated dialog prompts driven by Google Play In-App Update / Firebase configurations.</p>
+                        
+                        <div class="playground-container">
+                            <button class="config-tab-btn" aria-label="Configure In-App Updates">
+                                <span class="tab-icon">⚙️</span>
+                                <span class="tab-text">Configure</span>
+                            </button>
+                            <div class="demo-card-front">
+                                <div class="component-group-list" style="width: 100%;">
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
+                                            <h4 class="component-name">In-App Update Dialogue Simulation</h4>
+                                            <span class="component-desc">Test Google Play Flexible and Immediate flows</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="update-playground" style="display: flex; gap: 12px; flex-wrap: wrap; width: 100%;">
+                                                <button class="btn btn-primary" id="btn-trigger-update-flexible" style="flex: 1;">Flexible Update</button>
+                                                <button class="btn btn-primary" id="btn-trigger-update-immediate" style="flex: 1;">Immediate Update</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="config-card-back">
+                                <div class="config-card-content">
+                                    <div class="config-title">In-App Update Settings</div>
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; width: 100%;">
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text">Target Update Version</span>
+                                            <input type="text" id="update-version-input" value="2.4.0" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none;">
+                                        </div>
+                                        <div class="config-option">
+                                            <span class="label-text">Simulate Network Failure</span>
+                                            <div class="toggle-container">
+                                                <label class="switch-label">
+                                                    <input type="checkbox" id="update-fail-toggle">
+                                                    <span class="switch-slider"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- MessageDialog Modal -->
+    <div class="modal-overlay" id="dialog-modal">
+        <div class="dialog-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h4>G2 Smooth Dialog</h4>
+                <span class="platform-badge" style="background-color: rgba(99, 102, 241, 0.15); color: #6366f1; border-color: rgba(99, 102, 241, 0.25); font-size: 11px; padding: 3px 8px; font-family: var(--font-stack);">KMP</span>
+            </div>
+            <p>This dialog uses the custom SmoothCornerShape(12px) for G2 continuous corners. It's now available in <code>compose-kmp</code> — working across Android, iOS, Desktop, and Web.</p>
+            <div class="dialog-actions">
+                <button class="btn btn-outline" id="dialog-dismiss-btn">Dismiss</button>
+                <button class="btn btn-primary" id="dialog-accept-btn">Accept</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Sheet Modal -->
+    <div class="bottom-sheet-overlay" id="sheet-modal">
+        <div class="bottom-sheet-card">
+            <div class="drag-handle"></div>
+            <div class="sheet-header">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <h4>Interactive Bottom Sheet</h4>
+                    <span class="platform-badge" style="background-color: rgba(99, 102, 241, 0.15); color: #6366f1; border-color: rgba(99, 102, 241, 0.25); font-size: 11px; padding: 3px 8px; font-family: var(--font-stack);">KMP</span>
+                </div>
+                <button class="close-sheet-btn" id="close-sheet-cross">×</button>
+            </div>
+            <div class="sheet-body">
+                <p>This modal bottom sheet slides up gracefully and provides custom action triggers.</p>
+                <div style="background-color: rgba(93, 95, 239, 0.08); border-left: 3px solid var(--primary-color); padding: 10px 14px; border-radius: 6px; font-size: 12px; line-height: 1.5; color: var(--text-muted); margin-bottom: 8px;">
+                    <strong>Now on KMP:</strong> <code>AppsBottomSheet</code> has been ported to <code>compose-kmp</code> — it now works on Android, iOS, Desktop, and Web via Compose Multiplatform's ModalBottomSheet API.
+                </div>
+                <button class="btn btn-primary" id="close-sheet-btn">Close Sheet</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Snackbar Container -->
+    <div class="snackbar-container" id="snackbar-host">
+        <div class="apps-snackbar">
+            <span class="snackbar-text">Changes saved successfully.</span>
+            <button class="snackbar-action" id="snackbar-undo-btn">Undo</button>
+        </div>
+    </div>
+
+    <!-- Toast container -->
+    <div class="toast-container" id="toast-host">
+        <div class="apps-toast">This is a system toast notification!</div>
+    </div>
+
+    <!-- In-App Update Modal -->
+    <div class="modal-overlay" id="update-modal">
+        <div class="dialog-card" style="max-width: 400px; border-radius: 12px; background-color: var(--surface-color); border: 1px solid var(--border-color); padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+            <h4 id="update-title" style="font-size: 18px; font-weight: 600;">Update Available</h4>
+            <p id="update-desc" style="font-size: 14px; color: var(--text-muted); line-height: 1.5;">A new version of the app is available. Would you like to download and install it now?</p>
+            <div class="dialog-actions" style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 8px;">
+                <button class="btn btn-outline" id="update-cancel-btn" style="border-radius: 8px;">Later</button>
+                <button class="btn btn-primary" id="update-action-btn" style="border-radius: 8px;">Update Now</button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../src/main.js"></script>
+    <script>
+        // Dynamically add links to component documentation pages
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.showcase-card').forEach(card => {
+                const cardId = card.id;
+                if (cardId && cardId.startsWith('demo-')) {
+                    const compId = cardId.replace('demo-', '');
+                    const heading = card.querySelector('h3');
+                    if (heading) {
+                        const link = document.createElement('a');
+                        link.href = `../docs/components/detail.html?id=${compId}`;
+                        link.className = 'docs-reference-link';
+                        link.innerHTML = 'View Docs &rarr;';
+                        link.style.cssText = 'font-size: 13px; color: var(--primary-color); text-decoration: none; font-weight: 500; margin-left: 16px; display: inline-flex; align-items: center;';
+                        
+                        heading.style.display = 'inline-flex';
+                        heading.style.alignItems = 'center';
+                        heading.style.flexWrap = 'wrap';
+                        heading.appendChild(link);
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

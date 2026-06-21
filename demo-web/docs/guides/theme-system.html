@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theme System — Kolt Docs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body class="light-mode docs-body">
+    <script>
+        window.docsBasePath = '../';
+        window.docsEnableToc = true;
+    </script>
+    <nav class="docs-sidebar" id="docs-sidebar"></nav>
+    <div class="docs-main">
+        <header class="docs-topbar" id="docs-topbar"></header>
+        <article class="docs-article">
+            <span class="docs-eyebrow">Guides</span>
+            <h1>Style with the Kolt Theme System</h1>
+            <p class="docs-lede">Understand and apply the layout, color, shape, and typography standards provided by the <code>compose-kmp</code> utility module.</p>
+
+            <h2>Introduction</h2>
+            <p>Kolt’s visual system is built on top of Material 3 but customizes core shapes and typography to deliver a premium, refined feel. The system centers around <strong>G2 Curvature Continuity</strong> for smooth corners, tailored typography scaling, fluent style property extensions, and unified light/dark mode support.</p>
+
+            <h2>1. Smooth Corners (G2 Curvature Continuity)</h2>
+            <p>Traditional rounded corners (standard CSS or basic Compose <code>RoundedCornerShape</code>) suffer from "corner breaks" — abrupt changes in math curvature where the straight edge transitions into the circle arc. Kolt uses a mathematically continuous cubic blending formula via <code>SmoothCornerShape</code> (squircles) to avoid this visual friction.</p>
+
+            <pre><code>Standard Circle Arc:  ───╮ (Hard math curve transition break)
+Curvature Continuous:  ───⏏ (Mathematically smooth G2 transition)</code></pre>
+            
+            <p>Apply smooth corners directly via modifiers or container cards:</p>
+            <pre><code>// 1. Modifier Clip
+Box(
+    modifier = Modifier
+        .size(120.dp)
+        .clip(SmoothCornerShape(radius = 24.dp, smoothness = 0.55f))
+        .background(Kolt.colors.primary)
+)
+
+// 2. TitledCardView wrapper (automatically implements G2 corners)
+TitledCardView(title = UiText.DynamicString("Card Title")) {
+    Text("This card has smooth corners.")
+}</code></pre>
+
+            <h2>2. The Color System (Exhaustive Tokens)</h2>
+            <p>Colors are organized into semantically grouped tokens, exposed through the <code>Kolt.colors</code> object. This allows components to automatically adjust their contrast and values when switching between light and dark modes.</p>
+
+            <h3>Core Brand Palette</h3>
+            <ul>
+                <li><strong><code>primary</code> / <code>onPrimary</code></strong>: Core brand accent color. Used on major triggers, focus rings, and filled action buttons.</li>
+                <li><strong><code>secondary</code> / <code>onSecondary</code></strong>: Subdued actions, outlined buttons, and secondary borders.</li>
+                <li><strong><code>tertiary</code> / <code>onTertiary</code></strong>: Tertiary accents and warning highlights.</li>
+            </ul>
+
+            <h3>Layout Surfaces &amp; Boundaries</h3>
+            <ul>
+                <li><strong><code>background</code> / <code>onBackground</code></strong>: Underlying window background behind all scroll areas and views.</li>
+                <li><strong><code>mainSurface</code> / <code>onMainSurface</code></strong>: Layout containers, sidebar menus, and parent pages.</li>
+                <li><strong><code>secondarySurface</code> / <code>onSecondarySurface</code></strong>: Sub-panels, drawer details, and inner content regions.</li>
+                <li><strong><code>dividerColor</code> (also aliased as <code>outline</code>)</strong>: Used for divider lines, spacers, and card borders.</li>
+                <li><strong><code>scrimColor</code></strong>: Overlay dims behind bottom sheets, dialog modals, and navigation drawers.</li>
+            </ul>
+
+            <h3>Card Containers</h3>
+            <ul>
+                <li><code>primaryCardContainer</code> / <code>onPrimaryCardContainer</code>: Filled containers for active elements.</li>
+                <li><code>secondaryCardContainer</code> / <code>onSecondaryCardContainer</code>: Filled containers for supporting details.</li>
+                <li><code>tertiaryCardContainer</code> / <code>onTertiaryCardContainer</code>: Alternating container fills.</li>
+                <li><code>greyCardContainer</code> / <code>onGreyCardContainer</code>: Muted neutral container panels.</li>
+                <li><code>errorCardContainer</code> / <code>onErrorCardContainer</code>: Container fills for input error states.</li>
+            </ul>
+
+            <h3>Specialized Text Accents</h3>
+            <p>Direct typography overrides for highlights and links:</p>
+            <ul>
+                <li><code>accentedBlueText</code> (aliased as <code>accentedBlue</code>): Hyperlinks and clickable inline prompts.</li>
+                <li><code>accentedGoldText</code> (aliased as <code>accentedGold</code>): Interactive rating stars and confirmation badges.</li>
+                <li><code>disabledText</code> / <code>subText</code> / <code>hintText</code>: Successive gray-scaled tiers of secondary text.</li>
+                <li><code>accentedBlueTitle</code> / <code>accentedBlackTitle</code> / <code>accentedRedTitle</code>: Focused header accents.</li>
+            </ul>
+
+            <h3>Semantic State Intents</h3>
+            <p>Semantic state colors represent system feedback, typically backing components like <code>AppsStatusTag</code>, <code>AppsBadge</code>, or <code>AppsBanner</code>:</p>
+            <ul>
+                <li><strong>Success State</strong>: <code>successContainer</code> &amp; <code>onSuccessContainer</code> (defaults to primary card containers).</li>
+                <li><strong>Warning State</strong>: <code>warningContainer</code> &amp; <code>onWarningContainer</code> (defaults to tertiary card containers).</li>
+                <li><strong>Info State</strong>: <code>infoContainer</code> &amp; <code>onInfoContainer</code> (defaults to secondary card containers).</li>
+                <li><strong>Error State</strong>: <code>errorContainer</code> &amp; <code>onErrorContainer</code> (defaults to error card containers).</li>
+            </ul>
+
+            <pre><code>// Usage in a Composable
+Box(
+    modifier = Modifier
+        .background(Kolt.colors.mainSurface)
+        .border(1.dp, Kolt.colors.outline, RoundedCornerShape(8.dp))
+) {
+    Text(
+        text = "Hello World",
+        color = Kolt.colors.onMainSurface
+    )
+}</code></pre>
+
+            <h2>3. Typography Scaling (100% Reference)</h2>
+            <p>Kolt provides a highly granular core typography scale. Text sizes default to the <strong>Outfit</strong> font family and define 19 distinct steps. In addition, the system maps 15 Material 3 compatibility aliases to make integration with standard components seamless.</p>
+
+            <h3>The Core Text Styles</h3>
+            <p>All core text styles can be retrieved via <code>Kolt.typography.&lt;style_name&gt;</code>. Below are the default font sizes applied on Android:</p>
+            
+            <table class="docs-table">
+                <thead>
+                    <tr>
+                        <th>Style Property</th>
+                        <th>Default Size (sp)</th>
+                        <th>Style Property</th>
+                        <th>Default Size (sp)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>textMinimum</code></td>
+                        <td>6sp</td>
+                        <td><code>textMediumLarge</code></td>
+                        <td>16sp</td>
+                    </tr>
+                    <tr>
+                        <td><code>textTiny</code></td>
+                        <td>7sp</td>
+                        <td><code>textLarge</code></td>
+                        <td>18sp</td>
+                    </tr>
+                    <tr>
+                        <td><code>textXXXSmall</code></td>
+                        <td>8sp</td>
+                        <td><code>textXLarge</code></td>
+                        <td>20sp</td>
+                    </tr>
+                    <tr>
+                        <td><code>textXXSmall</code></td>
+                        <td>9sp</td>
+                        <td><code>textXXLarge</code></td>
+                        <td>24sp</td>
+                    </tr>
+                    <tr>
+                        <td><code>textXSmall</code></td>
+                        <td>10sp</td>
+                        <td><code>textXXXLarge</code></td>
+                        <td>28sp</td>
+                    </tr>
+                    <tr>
+                        <td><code>textXSmallMedium</code></td>
+                        <td>11sp</td>
+                        <td><code>textBig</code></td>
+                        <td>32sp</td>
+                    </tr>
+                    <tr>
+                        <td><code>textSmall</code></td>
+                        <td>12sp</td>
+                        <td><code>textXBig</code></td>
+                        <td>36sp</td>
+                    </tr>
+                    <tr>
+                        <td><code>textSmallMedium</code></td>
+                        <td>13sp</td>
+                        <td><code>textHuge</code></td>
+                        <td>40sp</td>
+                    </tr>
+                    <tr>
+                        <td><code>textMedium</code></td>
+                        <td>14sp</td>
+                        <td><code>textGiant</code></td>
+                        <td>48sp</td>
+                    </tr>
+                    <tr>
+                        <td><code>textMediumMid</code></td>
+                        <td>15sp</td>
+                        <td>-</td>
+                        <td>-</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>Material 3 Compatibility Aliases</h3>
+            <p>To avoid bulk search-and-replace, Kolt maps Material 3 typography names to their visual equivalents in the core scale (typically shifted by ~2 steps to account for differences in baseline metrics):</p>
+
+            <table class="docs-table">
+                <thead>
+                    <tr>
+                        <th>M3 Alias Property</th>
+                        <th>Resolves to Core Style</th>
+                        <th>Effective Size</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>bodyXXXSmall</code></td>
+                        <td><code>textXXSmall</code></td>
+                        <td>9sp</td>
+                    </tr>
+                    <tr>
+                        <td><code>bodyXSmall</code></td>
+                        <td><code>textXSmall</code></td>
+                        <td>10sp</td>
+                    </tr>
+                    <tr>
+                        <td><code>bodySmall</code></td>
+                        <td><code>textSmall</code></td>
+                        <td>12sp</td>
+                    </tr>
+                    <tr>
+                        <td><code>bodyMedium</code></td>
+                        <td><code>textMedium</code></td>
+                        <td>14sp</td>
+                    </tr>
+                    <tr>
+                        <td><code>bodyMediumLarge</code></td>
+                        <td><code>textMediumMid</code></td>
+                        <td>15sp</td>
+                    </tr>
+                    <tr>
+                        <td><code>bodyLarge</code></td>
+                        <td><code>textLarge</code></td>
+                        <td>18sp</td>
+                    </tr>
+                    <tr>
+                        <td><code>labelSmall</code></td>
+                        <td><code>textSmall</code></td>
+                        <td>12sp</td>
+                    </tr>
+                    <tr>
+                        <td><code>labelMedium</code></td>
+                        <td><code>textSmallMedium</code></td>
+                        <td>13sp</td>
+                    </tr>
+                    <tr>
+                        <td><code>labelLarge</code></td>
+                        <td><code>textMedium</code></td>
+                        <td>14sp</td>
+                    </tr>
+                    <tr>
+                        <td><code>titleSmall</code></td>
+                        <td><code>textMediumLarge</code></td>
+                        <td>16sp</td>
+                    </tr>
+                    <tr>
+                        <td><code>titleMedium</code></td>
+                        <td><code>textLarge</code></td>
+                        <td>18sp</td>
+                    </tr>
+                    <tr>
+                        <td><code>titleLarge</code></td>
+                        <td><code>textXLarge</code></td>
+                        <td>20sp</td>
+                    </tr>
+                    <tr>
+                        <td><code>headlineSmall</code></td>
+                        <td><code>textXXLarge</code></td>
+                        <td>24sp</td>
+                    </tr>
+                    <tr>
+                        <td><code>headlineMedium</code></td>
+                        <td><code>textXXXLarge</code></td>
+                        <td>28sp</td>
+                    </tr>
+                    <tr>
+                        <td><code>displaySmall</code></td>
+                        <td><code>textBig</code></td>
+                        <td>32sp</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h2>4. Fluent Weight &amp; Style Extensions</h2>
+            <p>Rather than calling <code>copy(...)</code> manually to adjust style weights or styles, Kolt provides properties as direct extensions on <code>TextStyle</code>. These can be chained fluently in standard Kotlin:</p>
+
+            <h3>Font Weights</h3>
+            <ul>
+                <li><strong><code>.thin</code></strong> &rarr; <code>FontWeight.Thin</code> (100)</li>
+                <li><strong><code>.extraLight</code></strong> &rarr; <code>FontWeight.ExtraLight</code> (200)</li>
+                <li><strong><code>.light</code></strong> &rarr; <code>FontWeight.Light</code> (300)</li>
+                <li><strong><code>.normal</code></strong> &rarr; <code>FontWeight.Normal</code> (400)</li>
+                <li><strong><code>.medium</code></strong> &rarr; <code>FontWeight.Medium</code> (500)</li>
+                <li><strong><code>.semiBold</code></strong> &rarr; <code>FontWeight.SemiBold</code> (600)</li>
+                <li><strong><code>.bold</code></strong> &rarr; <code>FontWeight.Bold</code> (700)</li>
+                <li><strong><code>.extraBold</code></strong> &rarr; <code>FontWeight.ExtraBold</code> (800)</li>
+                <li><strong><code>.black</code></strong> &rarr; <code>FontWeight.Black</code> (900)</li>
+            </ul>
+
+            <h3>Italic Variations</h3>
+            <p>You can make any style italic with <strong><code>.italic</code></strong>, or set weight and style in one step:</p>
+            <ul>
+                <li><code>.thinItalic</code>, <code>.extraLightItalic</code>, <code>.lightItalic</code>, <code>.mediumItalic</code>, <code>.semiBoldItalic</code>, <code>.boldItalic</code>, <code>.extraBoldItalic</code>, <code>.blackItalic</code></li>
+            </ul>
+
+            <h3>Platform Font Padding (Zero-Padding Adjustments)</h3>
+            <p>To eliminate vertical padding offsets introduced by Android or iOS fonts, chain <strong><code>.noPadding</code></strong>. This forces the system layout engine to compute vertical bounds tightly around the glyph cap height.</p>
+            <pre><code>// Usage Example
+Text(
+    text = "CHALLENGE",
+    style = Kolt.typography.textGiant.blackItalic.noPadding
+)</code></pre>
+
+            <h2>5. Font Families &amp; AppFont Configuration</h2>
+            <p>The system theme font is defined at the root using the <code>AppFont</code> sealed class. You can customize the font family across the entire composable hierarchy, or apply localized overrides on specific elements.</p>
+
+            <h3>One-off overrides</h3>
+            <p>Apply specific font families directly on a single text element using property extensions:</p>
+            <ul>
+                <li><strong><code>.roboto</code></strong> &rarr; Forces Noto Sans / Roboto (bundled offline).</li>
+                <li><strong><code>.noto</code></strong> &rarr; Forces Noto Sans (bundled offline, ideal for Indic scripts like Malayalam, Hindi, Tamil).</li>
+            </ul>
+            <pre><code>// Override on a single text element
+Text(
+    text = "മലയാളം",
+    style = Kolt.typography.bodyMedium.noto
+)</code></pre>
+
+            <h3>The AppFont Configuration Options</h3>
+            <p>Kolt supports 4 ways to configure fonts across your entire application root via the <code>AppFont</code> class:</p>
+            <ul>
+                <li><strong><code>AppFont.Roboto</code></strong>: Offline-bundled Roboto font. All 9 weights are registered and load instantly without system or network dependencies (Default).</li>
+                <li><strong><code>AppFont.Noto</code></strong>: Offline-bundled Noto Sans. Recommended for Indian localization. The <code>MalayalamCompositionBaseProvider</code> defaults to this font family.</li>
+                <li><strong><code>AppFont.Google("Font Name")</code></strong>: Dynamically downloads the requested font from the Google Fonts directory at runtime using Google Play Services. For example, <code>AppFont.Google("Inter")</code> or <code>AppFont.Google("Poppins")</code>.</li>
+                <li><strong><code>AppFont.Google("Outfit")</code></strong>: Load Outfit via Google Fonts (Requires Play Services).</li>
+                <li><strong><code>AppFont.Custom(family: FontFamily)</code></strong>: Pass in your own pre-built <code>FontFamily</code> (loading local resource assets or downloadable font resources).</li>
+            </ul>
+
+            <h3>Configuring the Root Provider</h3>
+            <p>To configure your app-wide font family, pass the <code>font</code> parameter to your root composition provider:</p>
+            <pre><code>// 1. Standard App Setup using a Google Font
+@Composable
+fun AppRoot() {
+    CompositionBaseProvider(
+        font = AppFont.Google("Inter")
+    ) {
+        MainAppContent()
+    }
+}
+
+// 2. Malayalam Localization using Noto Sans
+@Composable
+fun LocalizedAppRoot() {
+    MalayalamCompositionBaseProvider(
+        font = AppFont.Noto
+    ) {
+        MainAppContent()
+    }
+}</code></pre>
+
+            <h2>6. Theme Switching (Light/Dark Mode)</h2>
+            <p>Kolt supports dynamic light/dark mode theme switching via the <code>KoltTheme</code> composable. Wrap your application navigation and supply the mode parameter:</p>
+            <pre><code>// AppEntry.kt
+@Composable
+fun AppEntry(settingsViewModel: SettingsViewModel = viewModel()) {
+    val isDarkMode by settingsViewModel.isDarkMode.collectAsState()
+
+    KoltTheme(darkTheme = isDarkMode) {
+        AppNavigation()
+    }
+}</code></pre>
+        </article>
+    </div>
+    <script type="module" src="../assets/docs.js"></script>
+</body>
+</html>

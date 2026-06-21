@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kolt — Architecture and Multiplatform Suite</title>
+    <link rel="icon" type="image/png" href="img/logo.png">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="docs/assets/docs.css">
+    <style>
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="light-mode docs-body docs-landing-page">
+    <script>window.docsBasePath = 'docs/';</script>
+    <nav class="docs-sidebar" id="docs-sidebar"></nav>
+    <div class="docs-main" style="width: 100%;">
+        <!-- Header Navigation bar (mounted dynamically by docs.js) -->
+        <header class="docs-topbar" id="docs-topbar"></header>
+        <!-- Hero Section with Parallax Background -->
+        <div class="hero-section" style="position: relative; overflow: hidden; border-bottom: 1px solid var(--border-color); text-align: center;">
+            <div class="hero-parallax-bg"></div>
+            <div class="hero-content">
+                <div class="hero-logo-wrapper">
+                    <img id="landing-logo" class="hero-logo" alt="Kolt Logo" src="img/logo_name_light.png">
+                </div>
+                <h1 class="gradient-text" style="font-size: 52px; font-weight: 700; line-height: 1.15; letter-spacing: -1.5px; margin: 0 0 20px;">
+                    Architected for Kotlin Multiplatform
+                </h1>
+                <div class="promo-badge">
+                    <span style="font-size: 14px;">🚀</span>
+                    <span>Ready for Kotlin 2.3.10 &amp; Gradle 8.x</span>
+                </div>
+                <p class="hero-tagline">
+                    A unified, type-safe suite of Gradle convention plugins and lightweight runtime utilities designed to build robust, offline-first applications across Android, iOS, and Desktop.
+                </p>
+                <div class="hero-buttons">
+                    <a href="docs/getting-started/index.html" class="btn btn-primary btn-landing">Explore Docs &rarr;</a>
+                    <a href="showcase/index.html" class="btn btn-outline btn-landing">Open Components Showcase</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive Playground Section -->
+        <section class="showcase-section">
+            <h2 style="font-size: 32px; font-weight: 600; text-align: center; margin: 0 0 8px; color: var(--title-color);">Type-Safe API Abstraction</h2>
+            <p style="text-align: center; color: var(--text-muted); font-size: 16px; max-width: 640px; margin: 0 auto 48px; line-height: 1.6;">
+                Write clean, platform-agnostic business logic in your shared common source set, and let Kolt handle resources, asynchronous transitions, and log configurations.
+            </p>
+
+            <div class="showcase-grid">
+                <!-- IDE Window -->
+                <div class="mock-ide">
+                    <div class="ide-header">
+                        <div class="ide-dots">
+                            <span class="ide-dot red"></span>
+                            <span class="ide-dot yellow"></span>
+                            <span class="ide-dot green"></span>
+                        </div>
+                        <div class="ide-title" id="ide-filename">UiText.kt</div>
+                        <div style="width: 36px;"></div>
+                    </div>
+                    <div class="ide-tabs">
+                        <div class="ide-tab active" data-tab="uitext">UiText (Resources)</div>
+                        <div class="ide-tab" data-tab="asyncstate">AsyncState (Flows)</div>
+                        <div class="ide-tab" data-tab="logfacade">Log.printLog() (Logs)</div>
+                    </div>
+                    <pre class="ide-content"><code id="ide-code-block">Loading...</code></pre>
+                </div>
+
+                <!-- Preview container -->
+                <div class="live-preview-box" id="live-preview-box">
+                    Loading preview...
+                </div>
+            </div>
+        </section>
+
+        <!-- Visual Architecture Section -->
+        <section class="arch-section">
+            <h2 style="font-size: 32px; font-weight: 600; margin: 0 0 8px; color: var(--title-color);">Modular Architecture Flow</h2>
+            <p style="color: var(--text-muted); font-size: 16px; max-width: 640px; margin: 0 auto 40px; line-height: 1.6;">
+                How Kolt bridges compiling plugins and runtime assets inside a composite multi-module Gradle layout:
+            </p>
+
+            <div class="arch-container">
+                <!-- Convention Plugins -->
+                <div class="arch-row">
+                    <div class="arch-card highlight">
+                        <span style="font-size: 14px; margin-right: 4px;">🔌</span>
+                        build-logic/conventions
+                    </div>
+                </div>
+                <div class="arch-arrow">↓ applies source-configuration to</div>
+
+                <!-- Core runtime libraries -->
+                <div class="arch-row">
+                    <div class="arch-card">utils</div>
+                    <div class="arch-card">logutils</div>
+                    <div class="arch-card">compose-kmp</div>
+                    <div class="arch-card">compose-utils</div>
+                    <div class="arch-card">update-utils</div>
+                </div>
+                <div class="arch-arrow">↓ publishes compile-time dependencies to</div>
+
+                <!-- Native client applications -->
+                <div class="arch-row">
+                    <div class="arch-card highlight">
+                        <span style="font-size: 14px; margin-right: 4px;">🤖</span>
+                        Android App
+                    </div>
+                    <div class="arch-card highlight">
+                        <span style="font-size: 14px; margin-right: 4px;">🍏</span>
+                        iOS Application
+                    </div>
+                    <div class="arch-card highlight">
+                        <span style="font-size: 14px; margin-right: 4px;">💻</span>
+                        Desktop App
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Agent Steering Section -->
+        <section class="ai-ready-section" style="padding: 80px 24px; border-bottom: 1px solid var(--border-color); background: radial-gradient(circle at 80% 20%, rgba(26, 115, 232, 0.04), transparent 50%); text-align: center;">
+            <div style="max-width: 960px; margin: 0 auto; background: rgba(var(--bg-color-rgb), 0.6); backdrop-filter: blur(12px); border: 1px solid var(--border-color); border-radius: 20px; padding: 48px 32px; box-shadow: 0 8px 32px rgba(0,0,0,0.02); position: relative; overflow: hidden;">
+                <!-- Decorative Glow -->
+                <div style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: rgba(26, 115, 232, 0.15); filter: blur(50px); border-radius: 50%; pointer-events: none;"></div>
+                
+                <span style="font-size: 11px; background: rgba(26, 115, 232, 0.1); color: var(--primary-color); padding: 4px 12px; border-radius: 20px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; display: inline-block; margin-bottom: 16px;">AI-Agent-Ready Monorepo</span>
+                
+                <h2 style="font-size: 32px; font-weight: 600; margin: 0 0 16px; color: var(--title-color);">Steerable AI Code Generation</h2>
+                
+                <p style="color: var(--text-muted); font-size: 16px; max-width: 640px; margin: 0 auto 32px; line-height: 1.6;">
+                    Kolt is built to work seamlessly with AI coding assistants (Gemini, Claude, Cursor). Scaffold structured context models into your modules to align LLMs instantly on KMP architecture and coding standards.
+                </p>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 0 auto 40px; max-width: 800px; text-align: left;">
+                    <div style="background: var(--surface-color); border: 1px solid var(--border-color); padding: 16px; border-radius: 8px;">
+                        <span style="font-size: 18px; margin-right: 6px;">📄</span>
+                        <strong style="color: var(--text-main); font-size: 14px;">AGENTS.md</strong>
+                        <p style="margin: 4px 0 0 0; font-size: 12px; color: var(--text-muted); line-height: 1.4;">Guides LLM reasoning about convention plugins &amp; dependencies.</p>
+                    </div>
+                    <div style="background: var(--surface-color); border: 1px solid var(--border-color); padding: 16px; border-radius: 8px;">
+                        <span style="font-size: 18px; margin-right: 6px;">⚡</span>
+                        <strong style="color: var(--text-main); font-size: 14px;">CLAUDE.md</strong>
+                        <p style="margin: 4px 0 0 0; font-size: 12px; color: var(--text-muted); line-height: 1.4;">Defines terminal build shortcuts &amp; code formatting rules.</p>
+                    </div>
+                    <div style="background: var(--surface-color); border: 1px solid var(--border-color); padding: 16px; border-radius: 8px;">
+                        <span style="font-size: 18px; margin-right: 6px;">🛠️</span>
+                        <strong style="color: var(--text-main); font-size: 14px;">KOLT.md</strong>
+                        <p style="margin: 4px 0 0 0; font-size: 12px; color: var(--text-muted); line-height: 1.4;">Provides custom DSL extension reference tables for code models.</p>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 16px; justify-content: center; align-items: center; flex-wrap: wrap;">
+                    <a href="docs/guides/ai-steering.html" class="btn btn-primary" style="padding: 10px 24px; border-radius: 20px; font-size: 13.5px; text-decoration: none;">Configure AI Steering &rarr;</a>
+                    <div style="font-family: monospace; font-size: 13px; background: #151618; color: #81c995; padding: 10px 20px; border-radius: 20px; border: 1px solid var(--border-color); display: flex; align-items: center; gap: 8px;">
+                        <span style="color: var(--text-muted); user-select: none;">$</span>
+                        <span>./gradlew scaffoldKoltResources</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Technical Benefits Section -->
+        <section class="features-section">
+            <h2 style="font-size: 32px; font-weight: 600; text-align: center; margin: 0 0 40px; color: var(--title-color);">Engineered for Scaling</h2>
+            
+            <div class="feature-grid">
+                <!-- Card 1 -->
+                <div class="feature-card">
+                    <div class="feature-card-icon">🏗️</div>
+                    <h3>0 Gradle Boilerplate</h3>
+                    <p>Centralize compiler options, SDK boundaries, and build flags inside standard included Gradle builds. Consumer modules remain slim and decoupled.</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="feature-card">
+                    <div class="feature-card-icon">⚡</div>
+                    <h3>Classloader Isolation</h3>
+                    <p>Divided conventions and publishing setups. Eliminates Sonatype dependency conflicts and build service collisions during Release deployments.</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="feature-card">
+                    <div class="feature-card-icon">🔒</div>
+                    <h3>Debug Auto-Gating</h3>
+                    <p>Integrates AndroidX App Startup initializers to automatically silence logs in production. Keep logs fast in debug, zero-overhead in release.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Documentation hub -->
+        <article class="docs-article" style="max-width: 1080px; margin: 0 auto; padding: 48px 24px 80px;">
+            <h2 style="font-size: 32px; font-weight: 600; text-align: center; margin: 0 0 8px; color: var(--title-color);">Documentation Hub</h2>
+            <p style="text-align: center; color: var(--text-muted); font-size: 16px; margin-bottom: 24px;">Explore our detailed setup guides, plugin specifications, and multiplatform API designs:</p>
+
+            <div class="docs-tile-grid">
+                <a class="docs-tile" href="docs/getting-started/index.html">
+                    <span class="docs-tile-icon">🚀</span>
+                    <h3>Getting Started</h3>
+                    <p>Bootstrap scripts, composite-build structures, and initializing your first build configuration.</p>
+                </a>
+                <a class="docs-tile" href="docs/which-library/index.html">
+                    <span class="docs-tile-icon">🔍</span>
+                    <h3>Which Library?</h3>
+                    <p>Decision matrix mapping your development goals to the correct platform coordinates.</p>
+                </a>
+                <a class="docs-tile" href="docs/plugins/index.html">
+                    <span class="docs-tile-icon">🔌</span>
+                    <h3>Plugins Catalog</h3>
+                    <p>Deep-dive into the 12 Gradle convention plugins, custom DSL blocks, and targeting limits.</p>
+                </a>
+                <a class="docs-tile" href="docs/components/index.html">
+                    <span class="docs-tile-icon">🧩</span>
+                    <h3>Components Catalog</h3>
+                    <p>View every Compose/KMP component along with source paths, snippets, and interactive iframe showcase examples.</p>
+                </a>
+                <a class="docs-tile" href="docs/utilities/index.html">
+                    <span class="docs-tile-icon">🛠️</span>
+                    <h3>Runtime Libraries</h3>
+                    <p>Detailed API specs and usage configurations for all five shared utility libraries.</p>
+                </a>
+                <a class="docs-tile" href="docs/guides/ai-steering.html">
+                    <div style="margin-bottom: 8px;">
+                        <span style="font-size: 10px; background: rgba(26, 115, 232, 0.1); color: #1a73e8; padding: 2px 8px; border-radius: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.3px;">AI-Agent-Ready</span>
+                    </div>
+                    <span class="docs-tile-icon">🤖</span>
+                    <h3>AI Agent Steering</h3>
+                    <p>Standardized context templates (AGENTS.md, CLAUDE.md) enabling instant alignment with AI code generators.</p>
+                </a>
+                <a class="docs-tile" href="docs/guides/starter-projects.html">
+                    <span class="docs-tile-icon">📁</span>
+                    <h3>Starter Templates</h3>
+                    <p>Bootstrap a new Android or KMP project in seconds using the CLI script or the IntelliJ wizard.</p>
+                </a>
+                <a class="docs-tile" href="docs/guides/intellij-plugin.html">
+                    <span class="docs-tile-icon">🔌</span>
+                    <h3>IntelliJ Plugin</h3>
+                    <p>New Project wizard for Android Studio and IntelliJ IDEA — generates a fully wired Kolt project from a GUI.</p>
+                </a>
+                <a class="docs-tile" href="docs/architecture/architecture.html">
+                    <span class="docs-tile-icon">🏛️</span>
+                    <h3>Architecture Standards</h3>
+                    <p>Unidirectional data flow, Clean boundaries, SQLDelight local synchronization database schemas, and testing.</p>
+                </a>
+            </div>
+        </article>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="docs/assets/docs.js"></script>
+    <script>
+        // Simple parallax scroll listener for the hero background
+        window.addEventListener('scroll', () => {
+            const depth = window.pageYOffset;
+            const bg = document.querySelector('.hero-parallax-bg');
+            if (bg) {
+                bg.style.transform = `translateY(${depth * 0.3}px)`;
+            }
+        });
+
+        // Interactive Code & Component Playground tabs
+        const TABS = {
+            uitext: {
+                filename: 'UserProfileViewModel.kt',
+                code: `<span class="code-keyword">val</span> greeting = UiText.StringResource(
+    resId = R.string.welcome_user,
+    <span class="code-string">"Arun Shankar"</span>,
+    UiText.PluralResource(R.plurals.notif, <span class="code-keyword">3</span>, <span class="code-keyword">3</span>)
+)
+
+<span class="code-annotation">@Composable</span>
+<span class="code-keyword">fun</span> <span class="code-call">GreetingScreen</span>(vm: ProfileViewModel) {
+    <span class="code-call">Text</span>(text = vm.greeting.<span class="code-call">asString</span>())
+}`,
+                preview: `
+                    <div style="background: var(--surface-color); border: 1px solid var(--border-color); padding: 24px; border-radius: 12px; width: 100%; max-width: 320px; box-shadow: 0 4px 24px rgba(0,0,0,0.04); text-align: left;">
+                        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+                            <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #1a73e8, #34a853); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 14px;">AS</div>
+                            <div>
+                                <h4 style="margin: 0; font-size: 15px; font-weight: 600; color: var(--title-color);">Arun Shankar</h4>
+                                <span style="font-size: 12px; color: var(--text-muted);">KMP Developer</span>
+                            </div>
+                        </div>
+                        <p style="margin: 0 0 16px; font-size: 13.5px; line-height: 1.5; color: var(--text-main);">Welcome, Arun Shankar! You have 3 new notifications.</p>
+                        <div style="display: flex; gap: 8px;">
+                            <span style="background: var(--primary-glow); color: var(--primary-color); font-size: 11px; padding: 4px 10px; border-radius: 12px; font-weight: 600;">Online</span>
+                            <span style="background: rgba(249, 171, 0, 0.1); color: #f9ab00; font-size: 11px; padding: 4px 10px; border-radius: 12px; font-weight: 600;">Premium</span>
+                        </div>
+                    </div>
+                `
+            },
+            asyncstate: {
+                filename: 'DashboardViewModel.kt',
+                code: `<span class="code-keyword">val</span> state = MutableStateFlow&lt;AsyncState&lt;User&gt;&gt;(AsyncState.Idle)
+
+<span class="code-keyword">fun</span> <span class="code-call">loadProfile</span>() {
+    state.value = AsyncState.Loading
+    <span class="code-keyword">try</span> {
+        <span class="code-keyword">val</span> user = repo.<span class="code-call">fetchUser</span>()
+        state.value = AsyncState.Success(user)
+    } <span class="code-keyword">catch</span> (e: Exception) {
+        state.value = AsyncState.Error(e)
+    }
+}`,
+                preview: `
+                    <div id="async-state-demo" style="display: flex; flex-direction: column; align-items: center; gap: 16px; width: 100%; max-width: 320px; padding: 24px; border: 1px dashed var(--border-color); border-radius: 12px; background: rgba(var(--bg-color-rgb), 0.3); text-align: center;">
+                        <div id="state-widget-content" style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+                            <div style="font-size: 14px; font-weight: 600; color: var(--text-main);">Current State: <span style="color: #f9ab00; font-weight: 700;" id="state-label">Idle</span></div>
+                            <div style="height: 50px; display: flex; align-items: center; justify-content: center;" id="state-graphic">
+                                <span style="font-size: 28px;">😴</span>
+                            </div>
+                            <p style="margin: 0; font-size: 12.5px; color: var(--text-muted); line-height: 1.4;" id="state-desc">Click below to cycle through KMP loading states.</p>
+                        </div>
+                        <button id="trigger-state-cycle" class="btn btn-outline" style="font-size: 12px; padding: 6px 14px; border-radius: 16px; width: 100%;">Trigger Sync Cycle</button>
+                    </div>
+                `
+            },
+            logfacade: {
+                filename: 'SyncEngine.kt',
+                code: `<span class="code-comment">// Evaluates dynamically in ViewModel or shared classes:</span>
+<span class="code-string">"Sync successfully completed"</span>.<span class="code-call">printLog</span>()
+
+<span class="code-comment">// Logs exceptions with trace outputs in development only:</span>
+<span class="code-keyword">try</span> {
+    db.<span class="code-call">write</span>(user)
+} <span class="code-keyword">catch</span> (ex: Exception) {
+    ex.<span class="code-call">printLog</span>(tag = <span class="code-string">"DatabaseSync"</span>)
+}`,
+                preview: `
+                    <div style="background: #151618; border: 1px solid var(--border-color); border-radius: 8px; font-family: monospace; font-size: 11px; color: #e8eaed; padding: 16px; width: 100%; text-align: left; box-shadow: 0 4px 16px rgba(0,0,0,0.15);">
+                        <div style="color: var(--text-muted); border-bottom: 1px solid var(--border-color); padding-bottom: 6px; margin-bottom: 10px; font-size: 9px; letter-spacing: 0.5px; font-weight: 700;">ADB LOGCAT (DEBUG MODE)</div>
+                        <div style="line-height: 1.7;">
+                            <div><span style="color: #81c995;">D/Kolt-Log [12:30:15]:</span> Loading profile configuration...</div>
+                            <div><span style="color: #8ab4f8;">I/UserProfile [12:30:16]:</span> User Arun Shankar resolved</div>
+                            <div><span style="color: #fdd663;">W/Kolt-Log [12:30:16]:</span> String resource fallback triggered</div>
+                            <div><span style="color: #f28b82;">E/DatabaseSync [12:30:17]:</span> Failed to write user to DB</div>
+                            <div style="color: #ff8080; padding-left: 12px; font-size: 10px;">java.io.IOException: Disk Full at db.write(User.kt:54)</div>
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        function switchShowcaseTab(tabKey) {
+            const tabData = TABS[tabKey];
+            if (!tabData) return;
+
+            // Set text & styling
+            document.getElementById('ide-filename').textContent = tabData.filename;
+            document.getElementById('ide-code-block').innerHTML = tabData.code;
+            document.getElementById('live-preview-box').innerHTML = tabData.preview;
+
+            // Update active tabs styling
+            document.querySelectorAll('.ide-tab').forEach(tab => {
+                const isActive = tab.getAttribute('data-tab') === tabKey;
+                tab.classList.toggle('active', isActive);
+            });
+
+            // Wire up internal interactive scripts for tabs (like state cycling)
+            if (tabKey === 'asyncstate') {
+                const triggerBtn = document.getElementById('trigger-state-cycle');
+                if (triggerBtn) {
+                    triggerBtn.addEventListener('click', () => {
+                        const label = document.getElementById('state-label');
+                        const graphic = document.getElementById('state-graphic');
+                        const desc = document.getElementById('state-desc');
+                        if (!label || !graphic || !desc) return;
+
+                        triggerBtn.disabled = true;
+                        
+                        // 1. Loading
+                        label.textContent = "Loading";
+                        label.style.color = "#1a73e8";
+                        graphic.innerHTML = '<div style="width: 24px; height: 24px; border: 3px solid var(--border-color); border-top-color: var(--primary-color); border-radius: 50%; animation: spin 1s linear infinite;"></div>';
+                        desc.textContent = "Running background thread operations...";
+
+                        setTimeout(() => {
+                            // 2. Success
+                            label.textContent = "Success";
+                            label.style.color = "#34a853";
+                            graphic.innerHTML = '<span style="font-size: 28px;">✅</span>';
+                            desc.textContent = "Data fetched successfully from database.";
+
+                            setTimeout(() => {
+                                triggerBtn.disabled = false;
+                            }, 1000);
+                        }, 1800);
+                    });
+                }
+            }
+        }
+
+        // Initialize click actions for tabs
+        document.querySelectorAll('.ide-tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabKey = tab.getAttribute('data-tab');
+                switchShowcaseTab(tabKey);
+            });
+        });
+
+        // Load default tab
+        switchShowcaseTab('uitext');
+    </script>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UiColor &amp; UiDimen: Theme Wrappers — Kolt Docs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body class="light-mode docs-body">
+    <script>
+        window.docsBasePath = '../';
+        window.docsEnableToc = true;
+    </script>
+    <nav class="docs-sidebar" id="docs-sidebar"></nav>
+    <div class="docs-main">
+        <header class="docs-topbar" id="docs-topbar"></header>
+        <article class="docs-article">
+            <span class="docs-eyebrow">Library: compose-kmp</span>
+            <h1>UiColor &amp; UiDimen</h1>
+            <p class="docs-lede">Abstract Compose-native colors, XML resource specifications, and lengths/fonts in common business models, resolving them dynamically at runtime.</p>
+
+            <h2>1. Overview: Abstracting Layout &amp; Theme Variables</h2>
+            <p>To design highly customized views in KMP projects, ViewModels or domain controllers must frequently express styling variables—such as custom tag borders, brand highlights, dynamic container padding, or user-selected font sizes. However, standard Compose classes like <code>Color</code>, <code>Dp</code>, and <code>TextUnit</code> (sp) are not easily serializable or translatable across platform-dependent configuration resources (e.g. Android XML <code>colors.xml</code> and <code>dimens.xml</code>).</p>
+            <p>Kolt addresses this by introducing <code>UiColor</code> and <code>UiDimen</code> wrappers. They unify raw runtime properties and static file resources under serializable, testable models that resolve instantly inside Composable functions.</p>
+
+            <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 32px 0;">
+
+            <h2>2. UiColor (Color Wrapper)</h2>
+            <p><code>UiColor</code> manages standard Compose color objects, color XML resource identifiers, and hex code strings.</p>
+
+            <h3>Class Definition &amp; Subclasses</h3>
+            <pre><code>package io.github.appspiriment.kolt.composekmp.wrappers
+
+sealed class UiColor {
+    companion object {
+        val Black = DynamicColor(Color.Black)
+        val White = DynamicColor(Color.White)
+        val Transparent = DynamicColor(Color.Transparent)
+        val Unspecified = DynamicColor(Color.Unspecified)
+    }
+
+    data class DynamicColor(val value: Color) : UiColor()
+    class ColorResource(val resId: Int) : UiColor()
+    data class HexColor(val hex: String) : UiColor() {
+        init {
+            require(hex.matches(Regex("^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{8})$"))) {
+                "Invalid hex color format. Must be #RRGGBB or #AARRGGBB"
+            }
+        }
+    }
+}</code></pre>
+
+            <h3>Factory Functions &amp; Extensions</h3>
+            <p>Quickly convert platform variables into <code>UiColor</code> instances:</p>
+            <pre><code>Color.Red.toUiColor()                     // -> UiColor.DynamicColor
+R.color.brand_blue.toUiColorResource()    // -> UiColor.ColorResource
+"#34A853".toUiColorHex()                  // -> UiColor.HexColor
+uiColorResource(R.color.background_dark)  // Composable helper</code></pre>
+
+            <h3>Resolving inside Composables</h3>
+            <p>To resolve the wrapped value into a standard Compose-native color, use the following Composable extension:</p>
+            <pre><code>val color: Color = uiColor.asColor()</code></pre>
+
+            <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 32px 0;">
+
+            <h2>3. UiDimen (Dimension Wrapper)</h2>
+            <p><code>UiDimen</code> represents lengths, spacings, padding intervals, and font sizes (sp) from raw floats or resource structures.</p>
+
+            <h3>Class Definition &amp; Subclasses</h3>
+            <pre><code>package io.github.appspiriment.kolt.composekmp.wrappers
+
+sealed class UiDimen {
+    data class DynamicDp(val value: Dp) : UiDimen() {
+        companion object {
+            val Zero = DynamicDp(0.dp)
+            val Unspecified = DynamicDp(Dp.Unspecified)
+        }
+    }
+
+    data class DynamicTextUnit(val value: TextUnit) : UiDimen() {
+        companion object {
+            val Unspecified = DynamicTextUnit(TextUnit.Unspecified)
+        }
+    }
+
+    class DimenResource(val resId: Int) : UiDimen()
+}</code></pre>
+
+            <h3>Factory Functions &amp; Extensions</h3>
+            <pre><code>16.dp.toUiDimen()                         // -> UiDimen.DynamicDp
+14.sp.toUiDimen()                         // -> UiDimen.DynamicTextUnit
+R.dimen.padding_large.toUiDimenResource() // -> UiDimen.DimenResource
+uiDimenResource(R.dimen.spacing_small)    // Composable helper</code></pre>
+
+            <h3>Resolving inside Composables</h3>
+            <p>Resolve dimensions and font sizes using these Composable extensions:</p>
+            <pre><code>val padding: Dp = uiDimen.asDp()
+val fontSize: TextUnit = uiDimen.asSp()</code></pre>
+
+            <hr style="border: 0; border-top: 1px solid var(--border-color); margin: 32px 0;">
+
+            <h2>4. Complete Code Example</h2>
+            <p>This implementation showcases how to pass dynamic borders, background colors, and margin spacing from a common data structure to build a customizable UI banner.</p>
+
+            <h3>1. Styling Configuration Model (commonMain)</h3>
+            <pre><code>import io.github.appspiriment.kolt.composekmp.wrappers.UiColor
+import io.github.appspiriment.kolt.composekmp.wrappers.UiDimen
+import io.github.appspiriment.kolt.composekmp.wrappers.toUiColorHex
+import io.github.appspiriment.kolt.composekmp.wrappers.toUiDimen
+import androidx.compose.ui.unit.dp
+
+data class BannerStyle(
+    val backgroundColor: UiColor,
+    val outlineColor: UiColor,
+    val paddingSize: UiDimen
+)
+
+class AlertController {
+    val successBanner = BannerStyle(
+        backgroundColor = "#E6F4EA".toUiColorHex(), // Light Green Hex
+        outlineColor = "#137333".toUiColorHex(),    // Dark Green Hex
+        paddingSize = 16.dp.toUiDimen()            // Raw 16dp spacing
+    )
+}</code></pre>
+
+            <h3>2. Composable Component (commonMain UI)</h3>
+            <pre><code>import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import io.github.appspiriment.kolt.composekmp.wrappers.asColor
+import io.github.appspiriment.kolt.composekmp.wrappers.asDp
+
+@Composable
+fun StyledAlertBanner(style: BannerStyle, message: String) {
+    Box(
+        modifier = Modifier
+            .border(
+                width = 1.dp,
+                color = style.outlineColor.asColor() // Resolves border color
+            )
+            .background(
+                color = style.backgroundColor.asColor() // Resolves background color
+            )
+            .padding(
+                all = style.paddingSize.asDp() // Resolves padding intervals
+            )
+    ) {
+        Text(text = message, color = style.outlineColor.asColor())
+    }
+}</code></pre>
+        </article>
+    </div>
+    <script type="module" src="../assets/docs.js"></script>
+</body>
+</html>

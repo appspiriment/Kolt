@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose a Plugin — Kolt Docs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body class="light-mode docs-body">
+    <script>
+        window.docsBasePath = '../';
+        window.docsEnableToc = true;
+    </script>
+    <nav class="docs-sidebar" id="docs-sidebar"></nav>
+    <div class="docs-main">
+        <header class="docs-topbar" id="docs-topbar"></header>
+        <article class="docs-article">
+            <span class="docs-eyebrow">Guides</span>
+            <h1>Choose a Convention Plugin</h1>
+            <p class="docs-lede">Kolt bundles its Gradle rules into 12 convention plugins. Use this guide to determine which plugin to apply to your module.</p>
+
+            <h2>Decision Flowchart</h2>
+            <p>Follow the tree below to identify the plugin that best matches your target platforms and dependency needs:</p>
+            
+            <pre><code>Target Module Type?
+ ├── Application ──► Android-only? ──► Use: android-application
+ │                 └── KMP? ─────────► Use: kmp-application
+ └── Library ──────► Android-only? ──► Needs Hilt? ──► Needs Compose? ──► Use: android-library-hilt-compose
+                   │                                  └── No Compose? ─► Use: android-library-hilt
+                   │                 └── No Hilt? ───► Needs Compose? ──► Use: android-library-compose
+                   │                                  └── No Compose? ─► Use: android-library
+                   └── KMP? ─────────► Needs Koin? ──► Needs Compose? ──► Use: kmp-library-koin-compose
+                                                      └── No Compose? ─► Use: kmp-library-koin
+                                     └── No Koin? ───► Needs Compose? ──► Use: kmp-library-compose
+                                                      └── No Compose? ─► Use: kmp-library</code></pre>
+
+            <h2>Specialized Data Layers</h2>
+            <p>If your module is dedicated strictly to repositories, databases, or networking clients, apply the specialized data layer plugins. These bundle Room/SQLDelight schemas and Retrofit/Ktor networking setups:</p>
+            <ul>
+                <li><strong>Android-only data:</strong> Apply <code>android-data-layer</code>.</li>
+                <li><strong>KMP shared data:</strong> Apply <code>kmp-data</code>.</li>
+            </ul>
+
+            <h2>Comparison Table</h2>
+            <table class="docs-table">
+                <thead>
+                    <tr>
+                        <th>Plugin ID / Alias</th>
+                        <th>Target Target</th>
+                        <th>Bridges / Wires In</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>android-application</code></td>
+                        <td>Android App</td>
+                        <td>Kotlin Android, AGP, Java 17 compile target</td>
+                    </tr>
+                    <tr>
+                        <td><code>android-library</code></td>
+                        <td>Android Lib</td>
+                        <td>Standard library setup</td>
+                    </tr>
+                    <tr>
+                        <td><code>android-library-hilt</code></td>
+                        <td>Android Lib</td>
+                        <td>Adds Hilt DI configuration</td>
+                    </tr>
+                    <tr>
+                        <td><code>android-library-compose</code></td>
+                        <td>Android Lib</td>
+                        <td>Adds Compose compiler &amp; dependencies</td>
+                    </tr>
+                    <tr>
+                        <td><code>android-library-hilt-compose</code></td>
+                        <td>Android Lib</td>
+                        <td>Hilt DI + Compose configurations combined</td>
+                    </tr>
+                    <tr>
+                        <td><code>android-data-layer</code></td>
+                        <td>Android Lib</td>
+                        <td>Room, Retrofit, Kotlinx Serialization</td>
+                    </tr>
+                    <tr>
+                        <td><code>kmp-library</code></td>
+                        <td>KMP Lib</td>
+                        <td>Common + Android targets configured</td>
+                    </tr>
+                    <tr>
+                        <td><code>kmp-library-compose</code></td>
+                        <td>KMP Lib</td>
+                        <td>Adds Multiplatform Compose dependencies</td>
+                    </tr>
+                    <tr>
+                        <td><code>kmp-library-koin</code></td>
+                        <td>KMP Lib</td>
+                        <td>Common + Koin dependency setup</td>
+                    </tr>
+                    <tr>
+                        <td><code>kmp-library-koin-compose</code></td>
+                        <td>KMP Lib</td>
+                        <td>Multiplatform Compose + Koin combined</td>
+                    </tr>
+                    <tr>
+                        <td><code>kmp-data</code></td>
+                        <td>KMP Lib</td>
+                        <td>SQLDelight, Ktor client, Serializers</td>
+                    </tr>
+                    <tr>
+                        <td><code>kmp-application</code></td>
+                        <td>KMP App</td>
+                        <td>Configures multiplatform app outputs</td>
+                    </tr>
+                </tbody>
+            </table>
+        </article>
+    </div>
+    <script type="module" src="../assets/docs.js"></script>
+</body>
+</html>

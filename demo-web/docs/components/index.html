@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Components — Kolt Docs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body class="light-mode docs-body">
+    <script>window.docsBasePath = '../';</script>
+    <nav class="docs-sidebar" id="docs-sidebar"></nav>
+    <div class="docs-main">
+        <header class="docs-topbar" id="docs-topbar"></header>
+        <article class="docs-article">
+            <span class="docs-eyebrow">Components</span>
+            <h1>Component Catalog</h1>
+            <p class="docs-lede">Every Compose/KMP component, grouped exactly like the <a href="../../showcase/index.html">live showcase</a>. Open any component for a description, source path, usage snippet, and an embedded live demo.</p>
+            <div id="catalog-sections"></div>
+        </article>
+    </div>
+    <script type="module">
+        import { COMPONENTS, CATEGORIES } from './data.js';
+
+        const container = document.getElementById('catalog-sections');
+        container.innerHTML = CATEGORIES.map(cat => {
+            const items = COMPONENTS.filter(c => c.category === cat.id);
+            const tiles = items.map(c => `
+                <a class="docs-tile" href="detail.html?id=${c.id}">
+                    <span class="docs-tile-icon">🧩</span>
+                    <h3>${c.title}</h3>
+                    <p>${c.description}</p>
+                </a>
+            `).join('');
+            const introHtml = cat.categoryIntro ? `<p class="docs-lede" style="margin: 0 0 16px; font-size: 14.5px;">${cat.categoryIntro}</p>` : '';
+            return `
+                <h2 id="${cat.id}">${cat.icon} ${cat.label}</h2>
+                ${introHtml}
+                <div class="docs-tile-grid">${tiles}</div>
+            `;
+        }).join('');
+    </script>
+    <script type="module" src="../assets/docs.js"></script>
+</body>
+</html>

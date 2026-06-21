@@ -1,0 +1,120 @@
+<idea-plugin>
+    <id>io.github.appspiriment.kolt.project-wizard</id>
+    <name>Kolt Project Wizard</name>
+    <vendor email="support@appspiriment.io" url="https://github.com/appspiriment/UtilsLibs">
+        Appspiriment
+    </vendor>
+
+    <description><![CDATA[
+        Adds a <b>Kolt</b> entry to the New Project wizard.<br/><br/>
+        Creates a fully-configured <b>Android</b> or <b>Kotlin Multiplatform</b> project with:
+        <ul>
+            <li>Kolt convention plugins pre-applied</li>
+            <li>Version catalog wired (<code>koltlibs</code> / <code>kmplibs</code>)</li>
+            <li>Gradle wrapper included (immediately buildable)</li>
+            <li>Source directory tree at the correct package path</li>
+            <li>AI-agent steering docs (<code>CLAUDE.md</code>, <code>AGENTS.md</code>, <code>docs/</code>)</li>
+            <li>Theme XML scaffolding on first build</li>
+        </ul>
+        <br/>
+        Also provides <b>Tools &gt; Kolt</b> publish actions for pushing libraries and
+        convention plugins to <b>Maven Local</b> or <b>Maven Central (Sonatype OSSRH)</b>, with
+        credentials stored securely in the OS keychain.
+    ]]></description>
+
+    <!-- Works in Android Studio and IntelliJ IDEA 2024.3+ -->
+    <idea-version since-build="243"/>
+
+    <depends>com.intellij.modules.platform</depends>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         Application services
+         ═══════════════════════════════════════════════════════════════════════ -->
+    <extensions defaultExtensionNs="com.intellij">
+
+        <!--
+            Registers the Kolt generator in the "New Project" dialog.
+            Appears as a top-level entry alongside "Empty Project", "Kotlin", etc.
+        -->
+        <directoryProjectGenerator
+            implementation="io.github.appspiriment.kolt.intellij.KoltProjectGenerator"/>
+
+        <!--
+            Persists non-secret settings (OSSRH username, GPG key name, flags…)
+            to <IDE-config>/kolt.xml.  Secrets go to the OS keychain via
+            KoltCredentials (PasswordSafe).
+        -->
+        <applicationService
+            serviceImplementation="io.github.appspiriment.kolt.intellij.settings.KoltSettings"/>
+
+        <!--
+            Adds Settings → Tools → Kolt panel.
+        -->
+        <applicationConfigurable
+            parentId="tools"
+            id="io.github.appspiriment.kolt.settings"
+            displayName="Kolt"
+            implementation="io.github.appspiriment.kolt.intellij.settings.KoltSettingsConfigurable"/>
+
+        <!--
+            Notification group used by GradleTaskRunner for error toasts.
+        -->
+        <notificationGroup
+            id="Kolt"
+            displayType="BALLOON"/>
+
+    </extensions>
+
+    <!-- ═══════════════════════════════════════════════════════════════════════
+         Actions — Tools > Kolt menu
+         ═══════════════════════════════════════════════════════════════════════ -->
+    <actions>
+
+        <!--
+            Top-level group under the Tools menu.
+        -->
+        <group
+            id="Kolt.ToolsMenu"
+            text="Kolt"
+            description="Kolt build and publish actions"
+            popup="true">
+
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+
+            <!-- Publish ALL modules to Maven Local in one Gradle run -->
+            <action
+                id="Kolt.PublishAllMavenLocal"
+                class="io.github.appspiriment.kolt.intellij.actions.PublishToMavenLocalAction"
+                text="Publish All → Maven Local"
+                description="Run publishAllToMavenLocal for all Kolt modules"/>
+
+            <!-- Publish ALL modules to Maven Central (separate Gradle invocations per module) -->
+            <action
+                id="Kolt.PublishAllMavenCentral"
+                class="io.github.appspiriment.kolt.intellij.actions.PublishToMavenCentralAction"
+                text="Publish All → Maven Central (Release)"
+                description="Sign and publish all Kolt modules to Sonatype OSSRH"/>
+
+            <separator/>
+
+            <!-- Pick a single module from a popup chooser -->
+            <action
+                id="Kolt.PublishSingleModule"
+                class="io.github.appspiriment.kolt.intellij.actions.PublishSingleModuleAction"
+                text="Publish Single Module…"
+                description="Choose one Kolt module to publish"/>
+
+            <separator/>
+
+            <!-- Bump the DEV counter in version.properties -->
+            <action
+                id="Kolt.BumpDevVersion"
+                class="io.github.appspiriment.kolt.intellij.actions.BumpDevVersionAction"
+                text="Bump Dev Version"
+                description="Increment the DEV counter in version.properties"/>
+
+        </group>
+
+    </actions>
+
+</idea-plugin>

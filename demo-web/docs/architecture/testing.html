@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testing — Kolt Docs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body class="light-mode docs-body">
+    <script>
+        window.docsBasePath = '../';
+        window.docsEnableToc = true;
+    </script>
+    <nav class="docs-sidebar" id="docs-sidebar"></nav>
+    <div class="docs-main">
+        <header class="docs-topbar" id="docs-topbar"></header>
+        <article class="docs-article">
+            <span class="docs-eyebrow">Architecture &amp; Standards</span>
+            <h1>Testing — Android / KMP</h1>
+            <p class="docs-lede">Goal: fewer bugs at low cost. Test the logic that breaks, skip the trivial.</p>
+
+            <h2>1. What to test (priority order)</h2>
+            <table class="docs-table">
+                <tr><th>Must test (high value, cheap)</th><th>Skip (low value)</th></tr>
+                <tr><td>Reducers — pure <code>(state, intent) &rarr; state</code>, every branch</td><td>Composable pixels (use previews instead)</td></tr>
+                <tr><td>Use cases — business rules, success + failure paths</td><td>Getters / data class equality</td></tr>
+                <tr><td>Mappers / validators — every edge case</td><td>Framework/DI wiring</td></tr>
+                <tr><td>Conflict resolution &amp; offline queue logic</td><td>Third-party libs</td></tr>
+                <tr><td>Repository impls — local read/write + enqueue (with fakes)</td><td></td></tr>
+            </table>
+            <p>Reducers are pure &rarr; testing them is trivial and catches most state bugs. Aim <strong>100% branch coverage on reducers</strong>, ~90% on use cases.</p>
+
+            <h2>2. Patterns</h2>
+            <h3>Reducer (no coroutines needed — it's pure)</h3>
+            <pre><code>@Test
+fun `QueryChanged filters visible items`() {
+    val vm = CartViewModel(getTotal = FakeGetTotal(), dispatchers = TestDispatchers())
+    vm.onIntent(CartIntent.Loaded(listOf(apple, banana)))
+
+    vm.onIntent(CartIntent.QueryChanged("app"))
+
+    assertThat(vm.state.value.visibleItems).containsExactly(apple)
+}</code></pre>
+
+            <h3>Use case (runTest + fake repo)</h3>
+            <pre><code>@Test
+fun `returns Failure when repo errors`() = runTest {
+    val useCase = GetCartTotalUseCase(FakeCartRepository(error = AppError.Storage))
+    val result = useCase(cartId)
+    assertThat(result).isInstanceOf(AppResult.Failure::class.java)
+}</code></pre>
+
+            <h3>Flow (Turbine)</h3>
+            <pre><code>repo.observeItems().test {
+    assertThat(awaitItem()).isEqualTo(AppResult.Success(emptyList()))
+    cancelAndIgnoreRemainingEvents()
+}</code></pre>
+
+            <h2>3. Rules</h2>
+            <ul>
+                <li><strong>Fakes over mocks.</strong> Hand-write <code>Fake{Interface}</code> in <code>commonTest/.../fake/</code>; a fake must honor the real contract (LSP).</li>
+                <li><strong>AAA</strong> structure: Arrange / Act / Assert, one logical assertion per test.</li>
+                <li><strong>Names:</strong> <code>subject condition expected</code> in backticks.</li>
+                <li><strong>Deterministic:</strong> inject <code>DispatcherProvider</code> (test = <code>UnconfinedTestDispatcher</code>); inject a <code>Clock</code> — never <code>System.currentTimeMillis()</code> in code under test.</li>
+                <li><strong>One behaviour per test.</strong> A failing test name should point at the bug.</li>
+            </ul>
+
+            <h2>4. Coverage targets (suggested, CI-enforced)</h2>
+            <table class="docs-table">
+                <tr><th>Area</th><th>Line</th><th>Branch</th></tr>
+                <tr><td>Reducers</td><td>95%</td><td>100%</td></tr>
+                <tr><td>Use cases</td><td>90%</td><td>85%</td></tr>
+                <tr><td>Mappers / validators</td><td>100%</td><td>100%</td></tr>
+                <tr><td>Crypto / security-critical</td><td>100%</td><td>100%</td></tr>
+                <tr><td>Everything else</td><td>70%</td><td>—</td></tr>
+            </table>
+            <p><em>Stack: kotlin-test / JUnit, Turbine (Flow), Truth or kotlin-test assertions.</em></p>
+        </article>
+    </div>
+    <script type="module" src="../assets/docs.js"></script>
+</body>
+</html>

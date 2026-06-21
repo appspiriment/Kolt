@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Date, Time &amp; Timing Utilities — Kolt Docs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body class="light-mode docs-body">
+    <script>
+        window.docsBasePath = '../';
+        window.docsEnableToc = true;
+    </script>
+    <nav class="docs-sidebar" id="docs-sidebar"></nav>
+    <div class="docs-main">
+        <header class="docs-topbar" id="docs-topbar"></header>
+        <article class="docs-article">
+            <span class="docs-eyebrow">Library: utils</span>
+            <h1>Date, Time &amp; Timing Utilities</h1>
+            <p class="docs-lede">Implement thread-safe time formatting, timezone conversions, relative time offsets, decimal hour calculations, and traditional Vedic Nazhika timing on Android.</p>
+
+            <h2>1. Formatter Caching (Performance)</h2>
+            <p>Creating Java <code>DateTimeFormatter</code> instances repeatedly is a heavy operations. Kolt optimizes this by caching compiled patterns inside a thread-safe <code>ConcurrentHashMap</code>:</p>
+            <pre><code>// Retrieves or compiles the pattern once, caching it automatically:
+val formatter = formatterFor("yyyy-MM-dd HH:mm:ss")</code></pre>
+
+            <h2>2. LocalDate Extensions</h2>
+            <p>Extensions on Java 8 <code>LocalDate</code> to format dates quickly using localized styles:</p>
+            <ul>
+                <li><strong><code>LocalDate.formatDisplay()</code></strong>: Formats the date into a standard reader style:
+                    <pre><code>val date = LocalDate.of(2026, 6, 21)
+date.formatDisplay() // returns "21 Jun 2026" (English locale)</code></pre>
+                </li>
+                <li><strong><code>LocalDate.formatDateTime()</code></strong>: Appends time components, returning a standardized display string:
+                    <pre><code>date.formatDateTime() // returns "21 Jun 2026, 00:00"</code></pre>
+                </li>
+                <li><strong><code>LocalDate.toEpochMillis()</code></strong>: Converts the date boundary into raw milliseconds since Unix epoch (UTC midnight).</li>
+                <li><strong><code>Long.toLocalDateTime()</code></strong>: Extension on <code>Long</code> epoch stamps to reconstruct standard <code>LocalDateTime</code> instances.</li>
+            </ul>
+
+            <h2>3. Relative Time Conversions</h2>
+            <p>Converts date/time instances into dynamic, human-readable relative time intervals:</p>
+            <ul>
+                <li><strong><code>LocalDateTime.toRelativeTime()</code></strong>:
+                    <pre><code>val past = LocalDateTime.now().minusHours(3)
+past.toRelativeTime() // returns "3 hours ago"
+
+val future = LocalDateTime.now().plusDays(2)
+future.toRelativeTime() // returns "in 2 days"
+
+val justNow = LocalDateTime.now().minusSeconds(10)
+justNow.toRelativeTime() // returns "Just now"</code></pre>
+                </li>
+            </ul>
+
+            <h2>4. Decimal Hour Conversions</h2>
+            <p>Useful for calculating task durations, astronomy computations, or time-tracking cards:</p>
+            <ul>
+                <li><strong><code>Long.millisToDecimalHour()</code></strong>: Converts epoch milliseconds into decimal hours (e.g. <code>3_600_000L</code> &rarr; <code>1.0</code>).</li>
+                <li><strong><code>Long.millisToDays()</code></strong>: Converts milliseconds into decimal day counts.</li>
+                <li><strong><code>Double.fromHoursToMillis()</code></strong>: Converts decimal hours back into milliseconds.</li>
+                <li><strong><code>Double.fromHoursToHMS()</code></strong>: Splits decimal hours into a Triple of <code>(Hours, Minutes, Seconds)</code>:
+                    <pre><code>val hms = 2.50.fromHoursToHMS() // returns Triple(2, 30, 0) -> 2 hours, 30 minutes, 0 seconds</code></pre>
+                </li>
+            </ul>
+
+            <h2>5. Vedic Time (Nazhika &amp; Vinazhika)</h2>
+            <p>Vedic time (commonly used in Kerala and other parts of India for traditional calendar calculations, astrological schedules, and astronomical maths) divides a 24-hour day into 60 <strong>Nazhika</strong> (നാഴിക). 1 Hour is equivalent to exactly <strong>2.5 Nazhika</strong>. A single Nazhika is further divided into 60 <strong>Vinazhika</strong> (വിനാഴിക).</p>
+            
+            <p>Kolt provides precise conversion helpers between standard decimal hours and traditional Vedic scales:</p>
+            <ul>
+                <li><strong><code>Double.fromHoursToNazhika()</code></strong>: Converts decimal hours to a Pair of <code>(Nazhika, Vinazhika)</code>:
+                    <pre><code>val (nazhika, vinazhika) = 1.0.fromHoursToNazhika() // 1 Hour -> Pair(2, 30) -> 2 Nazhika, 30 Vinazhika</code></pre>
+                </li>
+                <li><strong><code>Double.hourstoNazhikaVinazhikaString()</code></strong>: Formats hours directly into a Malayalam Vedic label:
+                    <pre><code>2.0.hourstoNazhikaVinazhikaString() // returns "5 നാ 0 വി" (5 Nazhika, 0 Vinazhika)</code></pre>
+                </li>
+                <li><strong><code>Double.nazhikaToNazhikaVinazhika()</code></strong>: Converts a decimal Nazhika count into a Pair of <code>(Nazhika, Vinazhika)</code>.</li>
+                <li><strong><code>Double.nazhikatoNazhikaVinazhikaString()</code></strong>: Formats a decimal Nazhika value into a Malayalam string:
+                    <pre><code>4.25.nazhikatoNazhikaVinazhikaString() // returns "4 നാ 15 വി"</code></pre>
+                </li>
+            </ul>
+
+            <h2>6. Epoch to Date Conversions</h2>
+            <ul>
+                <li><strong><code>Long.millisToDateTime(format: String, timeZone: ZoneId)</code></strong>: Directly formats epoch milliseconds into custom formatted date-time strings, resolving offsets correctly. Returns <code>null</code> if formatting fails.
+                    <pre><code>val text = epochMillis.millisToDateTime("yyyy/MM/dd HH:mm", ZoneId.of("Asia/Kolkata"))</code></pre>
+                </li>
+            </ul>
+        </article>
+    </div>
+    <script type="module" src="../assets/docs.js"></script>
+</body>
+</html>

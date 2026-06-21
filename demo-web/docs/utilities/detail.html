@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library — Kolt Docs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body class="light-mode docs-body">
+    <script>window.docsBasePath = '../';</script>
+    <nav class="docs-sidebar" id="docs-sidebar"></nav>
+    <div class="docs-main">
+        <header class="docs-topbar" id="docs-topbar"></header>
+        <article class="docs-article" id="utility-article">
+            <p>Loading…</p>
+        </article>
+    </div>
+    <script type="module">
+        import { getUtilityById } from './data.js';
+        import { COMPONENTS } from '../components/data.js';
+
+        const id = new URLSearchParams(window.location.search).get('id');
+        const util = getUtilityById(id);
+        const article = document.getElementById('utility-article');
+
+        if (!util) {
+            article.innerHTML = `<h1>Not found</h1><p>No library with id "<code>${id}</code>". <a href="index.html">Back to libraries</a>.</p>`;
+        } else {
+            document.title = `${util.title} — Kolt Docs`;
+            
+            // Check for components belonging to this library
+            let componentsHtml = '';
+            const matchingComponents = COMPONENTS.filter(c => {
+                const firstPath = c.composables[0]?.path || '';
+                if (util.id === 'compose-kmp') return firstPath.includes('compose-kmp');
+                if (util.id === 'compose-utils') return firstPath.includes('compose-utils');
+                if (util.id === 'update-utils') return firstPath.includes('update-utils');
+                return false;
+            });
+
+            if (matchingComponents.length > 0) {
+                componentsHtml = `
+                    <h2>UI Components &amp; Systems</h2>
+                    <p>The following UI components and interactive systems are provided by this library module:</p>
+                    <div class="docs-tile-grid" style="margin-top: 16px;">
+                        ${matchingComponents.map(c => `
+                            <a class="docs-tile" href="../components/detail.html?id=${c.id}" style="padding: 18px;">
+                                <h3 style="margin-top: 0; font-size: 15.5px; color: var(--primary-color);">${c.title}</h3>
+                                <p style="font-size: 13.5px; line-height: 1.45; color: var(--text-muted); margin: 0;">${c.description}</p>
+                            </a>
+                        `).join('')}
+                    </div>
+                `;
+            }
+
+            // Check for subpages belonging to this library
+            let subpagesHtml = '';
+            if (util.id === 'utils') {
+                subpagesHtml = `
+                    <h2>Detailed Utility Modules</h2>
+                    <p>This library groups its functions into these focused subpages:</p>
+                    <div class="docs-tile-grid" style="margin-top: 16px;">
+                        <a class="docs-tile" href="utils-flow-state.html" style="padding: 18px;">
+                            <h3 style="margin-top: 0; font-size: 15.5px; color: var(--primary-color);">AsyncState &amp; Flow Utilities</h3>
+                            <p style="font-size: 13.5px; line-height: 1.45; color: var(--text-muted); margin: 0;">State machines, coroutine flow lifecycle caches, and safe debounced collectors.</p>
+                        </a>
+                        <a class="docs-tile" href="utils-string-phone.html" style="padding: 18px;">
+                            <h3 style="margin-top: 0; font-size: 15.5px; color: var(--primary-color);">String &amp; Phone Utilities</h3>
+                            <p style="font-size: 13.5px; line-height: 1.45; color: var(--text-muted); margin: 0;">Email/URL validations, credit card luhn checkers, password strength metrics, and phone formatting.</p>
+                        </a>
+                        <a class="docs-tile" href="utils-list-format.html" style="padding: 18px;">
+                            <h3 style="margin-top: 0; font-size: 15.5px; color: var(--primary-color);">Collection &amp; Formatting</h3>
+                            <p style="font-size: 13.5px; line-height: 1.45; color: var(--text-muted); margin: 0;">Safe list operations, compact numbers, file size formatters, percentages, and ordinal suffixes.</p>
+                        </a>
+                        <a class="docs-tile" href="utils-time-timing.html" style="padding: 18px;">
+                            <h3 style="margin-top: 0; font-size: 15.5px; color: var(--primary-color);">Date, Time &amp; Timing</h3>
+                            <p style="font-size: 13.5px; line-height: 1.45; color: var(--text-muted); margin: 0;">Android LocalDate formatting, relative time intervals, and traditional Vedic Nazhika timings.</p>
+                        </a>
+                    </div>
+                `;
+            } else if (util.id === 'compose-utils') {
+                subpagesHtml = `
+                    <h2>Detailed Utility Modules</h2>
+                    <p>This library groups its functions into these focused subpages:</p>
+                    <div class="docs-tile-grid" style="margin-top: 16px;">
+                        <a class="docs-tile" href="compose-utils-permissions-pickers.html" style="padding: 18px;">
+                            <h3 style="margin-top: 0; font-size: 15.5px; color: var(--primary-color);">System Permissions &amp; Photo Pickers</h3>
+                            <p style="font-size: 13.5px; line-height: 1.45; color: var(--text-muted); margin: 0;">Request runtime permissions inline in Composables and trigger the system media photo selector.</p>
+                        </a>
+                        <a class="docs-tile" href="compose-utils-keyboard-actions.html" style="padding: 18px;">
+                            <h3 style="margin-top: 0; font-size: 15.5px; color: var(--primary-color);">Keyboard &amp; System Actions</h3>
+                            <p style="font-size: 13.5px; line-height: 1.45; color: var(--text-muted); margin: 0;">Disable default soft keyboards for custom inputs and launch email/dialer intents.</p>
+                        </a>
+                    </div>
+                `;
+            }
+
+            const sections = util.sections.map(s => `
+                <h2>${s.heading}</h2>
+                <p class="docs-source-link">${s.path}</p>
+                <pre><code>${s.code}</code></pre>
+            `).join('');
+
+            let noteHtml = '';
+            if (util.id === 'location') {
+                noteHtml = `
+                    <div style="background: rgba(255,165,0,0.1); border-left: 4px solid orange; padding: 12px 16px; margin: 20px 0; border-radius: 4px; font-size: 13.5px; line-height: 1.5; color: var(--text-main);">
+                        <strong>⚠️ Notice:</strong> The location library is speculative and is not currently published as a final artifact. It remains in a planning/draft phase in the codebase.
+                    </div>
+                `;
+            }
+
+            const introHtml = util.intro ? `<p>${util.intro}</p>` : '';
+
+            article.innerHTML = `
+                <span class="docs-eyebrow">Library</span>
+                <h1>${util.title}</h1>
+                <p class="docs-source-link">${util.coordinate} — ${util.platforms}</p>
+                <p class="docs-lede">${util.summary}</p>
+                ${noteHtml}
+                ${introHtml}
+                ${subpagesHtml}
+                ${componentsHtml}
+                ${sections}
+                <p><a href="index.html">&larr; Back to libraries</a></p>
+            `;
+        }
+    </script>
+    <script type="module" src="../assets/docs.js"></script>
+</body>
+</html>
