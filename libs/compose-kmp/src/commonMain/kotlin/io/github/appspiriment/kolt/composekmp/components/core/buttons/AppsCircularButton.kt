@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.Dp
 import io.github.appspiriment.kolt.composekmp.components.core.image.AppsIcon
 import io.github.appspiriment.kolt.composekmp.theme.Kolt
 import io.github.appspiriment.kolt.composekmp.wrappers.UiImage
+import io.github.appspiriment.kolt.composekmp.wrappers.asColor
 
 /**
  * A circular icon button with a solid background fill.
@@ -44,6 +45,7 @@ import io.github.appspiriment.kolt.composekmp.wrappers.UiImage
  * @param iconModifier       Applied to [AppsIcon] inside the circle. Defaults to a small padding
  *                           so the icon doesn't touch the circle edge.
  * @param buttonColor        Circle background fill colour. Defaults to [Kolt.colors.primary].
+ * @param enabled            When false, disables interactions and styles it with neutral disabled colors.
  * @param contentDescription Accessibility label. Defaults to [UiImage.description].
  * @param onClick            Called when the circle is tapped.
  */
@@ -54,15 +56,20 @@ fun AppsCircularButton(
     size: Dp = Kolt.sizes.floatingButtonSize,
     iconModifier: Modifier = Modifier.padding(Kolt.sizes.paddingXSmall),
     buttonColor: Color = Kolt.colors.primary,
+    enabled: Boolean = true,
     contentDescription: String? = icon.description,
     onClick: () -> Unit,
 ) {
+    val backgroundColor = if (enabled) buttonColor else Kolt.colors.onMainSurface.copy(alpha = 0.12f)
+    val iconTint = if (enabled) icon.tint?.asColor() else Kolt.colors.onMainSurface.copy(alpha = 0.38f)
+
     Box(
         modifier = modifier
             .size(size)
             .clip(CircleShape)
-            .background(buttonColor)
+            .background(backgroundColor)
             .clickable(
+                enabled = enabled,
                 role = Role.Button,
                 onClickLabel = contentDescription,
                 onClick = onClick,
@@ -72,8 +79,8 @@ fun AppsCircularButton(
         AppsIcon(
             icon = icon,
             modifier = iconModifier,
+            tint = iconTint,
             contentDescription = contentDescription,
         )
     }
 }
-

@@ -32,6 +32,7 @@ ButtonStyle.primaryPositive()   // accent / confirmed action`,
         title: 'Text Helpers & Components',
         description: 'Specialized text widgets: click-to-copy, ellipsis with "read more" expansion, and inline image/text alignment.',
         composables: [
+            { name: 'AppspirimentText', desc: 'Basic text wrapper supporting selectable text containment, font offset adjust, and HTML strings', path: 'libs/compose-kmp/.../components/core/text/AppspirimentText.kt' },
             { name: 'AppsCopyableText', desc: 'Click a text block to copy it to the clipboard', path: 'libs/compose-kmp/.../components/core/text/AppsCopyableText.kt' },
             { name: 'AppsExpandableText', desc: 'Limits text to N lines with a click-to-expand toggle', path: 'libs/compose-kmp/.../components/core/text/AppsExpandableText.kt' },
             { name: 'AppsImageText', desc: 'Perfectly centered inline icon/image + text alignment', path: 'libs/compose-kmp/.../components/core/text/AppsImageText.kt' },

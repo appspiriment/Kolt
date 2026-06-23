@@ -33,7 +33,7 @@ object Log {
 internal expect fun platformLog(level: LogLevel, tag: String, message: String, throwable: Throwable?)
 
 /** Logs a throwable's stack trace at ERROR level (no-op when [Log.enabled] is false). */
-fun Throwable.printLog(tag: String = "") {
+fun Throwable.printLog(tag: String = "Kolt") {
     if (Log.enabled) platformLog(LogLevel.ERROR, tag, message ?: toString(), this)
 }
 
@@ -41,7 +41,7 @@ fun Throwable.printLog(tag: String = "") {
  * Logs [message] at WARN (or ERROR when [isError]). Throwables are logged with their
  * stack trace. No-op when [Log.enabled] is false.
  */
-fun printLog(message: Any?, tag: String = "", isError: Boolean = false) {
+fun printLog(message: Any?, tag: String = "Kolt", isError: Boolean = false) {
     if (!Log.enabled) return
     platformLog(
         level = if (isError) LogLevel.ERROR else LogLevel.WARN,
@@ -55,7 +55,7 @@ fun printLog(message: Any?, tag: String = "", isError: Boolean = false) {
  * Logs [message] at an explicit [level], optionally prefixed with [className].
  * No-op when [Log.enabled] is false.
  */
-fun printLog(message: Any?, tag: String = "", level: LogLevel, className: String? = null) {
+fun printLog(message: Any?, tag: String = "Kolt", level: LogLevel, className: String? = null) {
     if (!Log.enabled) return
     val text = if (!className.isNullOrBlank()) "$className - $message" else "$message"
     platformLog(level, tag, text, message as? Throwable)

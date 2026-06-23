@@ -57,8 +57,8 @@ class SmoothCornerShape(
         val br = with(density) { bottomRightRadius.toPx() }.coerceAtLeast(0f)
         val bl = with(density) { bottomLeftRadius.toPx() }.coerceAtLeast(0f)
 
-        // Ensure corners do not overlap
-        val maxRadius = (w / 2f).coerceAtMost(h / 2f)
+        // Ensure corners do not overlap (taking smoothness factor into account)
+        val maxRadius = (w / 2f).coerceAtMost(h / 2f) / (1f + s)
         val rTl = tl.coerceAtMost(maxRadius)
         val rTr = tr.coerceAtMost(maxRadius)
         val rBr = br.coerceAtMost(maxRadius)

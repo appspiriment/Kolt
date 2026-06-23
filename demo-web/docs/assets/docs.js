@@ -331,15 +331,36 @@ function initDocsChrome() {
         `;
 
         topbarEl.innerHTML = `
-            <div style="display: flex; align-items: center; width: 100%; justify-content: space-between;">
+            <div style="display: flex; align-items: center; width: 100%; justify-content: space-between; position: relative;">
                 <div style="display: flex; align-items: center;">
                     ${document.body.classList.contains('docs-landing-page') ? '' : toggleButtonHtml}
                     ${breadcrumbHtml}
                 </div>
                 <div class="docs-topbar-actions" style="display: flex; align-items: center; gap: 10px;">
                     ${searchWrapperHtml}
-                    <a href="${base}../showcase/index.html" class="btn btn-outline" style="padding:6px 14px; font-size:12.5px; border-radius:16px; text-decoration: none;">Open Showcase</a>
-                    <button id="docs-theme-toggle" class="theme-toggle-btn header-theme-toggle" style="padding:6px 12px; font-size:12.5px; border-radius:16px;">🌙 Dark</button>
+                    <a href="${base}../showcase/index.html" class="btn btn-outline desktop-only" style="padding:6px 14px; font-size:12.5px; border-radius:16px; text-decoration: none;">Open Showcase</a>
+                    <button id="docs-theme-toggle" class="theme-toggle-btn header-theme-toggle desktop-only" style="padding:6px 12px; font-size:12.5px; border-radius:16px;">🌙 Dark</button>
+                    
+                    <!-- Mobile Hamburger Menu Button -->
+                    <button id="mobile-menu-toggle" class="mobile-menu-toggle-btn" aria-label="Toggle Menu" style="display: none; border: none; background: transparent; color: var(--text-main); cursor: pointer; padding: 8px; align-items: center; justify-content: center;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- Mobile Navigation Dropdown Menu -->
+                <div id="mobile-menu-panel" class="mobile-menu-panel" style="display: none; position: absolute; top: 100%; right: 0; background-color: var(--surface-color); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; min-width: 200px; box-shadow: 0 4px 24px rgba(0,0,0,0.15); z-index: 1000; flex-direction: column; gap: 8px; margin-top: 8px;">
+                    ${document.body.classList.contains('docs-landing-page') ? `
+                        <a href="${base}getting-started/index.html" style="text-decoration: none; color: var(--text-muted); font-size: 14px; padding: 8px 12px; border-radius: 8px; display: block; font-weight: 500;">Docs</a>
+                        <a href="${base}../showcase/index.html" style="text-decoration: none; color: var(--text-muted); font-size: 14px; padding: 8px 12px; border-radius: 8px; display: block; font-weight: 500;">Showcase</a>
+                        <a href="${base}api/index.html" style="text-decoration: none; color: var(--text-muted); font-size: 14px; padding: 8px 12px; border-radius: 8px; display: block; font-weight: 500;">KDoc API</a>
+                        <a href="${base}guides/ai-steering.html" style="text-decoration: none; color: var(--primary-color); font-size: 14px; padding: 8px 12px; border-radius: 8px; display: block; font-weight: 600; background: var(--primary-glow);">🤖 AI Ready</a>
+                    ` : ''}
+                    <a href="${base}../showcase/index.html" style="text-decoration: none; color: var(--text-main); font-size: 14px; padding: 8px 12px; border-radius: 8px; display: block; font-weight: 500; border-top: ${document.body.classList.contains('docs-landing-page') ? '1px solid var(--border-color)' : 'none'}; padding-top: 12px;">Open Showcase</a>
+                    <button id="mobile-theme-toggle" style="background: transparent; border: none; text-align: left; width: 100%; color: var(--text-main); font-size: 14px; padding: 8px 12px; border-radius: 8px; cursor: pointer; display: block; font-weight: 500;">🌙 Dark Mode</button>
                 </div>
             </div>
         `;
@@ -439,18 +460,56 @@ function initDocsChrome() {
         }
 
         const themeToggle = document.getElementById('docs-theme-toggle');
-        themeToggle.addEventListener('click', () => {
-            const isDark = document.body.classList.toggle('dark-mode');
-            document.body.classList.toggle('light-mode', !isDark);
-            themeToggle.textContent = isDark ? '☀️ Light' : '🌙 Dark';
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                const isDark = document.body.classList.toggle('dark-mode');
+                document.body.classList.toggle('light-mode', !isDark);
+                themeToggle.textContent = isDark ? '☀️ Light' : '🌙 Dark';
 
-            // Swap homepage logo if present
-            const landingLogo = document.getElementById('landing-logo');
-            if (landingLogo) {
-                const prefix = base ? '' : '../';
-                landingLogo.src = isDark ? prefix + 'img/logo_name_dark.png' : prefix + 'img/logo_name_light.png';
-            }
-        });
+                // Swap homepage logo if present
+                const landingLogo = document.getElementById('landing-logo');
+                if (landingLogo) {
+                    const prefix = base ? '' : '../';
+                    landingLogo.src = isDark ? prefix + 'img/logo_name_dark.png' : prefix + 'img/logo_name_light.png';
+                }
+                
+                // Sync mobile theme toggle text if exists
+                const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+                if (mobileThemeToggle) {
+                    mobileThemeToggle.textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+                }
+            });
+        }
+
+        // Mobile Hamburger Navigation Menu Toggle
+        const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+        const mobileMenuPanel = document.getElementById('mobile-menu-panel');
+        
+        if (mobileMenuToggle && mobileMenuPanel) {
+            mobileMenuToggle.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isHidden = mobileMenuPanel.style.display === 'none' || mobileMenuPanel.style.display === '';
+                mobileMenuPanel.style.display = isHidden ? 'flex' : 'none';
+            });
+            
+            document.addEventListener('click', (e) => {
+                if (!mobileMenuPanel.contains(e.target) && e.target !== mobileMenuToggle && !mobileMenuToggle.contains(e.target)) {
+                    mobileMenuPanel.style.display = 'none';
+                }
+            });
+        }
+        
+        const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+        if (mobileThemeToggle) {
+            mobileThemeToggle.addEventListener('click', () => {
+                if (themeToggle) {
+                    themeToggle.click(); // Trigger the main theme toggle logic
+                }
+            });
+            // Initial sync on load
+            const isDark = document.body.classList.contains('dark-mode');
+            mobileThemeToggle.textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
+        }
     }
 
     // Set correct initial logo for homepage on load

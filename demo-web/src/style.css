@@ -75,7 +75,7 @@ body {
     min-height: 100vh;
 }
 
-/* Sidebar Styling (Sticky Navigation) */
+/* Sidebar Styling (Mobile-first default) */
 .sidebar {
     width: 280px;
     background-color: var(--surface-color);
@@ -84,10 +84,15 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    z-index: 10;
-    position: sticky;
+    z-index: 1000;
+    position: fixed;
+    left: 0;
     top: 0;
+    bottom: 0;
     height: 100vh;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
 }
 
 .brand {
@@ -183,34 +188,52 @@ body {
 }
 
 .header-theme-toggle {
-    width: auto;
-    padding: 8px 16px;
-    border-radius: 20px;
-    font-size: 13px;
+    padding: 8px 10px;
+    border-radius: 50%;
+    min-width: 36px;
+    height: 36px;
     background-color: var(--surface-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
 }
 
 .header-theme-toggle:hover {
     background-color: var(--surface-hover);
 }
 
-/* Content Area */
-.content-area {
-    flex-grow: 1;
-    padding: 0 40px 40px 40px; /* modified top padding to look good with sticky header */
-    display: flex;
-    flex-direction: column;
-    gap: 40px;
-    max-width: 1200px;
-    margin: 0 auto;
+.header-theme-toggle .theme-text {
+    display: none;
 }
 
-/* Sticky Main Header with Blur */
+#theme-toggle {
+    display: none !important;
+}
+
+#sidebar-theme-toggle {
+    display: flex !important;
+}
+
+/* Content Area (Mobile-first default) */
+.content-area {
+    flex-grow: 1;
+    padding: 0 16px 24px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    overflow-x: hidden;
+}
+
+/* Sticky Main Header with Blur (Mobile-first default) */
 .main-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 24px 0 16px 0;
+    padding: 16px 0 12px 0;
     border-bottom: 1px solid var(--border-color);
     position: sticky;
     top: 0;
@@ -222,13 +245,14 @@ body {
 }
 
 .main-header h2 {
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 600;
     letter-spacing: -0.5px;
     color: var(--title-color);
 }
 
 .platform-badge {
+    display: none;
     background-color: rgba(26, 115, 232, 0.1);
     color: var(--primary-color);
     font-size: 13px;
@@ -236,6 +260,57 @@ body {
     padding: 6px 14px;
     border-radius: 20px;
     border: 1px solid rgba(26, 115, 232, 0.15);
+}
+
+/* Desktop styles override (min-width: 861px) */
+@media (min-width: 861px) {
+    .sidebar {
+        position: sticky;
+        top: 0;
+        transform: translateX(0);
+        box-shadow: none;
+        z-index: 10;
+    }
+    
+    #theme-toggle {
+        display: flex !important;
+    }
+    
+    #sidebar-theme-toggle {
+        display: none !important;
+    }
+    
+    .header-theme-toggle {
+        padding: 0 16px;
+        border-radius: 20px;
+        min-width: auto;
+        height: 36px;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .header-theme-toggle .theme-text {
+        display: inline;
+    }
+    
+    .content-area {
+        padding: 0 40px 40px 40px;
+        gap: 40px;
+    }
+    
+    .main-header {
+        padding: 24px 0 16px 0;
+    }
+    
+    .main-header h2 {
+        font-size: 24px;
+    }
+    
+    .platform-badge {
+        display: block;
+    }
 }
 
 /* Grid System - Stack Sections Vertically */
@@ -532,7 +607,6 @@ body {
 
 .btn-smooth {
     border-radius: 8px; /* Simulated squircle */
-    clip-path: url(#squircle-clip-button); /* dynamically clipped button shape */
 }
 
 /* Tonal & iOS Button Showcase Styles */
@@ -1168,11 +1242,39 @@ body {
 }
 
 /* Disabled buttons */
-.btn-demo:disabled, .btn-link:disabled {
-    opacity: 0.38;
-    cursor: not-allowed;
+.btn-demo:disabled:not(.btn-ios), .btn-link:disabled {
+    background-color: rgba(255, 255, 255, 0.12) !important;
+    background-image: none !important;
+    color: rgba(255, 255, 255, 0.38) !important;
+    border-color: transparent !important;
     transform: none !important;
     box-shadow: none !important;
+    cursor: not-allowed;
+    opacity: 1 !important;
+}
+
+.btn-outline.btn-demo:disabled {
+    background-color: transparent !important;
+    border: 1.5px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+.btn-text.btn-demo:disabled, .btn-link.btn-demo:disabled {
+    background-color: transparent !important;
+}
+
+.light-mode .btn-demo:disabled:not(.btn-ios), .light-mode .btn-link:disabled {
+    background-color: rgba(0, 0, 0, 0.12) !important;
+    background-image: none !important;
+    color: rgba(0, 0, 0, 0.38) !important;
+}
+
+.light-mode .btn-outline.btn-demo:disabled {
+    border-color: rgba(0, 0, 0, 0.12) !important;
+}
+
+.btn-ios:disabled {
+    opacity: 0.38;
+    cursor: not-allowed;
 }
 
 /* Progress & Loaders */
@@ -2061,8 +2163,8 @@ body {
     gap: 8px;
 }
 .btn-pill {
-    border-radius: 20px;
-    padding: 8px 16px;
+    border-radius: 9999px;
+    padding: 10px 20px;
 }
 .dropdown-menu {
     position: absolute;
@@ -2803,3 +2905,114 @@ body.embed-mode .showcase-card {
     100% { box-shadow: none; }
 }
 
+/* ---- Mobile Responsiveness ---- */
+@media (max-width: 860px) {
+    .sidebar-backdrop {
+        display: block !important;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+    
+    body.sidebar-open .sidebar-backdrop {
+        pointer-events: auto;
+        opacity: 1 !important;
+    }
+    
+    .sidebar-toggle-btn {
+        display: flex !important;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Adjust input controls and preview structures inside cards */
+    .playground-container {
+        margin-top: 40px !important;
+    }
+    
+    .demo-card-front {
+        padding: 16px !important;
+    }
+    
+    .config-card-content {
+        padding: 20px 16px 16px !important;
+    }
+    
+    /* Flex wrapping for control lists */
+    .control-row {
+        flex-direction: column !important;
+        align-items: stretch !important;
+        gap: 12px !important;
+    }
+}
+
+/* AppspirimentText Custom Styling and Highlighting */
+.appspiriment-text-wrapper {
+    position: relative;
+    border: 1px solid transparent;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.appspiriment-text-wrapper.highlighted-selectable {
+    background-color: rgba(59, 130, 246, 0.05) !important;
+    border-color: rgba(59, 130, 246, 0.3) !important;
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.15);
+}
+
+.appspiriment-text-wrapper.highlighted-selectable::after {
+    content: "selectable = true";
+    position: absolute;
+    top: -8px;
+    right: 8px;
+    background-color: var(--primary-color);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 2px 6px;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    pointer-events: none;
+    font-family: var(--font-stack);
+    animation: bounceIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes bounceIn {
+    0% { transform: scale(0.3); opacity: 0; }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+/* Preset text styles */
+.appspiriment-style-textMedium {
+    font-size: 14px !important;
+    font-weight: 500 !important;
+}
+
+.appspiriment-style-titleLarge {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.5px;
+}
+
+.appspiriment-style-bodySmall {
+    font-size: 12px !important;
+    font-weight: 400 !important;
+    color: var(--text-muted) !important;
+}
+
+/* Preset text colors */
+.appspiriment-color-default {
+    color: var(--text-main) !important;
+}
+
+.appspiriment-color-primary {
+    color: var(--primary-color) !important;
+}
+
+.appspiriment-color-success {
+    color: #10b981 !important;
+}
+
+.appspiriment-color-error {
+    color: #ef4444 !important;
+}

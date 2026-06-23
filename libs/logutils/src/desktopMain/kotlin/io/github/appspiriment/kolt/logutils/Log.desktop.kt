@@ -6,7 +6,7 @@ import java.util.logging.Logger
 private val logger = Logger.getLogger("Kolt")
 
 internal actual fun platformLog(level: LogLevel, tag: String, message: String, throwable: Throwable?) {
-    val fullTag = if (tag.isBlank()) "Kolt" else "Kolt-$tag"
+    val fullTag = if (tag.isBlank() || tag == "Kolt") "Kolt" else "Kolt-$tag"
     val jLevel = when (level) {
         LogLevel.VERBOSE, LogLevel.DEBUG -> Level.FINE
         LogLevel.INFO                    -> Level.INFO

@@ -9,11 +9,12 @@ function getSquirclePath(radiusNorm, smoothness) {
     const w = 1.0;
     const h = 1.0;
     
-    // Limit radius to 0.5 to avoid overlapping corners
-    const rTr = Math.min(r, 0.5);
-    const rBr = Math.min(r, 0.5);
-    const rBl = Math.min(r, 0.5);
-    const rTl = Math.min(r, 0.5);
+    // Limit radius to avoid overlapping corners (taking smoothness factor into account)
+    const maxRadius = 0.5 / (1 + s);
+    const rTr = Math.min(r, maxRadius);
+    const rBr = Math.min(r, maxRadius);
+    const rBl = Math.min(r, maxRadius);
+    const rTl = Math.min(r, maxRadius);
     
     let path = `M 0.5,0 `;
     
@@ -62,6 +63,29 @@ function getSquirclePath(radiusNorm, smoothness) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    // --- Mobile Sidebar Toggle ---
+    const sidebarToggle = document.getElementById('sidebar-toggle');
+    const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+    
+    if (sidebarToggle) {
+        sidebarToggle.addEventListener('click', () => {
+            document.body.classList.toggle('sidebar-open');
+        });
+    }
+    if (sidebarBackdrop) {
+        sidebarBackdrop.addEventListener('click', () => {
+            document.body.classList.remove('sidebar-open');
+        });
+    }
+    
+    // Close sidebar when clicking links/buttons on mobile
+    const sidebarButtons = document.querySelectorAll('.sidebar .nav-btn');
+    sidebarButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.body.classList.remove('sidebar-open');
+        });
+    });
+
     // --- 0. Setup Static Squircles for Buttons and Dialogs ---
     const svgDefs = document.querySelector('svg defs');
     if (svgDefs) {
@@ -165,28 +189,33 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- 2. Theme Toggle ---
-    const themeToggle = document.getElementById('theme-toggle');
+    const themeToggles = document.querySelectorAll('#theme-toggle, #sidebar-theme-toggle');
     const body = document.body;
     
-    themeToggle.addEventListener('click', () => {
-        const isDark = body.classList.toggle('dark-mode');
-        body.classList.toggle('light-mode', !isDark);
-        
-        const icon = themeToggle.querySelector('.theme-icon');
-        const text = themeToggle.querySelector('.theme-text');
-        
-        if (isDark) {
-            icon.textContent = '☀️';
-            text.textContent = 'Light Mode';
-        } else {
-            icon.textContent = '🌙';
-            text.textContent = 'Dark Mode';
-        }
+    themeToggles.forEach(toggle => {
+        if (!toggle) return;
+        toggle.addEventListener('click', () => {
+            const isDark = body.classList.toggle('dark-mode');
+            body.classList.toggle('light-mode', !isDark);
+            
+            themeToggles.forEach(btn => {
+                const icon = btn.querySelector('.theme-icon');
+                const text = btn.querySelector('.theme-text');
+                
+                if (isDark) {
+                    if (icon) icon.textContent = '☀️';
+                    if (text) text.textContent = 'Light Mode';
+                } else {
+                    if (icon) icon.textContent = '🌙';
+                    if (text) text.textContent = 'Dark Mode';
+                }
+            });
 
-        const fieldBorderSelect = document.getElementById('field-border-select');
-        if (fieldBorderSelect) {
-            fieldBorderSelect.dispatchEvent(new Event('change'));
-        }
+            const fieldBorderSelect = document.getElementById('field-border-select');
+            if (fieldBorderSelect) {
+                fieldBorderSelect.dispatchEvent(new Event('change'));
+            }
+        });
     });
 
     // --- 3. Corner Shape Playground ---
@@ -575,7 +604,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
                 if (shape === 'btn-smooth') {
-                    btn.style.clipPath = 'url(#squircle-clip-button)';
+                    btn.style.clipPath = 'none';
                     btn.style.borderRadius = '8px';
                 } else if (shape === 'pill') {
                     btn.style.clipPath = 'none';
@@ -1430,49 +1459,84 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- 16. Text Helpers Setup ---
+    // AppspirimentText elements
+    const appspirimentText = document.getElementById('web-appspiriment-text');
+    const appspirimentTextContainer = document.getElementById('web-appspiriment-text-container');
+    const appspirimentTextInput = document.getElementById('appspiriment-text-input');
+    const appspirimentTextSelectable = document.getElementById('appspiriment-text-selectable');
+    const appspirimentTextStyleSelect = document.getElementById('appspiriment-text-style-select');
+    const appspirimentTextColorSelect = document.getElementById('appspiriment-text-color-select');
+
+    if (appspirimentTextInput && appspirimentText) {
+        appspirimentTextInput.addEventListener('input', (e) => {
+            appspirimentText.textContent = e.target.value;
+        });
+    }
+
+    if (appspirimentTextSelectable && appspirimentText && appspirimentTextContainer) {
+        appspirimentTextSelectable.addEventListener('change', (e) => {
+            const isSelectable = e.target.checked;
+            appspirimentText.style.userSelect = isSelectable ? 'text' : 'none';
+            appspirimentText.style.webkitUserSelect = isSelectable ? 'text' : 'none';
+            appspirimentText.style.cursor = isSelectable ? 'text' : 'default';
+            if (isSelectable) {
+                appspirimentTextContainer.classList.add('highlighted-selectable');
+                showToast("AppspirimentText selectable enabled (highlights & text-selection enabled)");
+            } else {
+                appspirimentTextContainer.classList.remove('highlighted-selectable');
+            }
+        });
+    }
+
+    if (appspirimentTextStyleSelect && appspirimentText) {
+        appspirimentTextStyleSelect.addEventListener('change', (e) => {
+            const val = e.target.value;
+            appspirimentText.classList.remove('appspiriment-style-textMedium', 'appspiriment-style-titleLarge', 'appspiriment-style-bodySmall');
+            appspirimentText.classList.add(`appspiriment-style-${val}`);
+        });
+    }
+
+    if (appspirimentTextColorSelect && appspirimentText) {
+        appspirimentTextColorSelect.addEventListener('change', (e) => {
+            const val = e.target.value;
+            appspirimentText.classList.remove('appspiriment-color-default', 'appspiriment-color-primary', 'appspiriment-color-success', 'appspiriment-color-error');
+            appspirimentText.classList.add(`appspiriment-color-${val}`);
+        });
+    }
+
+    // AppsCopyableText elements
     const copyableText = document.getElementById('web-copyable-text');
+    const copyableTextInput = document.getElementById('copyable-text-input');
+    const copyableTextShowIcon = document.getElementById('copyable-text-show-icon');
+    const copyableTextFeedbackDuration = document.getElementById('copyable-text-feedback-duration');
+    const webCopyableIcon = document.getElementById('web-copyable-icon');
+
+    let feedbackDuration = 1500;
+    if (copyableTextFeedbackDuration) {
+        feedbackDuration = parseInt(copyableTextFeedbackDuration.value) || 1500;
+        copyableTextFeedbackDuration.addEventListener('change', (e) => {
+            feedbackDuration = parseInt(e.target.value) || 1500;
+        });
+    }
+
     if (copyableText) {
         copyableText.addEventListener('click', () => {
             const text = copyableText.getAttribute('data-text');
             navigator.clipboard.writeText(text).then(() => {
                 showToast("Copied to clipboard!");
                 copyableText.classList.add('copied');
+                if (webCopyableIcon) {
+                    webCopyableIcon.textContent = '✓';
+                    webCopyableIcon.style.color = '#10b981';
+                }
                 setTimeout(() => {
                     copyableText.classList.remove('copied');
-                }, 1500);
+                    if (webCopyableIcon) {
+                        webCopyableIcon.textContent = '📋';
+                        webCopyableIcon.style.color = '';
+                    }
+                }, feedbackDuration);
             });
-        });
-    }
-
-    const expandableText = document.getElementById('web-expandable-text');
-    const expandableToggle = document.getElementById('web-expandable-toggle');
-    const expandableBody = document.getElementById('web-expandable-body');
-    const expandableTextLines = document.getElementById('expandable-text-lines');
-    const copyableTextInput = document.getElementById('copyable-text-input');
-    const imageTextGap = document.getElementById('image-text-gap');
-    const imageTextGapVal = document.getElementById('image-text-gap-val');
-    const webImageTextContainer = document.getElementById('web-image-text-container');
-    
-    let lineLimit = 2;
-    if (expandableTextLines) {
-        lineLimit = parseInt(expandableTextLines.value) || 2;
-        expandableTextLines.addEventListener('change', (e) => {
-            lineLimit = parseInt(e.target.value) || 2;
-            if (expandableBody && expandableBody.classList.contains('collapsed')) {
-                expandableBody.style.webkitLineClamp = lineLimit;
-            }
-        });
-    }
-
-    if (expandableText && expandableToggle && expandableBody) {
-        expandableToggle.addEventListener('click', () => {
-            const isCollapsed = expandableBody.classList.toggle('collapsed');
-            expandableToggle.textContent = isCollapsed ? 'Show more' : 'Show less';
-            if (isCollapsed) {
-                expandableBody.style.webkitLineClamp = lineLimit;
-            } else {
-                expandableBody.style.webkitLineClamp = 'unset';
-            }
         });
     }
 
@@ -1485,11 +1549,115 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    if (copyableTextShowIcon && webCopyableIcon) {
+        copyableTextShowIcon.addEventListener('change', (e) => {
+            webCopyableIcon.style.display = e.target.checked ? 'inline-block' : 'none';
+        });
+    }
+
+    // AppsExpandableText elements
+    const expandableText = document.getElementById('web-expandable-text');
+    const expandableToggle = document.getElementById('web-expandable-toggle');
+    const expandableBody = document.getElementById('web-expandable-body');
+    const expandableTextLines = document.getElementById('expandable-text-lines');
+    const expandableTextToggleColor = document.getElementById('expandable-text-toggle-color');
+    const expandableTextMoreLabel = document.getElementById('expandable-text-more-label');
+    const expandableTextLessLabel = document.getElementById('expandable-text-less-label');
+
+    let lineLimit = 2;
+    if (expandableTextLines) {
+        lineLimit = parseInt(expandableTextLines.value) || 2;
+        expandableTextLines.addEventListener('change', (e) => {
+            lineLimit = parseInt(e.target.value) || 2;
+            if (expandableBody && expandableBody.classList.contains('collapsed')) {
+                expandableBody.style.webkitLineClamp = lineLimit;
+            }
+        });
+    }
+
+    let moreLabel = "Show more";
+    let lessLabel = "Show less";
+
+    if (expandableTextMoreLabel) {
+        moreLabel = expandableTextMoreLabel.value || "Show more";
+        expandableTextMoreLabel.addEventListener('input', (e) => {
+            moreLabel = e.target.value || "Show more";
+            if (expandableBody && expandableBody.classList.contains('collapsed') && expandableToggle) {
+                expandableToggle.textContent = moreLabel;
+            }
+        });
+    }
+
+    if (expandableTextLessLabel) {
+        lessLabel = expandableTextLessLabel.value || "Show less";
+        expandableTextLessLabel.addEventListener('input', (e) => {
+            lessLabel = e.target.value || "Show less";
+            if (expandableBody && !expandableBody.classList.contains('collapsed') && expandableToggle) {
+                expandableToggle.textContent = lessLabel;
+            }
+        });
+    }
+
+    if (expandableText && expandableToggle && expandableBody) {
+        expandableToggle.addEventListener('click', () => {
+            const isCollapsed = expandableBody.classList.toggle('collapsed');
+            expandableToggle.textContent = isCollapsed ? moreLabel : lessLabel;
+            if (isCollapsed) {
+                expandableBody.style.webkitLineClamp = lineLimit;
+            } else {
+                expandableBody.style.webkitLineClamp = 'unset';
+            }
+        });
+    }
+
+    if (expandableTextToggleColor && expandableToggle) {
+        expandableTextToggleColor.addEventListener('change', (e) => {
+            const val = e.target.value;
+            expandableToggle.style.color = '';
+            if (val === 'success') {
+                expandableToggle.style.color = '#10b981';
+            } else if (val === 'error') {
+                expandableToggle.style.color = '#ef4444';
+            } else if (val === 'muted') {
+                expandableToggle.style.color = 'var(--text-muted)';
+            } else {
+                expandableToggle.style.color = 'var(--primary-color)';
+            }
+        });
+    }
+
+    // AppsImageText elements
+    const imageTextGap = document.getElementById('image-text-gap');
+    const imageTextGapVal = document.getElementById('image-text-gap-val');
+    const webImageTextContainer = document.getElementById('web-image-text-container');
+    const imageTextPlacement = document.getElementById('image-text-placement');
+    const webImageTextLeading = document.getElementById('web-image-text-leading');
+    const webImageTextTrailing = document.getElementById('web-image-text-trailing');
+
     if (imageTextGap && imageTextGapVal && webImageTextContainer) {
         imageTextGap.addEventListener('input', (e) => {
             const val = e.target.value;
             imageTextGapVal.textContent = `${val}px`;
             webImageTextContainer.style.gap = `${val}px`;
+        });
+    }
+
+    if (imageTextPlacement && webImageTextLeading && webImageTextTrailing) {
+        imageTextPlacement.addEventListener('change', (e) => {
+            const val = e.target.value;
+            if (val === 'none') {
+                webImageTextLeading.style.display = 'none';
+                webImageTextTrailing.style.display = 'none';
+            } else if (val === 'leading') {
+                webImageTextLeading.style.display = 'inline-block';
+                webImageTextTrailing.style.display = 'none';
+            } else if (val === 'trailing') {
+                webImageTextLeading.style.display = 'none';
+                webImageTextTrailing.style.display = 'inline-block';
+            } else if (val === 'both') {
+                webImageTextLeading.style.display = 'inline-block';
+                webImageTextTrailing.style.display = 'inline-block';
+            }
         });
     }
 

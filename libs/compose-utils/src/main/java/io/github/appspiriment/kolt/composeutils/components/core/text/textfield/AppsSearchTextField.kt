@@ -141,7 +141,7 @@ private fun PreviewSearchTextField() {
 
         // With text (clear button visible)
         AppsSearchTextField(
-            state = remember { ValidatedTextFieldState(initialValue = "Arun Shankar") },
+            state = remember { ValidatedTextFieldState(initialValue = "David Lee Kolt") },
         )
 
         // Custom placeholder

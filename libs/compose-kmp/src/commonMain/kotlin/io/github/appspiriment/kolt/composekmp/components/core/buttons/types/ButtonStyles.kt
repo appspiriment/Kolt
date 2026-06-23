@@ -1,6 +1,7 @@
 package io.github.appspiriment.kolt.composekmp.components.core.buttons.types
 
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
@@ -39,9 +40,9 @@ data class ButtonStyle(
             buttonPressedColor: Color = Kolt.colors.primary,
             textColor: Color = Kolt.colors.onPrimary,
             strokeColor: Color = Color.Transparent,
-            buttonShape: Shape = SmoothCornerShape(8.dp),
-            disabledContainerColor: Color = Kolt.colors.disabledIconTint,
-            disabledContentColor: Color = Kolt.colors.disabledText,
+            buttonShape: Shape = CircleShape,
+            disabledContainerColor: Color = Kolt.colors.onMainSurface.copy(alpha = 0.12f),
+            disabledContentColor: Color = Kolt.colors.onMainSurface.copy(alpha = 0.38f),
         ): ButtonStyle = ButtonStyle(
             textStyle = textStyle,
             buttonColor = buttonColor,
@@ -60,9 +61,9 @@ data class ButtonStyle(
             buttonPressedColor: Color = Kolt.colors.primary,
             textColor: Color = Kolt.colors.primary,
             strokeColor: Color = Kolt.colors.primary,
-            buttonShape: Shape = SmoothCornerShape(8.dp),
+            buttonShape: Shape = CircleShape,
             disabledContainerColor: Color = Color.Transparent,
-            disabledContentColor: Color = Kolt.colors.disabledText,
+            disabledContentColor: Color = Kolt.colors.onMainSurface.copy(alpha = 0.38f),
             borderWidth: Dp = 1.dp,
         ): ButtonStyle = ButtonStyle(
             textStyle = textStyle,
@@ -83,9 +84,9 @@ data class ButtonStyle(
             buttonPressedColor: Color = Kolt.colors.primary,
             textColor: Color = Kolt.colors.primary,
             strokeColor: Color = Color.Transparent,
-            buttonShape: Shape = SmoothCornerShape(8.dp),
+            buttonShape: Shape = CircleShape,
             disabledContainerColor: Color = Color.Transparent,
-            disabledContentColor: Color = Kolt.colors.disabledText,
+            disabledContentColor: Color = Kolt.colors.onMainSurface.copy(alpha = 0.38f),
         ): ButtonStyle = ButtonStyle(
             textStyle = textStyle,
             buttonColor = buttonColor,
@@ -102,7 +103,7 @@ data class ButtonStyle(
         fun danger(
             textStyle: TextStyle = Kolt.typography.textMedium,
             textColor: Color = Kolt.colors.error,
-            buttonShape: Shape = SmoothCornerShape(8.dp),
+            buttonShape: Shape = CircleShape,
         ): ButtonStyle = transparent(
             textStyle = textStyle,
             textColor = textColor,
@@ -114,7 +115,7 @@ data class ButtonStyle(
         fun primaryNegative(
             textStyle: TextStyle = Kolt.typography.textMedium,
             textColor: Color = Kolt.colors.onMainSurface.copy(alpha = 0.6f),
-            buttonShape: Shape = SmoothCornerShape(8.dp),
+            buttonShape: Shape = CircleShape,
         ): ButtonStyle = transparent(
             textStyle = textStyle,
             textColor = textColor,
@@ -126,7 +127,7 @@ data class ButtonStyle(
         fun primaryPositive(
             textStyle: TextStyle = Kolt.typography.textMedium,
             textColor: Color = Kolt.colors.primary,
-            buttonShape: Shape = SmoothCornerShape(8.dp),
+            buttonShape: Shape = CircleShape,
         ): ButtonStyle = transparent(
             textStyle = textStyle,
             textColor = textColor,
@@ -140,9 +141,9 @@ data class ButtonStyle(
             buttonColor: Color = Kolt.colors.secondaryCardContainer,
             buttonPressedColor: Color = Kolt.colors.secondaryCardContainer.copy(alpha = 0.85f),
             textColor: Color = Kolt.colors.onSecondaryCardContainer,
-            buttonShape: Shape = SmoothCornerShape(8.dp),
-            disabledContainerColor: Color = Kolt.colors.disabledIconTint.copy(alpha = 0.12f),
-            disabledContentColor: Color = Kolt.colors.disabledText,
+            buttonShape: Shape = CircleShape,
+            disabledContainerColor: Color = Kolt.colors.onMainSurface.copy(alpha = 0.12f),
+            disabledContentColor: Color = Kolt.colors.onMainSurface.copy(alpha = 0.38f),
         ): ButtonStyle = ButtonStyle(
             textStyle = textStyle,
             buttonColor = buttonColor,

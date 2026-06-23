@@ -376,6 +376,7 @@ fun ButtonsInputsShowcase() {
                     )
                     AppsCircularButton(
                         icon = Icons.Default.Check.toUiImage(),
+                        enabled = buttonsEnabled,
                         onClick = {}
                     )
                 }
@@ -732,7 +733,7 @@ fun IndicatorsImagesShowcase() {
                     horizontalArrangement = Arrangement.spacedBy(16.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    AppsAvatar(name = "Arun Shankar", size = 48.dp)
+                    AppsAvatar(name = "David Lee Kolt", size = 48.dp)
                     Text("AppsAvatar (Initials)")
 
                     CircleIconBox(

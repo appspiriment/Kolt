@@ -86,17 +86,31 @@
                     <span class="icon">⚡</span> Complex Systems
                 </button>
             </nav>
+            <div class="sidebar-footer" style="margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border-color); width: 100%;">
+                <button id="sidebar-theme-toggle" class="theme-toggle-btn">
+                    <span class="theme-icon">🌙</span> <span class="theme-text">Dark Mode</span>
+                </button>
+            </div>
         </aside>
 
         <!-- Main Content Area -->
         <main class="content-area">
             <!-- Header -->
             <header class="main-header">
-                <h2 id="page-title">Core Components</h2>
+                <div style="display: flex; align-items: center;">
+                    <button id="sidebar-toggle" class="sidebar-toggle-btn" aria-label="Toggle Sidebar" style="display: none; border: none; background: transparent; color: var(--text-main); cursor: pointer; padding: 8px; margin-right: 8px; align-items: center; justify-content: center;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="3" y1="12" x2="21" y2="12"></line>
+                            <line x1="3" y1="6" x2="21" y2="6"></line>
+                            <line x1="3" y1="18" x2="21" y2="18"></line>
+                        </svg>
+                    </button>
+                    <h2 id="page-title">Core Components</h2>
+                </div>
                 <div style="display: flex; align-items: center; gap: 12px;">
                     <!-- Color Scheme Dropdown -->
                     <div class="dropdown-container">
-                        <button class="btn btn-outline header-theme-toggle" id="color-scheme-dropdown" style="padding: 8px 16px; border-radius: 20px; font-size: 13px; display: flex; align-items: center; gap: 8px; background-color: var(--surface-color);">
+                        <button class="btn btn-outline header-theme-toggle" id="color-scheme-dropdown" style="height: 36px; padding: 0 16px; border-radius: 20px; font-size: 13px; display: flex; align-items: center; gap: 8px; background-color: var(--surface-color); box-sizing: border-box;">
                             <span id="active-scheme-dot" style="width: 8px; height: 8px; border-radius: 50%; background-color: var(--primary-color); display: inline-block;"></span>
                             <span id="active-scheme-name">Material Blue</span>
                             <span style="font-size: 10px;">▼</span>
@@ -340,13 +354,25 @@
                                 <div class="component-group-list" style="width: 100%;">
                                     <div class="component-item-group">
                                         <div class="component-heading">
+                                            <h4 class="component-name">AppspirimentText</h4>
+                                            <span class="component-desc">Basic text wrapper supporting selectable text containment & offset</span>
+                                        </div>
+                                        <div class="component-demo-wrapper">
+                                            <div class="appspiriment-text-wrapper" id="web-appspiriment-text-container" style="width: 100%; padding: 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid transparent; transition: all 0.2s; position: relative;">
+                                                <div id="web-appspiriment-text" style="font-size: 14px; color: var(--text-main); font-family: var(--font-stack); user-select: none; line-height: 1.5; transition: all 0.2s;">This is a custom AppspirimentText component. You can toggle its selectability or change its styles from the configuration panel!</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="component-item-group">
+                                        <div class="component-heading">
                                             <h4 class="component-name">AppsCopyableText</h4>
                                             <span class="component-desc">Click text block to copy to clipboard</span>
                                         </div>
                                         <div class="component-demo-wrapper">
                                             <div class="copyable-text-container" id="web-copyable-text" data-text="support@appspiriment.com" style="width: fit-content;">
                                                 <span class="text-content">support@appspiriment.com</span>
-                                                <span class="copy-icon" style="font-size: 14px;">📋</span>
+                                                <span class="copy-icon" id="web-copyable-icon" style="font-size: 14px;">📋</span>
                                             </div>
                                         </div>
                                     </div>
@@ -371,8 +397,9 @@
                                         </div>
                                         <div class="component-demo-wrapper">
                                             <div class="image-text-container" id="web-image-text-container" style="display: flex; align-items: center; gap: 8px;">
-                                                <span class="inline-icon">🏠</span>
+                                                <span class="inline-icon" id="web-image-text-leading">🏠</span>
                                                 <span class="image-text-content">Appspiriment System Settings</span>
+                                                <span class="inline-icon" id="web-image-text-trailing" style="display: none;">🏠</span>
                                             </div>
                                         </div>
                                     </div>
@@ -401,11 +428,71 @@
                             <div class="config-card-back">
                                 <div class="config-card-content">
                                     <div class="config-title">Text Settings</div>
+                                    
+                                    <!-- AppspirimentText Section -->
+                                    <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px dashed var(--divider-color); padding-bottom: 4px; margin-top: 8px;">AppspirimentText Config</div>
                                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; width: 100%;">
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px; grid-column: span 2;">
+                                            <span class="label-text" style="align-self: flex-start;">Text Content</span>
+                                            <input type="text" id="appspiriment-text-input" value="This is a custom AppspirimentText component. You can toggle its selectability or change its styles from the configuration panel!" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none;">
+                                        </div>
+                                        <div class="config-option">
+                                            <span class="label-text">Selectable Text</span>
+                                            <div class="toggle-container">
+                                                <label class="switch-label">
+                                                    <input type="checkbox" id="appspiriment-text-selectable">
+                                                    <span class="switch-slider"></span>
+                                                </label>
+                                            </div>
+                                        </div>
                                         <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text" style="align-self: flex-start;">Text Style Preset</span>
+                                            <select id="appspiriment-text-style-select" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none; cursor: pointer;">
+                                                <option value="textMedium" selected>Body Medium (Kolt.typography.textMedium)</option>
+                                                <option value="titleLarge">Title Large (Kolt.typography.titleLarge)</option>
+                                                <option value="bodySmall">Body Small (Kolt.typography.bodySmall)</option>
+                                            </select>
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text" style="align-self: flex-start;">Text Color Preset</span>
+                                            <select id="appspiriment-text-color-select" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none; cursor: pointer;">
+                                                <option value="default" selected>On Main Surface (default)</option>
+                                                <option value="primary">Primary (Indigo)</option>
+                                                <option value="success">Success (Green)</option>
+                                                <option value="error">Error (Red)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- AppsCopyableText Section -->
+                                    <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px dashed var(--divider-color); padding-bottom: 4px; margin-top: 8px;">AppsCopyableText Config</div>
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; width: 100%;">
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px; grid-column: span 2;">
                                             <span class="label-text" style="align-self: flex-start;">Copyable Text Value</span>
                                             <input type="text" id="copyable-text-input" value="support@appspiriment.com" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none;">
                                         </div>
+                                        <div class="config-option">
+                                            <span class="label-text">Show Copy Icon</span>
+                                            <div class="toggle-container">
+                                                <label class="switch-label">
+                                                    <input type="checkbox" id="copyable-text-show-icon" checked>
+                                                    <span class="switch-slider"></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text" style="align-self: flex-start;">Feedback Duration</span>
+                                            <select id="copyable-text-feedback-duration" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none; cursor: pointer;">
+                                                <option value="500">500ms (Fast)</option>
+                                                <option value="1500" selected>1500ms (Default)</option>
+                                                <option value="3000">3000ms (Slow)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <!-- AppsExpandableText Section -->
+                                    <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px dashed var(--divider-color); padding-bottom: 4px; margin-top: 8px;">AppsExpandableText Config</div>
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; width: 100%;">
                                         <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
                                             <span class="label-text" style="align-self: flex-start;">Collapsed Line Limit</span>
                                             <select id="expandable-text-lines" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none; cursor: pointer;">
@@ -415,12 +502,43 @@
                                             </select>
                                         </div>
                                         <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text" style="align-self: flex-start;">Toggle Accent Color</span>
+                                            <select id="expandable-text-toggle-color" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none; cursor: pointer;">
+                                                <option value="primary" selected>Primary (Indigo)</option>
+                                                <option value="success">Success (Green)</option>
+                                                <option value="error">Error (Red)</option>
+                                                <option value="muted">Muted (Gray)</option>
+                                            </select>
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text" style="align-self: flex-start;">Show More Label</span>
+                                            <input type="text" id="expandable-text-more-label" value="Show more" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none;">
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text" style="align-self: flex-start;">Show Less Label</span>
+                                            <input type="text" id="expandable-text-less-label" value="Show less" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none;">
+                                        </div>
+                                    </div>
+
+                                    <!-- AppsImageText Section -->
+                                    <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px dashed var(--divider-color); padding-bottom: 4px; margin-top: 8px;">AppsImageText Config</div>
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; width: 100%;">
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
                                             <span class="label-text" style="align-self: flex-start;">Image/Text Gap</span>
                                             <div style="display: flex; justify-content: space-between; width: 100%;">
                                                 <span class="label-text" style="font-size: 11px;">Spacing size</span>
                                                 <span id="image-text-gap-val" style="color: var(--primary-color); font-weight: 700; font-size: 13px;">8px</span>
                                             </div>
                                             <input type="range" id="image-text-gap" min="4" max="24" value="8" style="width: 100%; accent-color: var(--primary-color);">
+                                        </div>
+                                        <div class="config-option" style="flex-direction: column; align-items: stretch; gap: 8px;">
+                                            <span class="label-text" style="align-self: flex-start;">Icon Placement</span>
+                                            <select id="image-text-placement" style="width: 100%; padding: 8px 12px; border-radius: 8px; background: var(--surface-color); border: 1px solid var(--border-color); color: var(--text-main); font-family: var(--font-stack); font-size: 13px; outline: none; cursor: pointer;">
+                                                <option value="leading" selected>Leading Only</option>
+                                                <option value="trailing">Trailing Only</option>
+                                                <option value="both">Both (Leading & Trailing)</option>
+                                                <option value="none">None</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
@@ -633,7 +751,7 @@
                                             </div>
                                             <div class="input-group">
                                                 <span class="label" style="font-size: 11px;">Disabled Input</span>
-                                                <input type="text" value="Arun Shankar" disabled class="themed-input">
+                                                <input type="text" value="David Lee Kolt" disabled class="themed-input">
                                             </div>
                                         </div>
                                     </div>
@@ -1324,7 +1442,7 @@
                                                 <div class="shimmer-item" style="opacity: 1;">
                                                     <div class="actual-avatar" style="width: 48px; height: 48px; border-radius: 50%; background: var(--primary-gradient); display: flex; align-items: center; justify-content: center; font-size: 20px;">👤</div>
                                                     <div class="shimmer-lines">
-                                                        <div class="content-title" style="font-weight: 700; color: var(--text-main); font-size: 15px; text-align: left;">Arun Shankar</div>
+                                                        <div class="content-title" style="font-weight: 700; color: var(--text-main); font-size: 15px; text-align: left;">David Lee Kolt</div>
                                                         <div class="content-desc" style="font-size: 13px; color: var(--text-muted); text-align: left;">Lead Mobile Engineer — Appspiriment</div>
                                                     </div>
                                                 </div>
@@ -1828,7 +1946,7 @@
                                                     <div class="swipe-foreground" style="position: absolute; top:0; left:0; right:0; bottom:0; background-color: var(--surface-color); display: flex; align-items: center; padding: 0 16px; transition: transform 0.2s cubic-bezier(0.25, 0.8, 0.25, 1); cursor: grab; user-select: none;">
                                                         <div style="display: flex; flex-direction: column;">
                                                             <span style="font-weight: 600; font-size: 14px;">Review KMP Convention Setup</span>
-                                                            <span style="font-size: 12px; color: var(--text-muted);">From: Arun Shankar</span>
+                                                            <span style="font-size: 12px; color: var(--text-muted);">From: David Lee Kolt</span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -2305,6 +2423,9 @@
             </div>
         </div>
     </div>
+    
+    <!-- Sidebar backdrop for mobile -->
+    <div id="sidebar-backdrop" class="sidebar-backdrop" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0, 0, 0, 0.4); z-index: 999;"></div>
 
     <script type="module" src="../src/main.js"></script>
     <script>

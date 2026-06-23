@@ -212,7 +212,7 @@ class MyViewModel(app: Application) : UiEventsAndroidViewModel<MyEffect>(app)
 ```kotlin
 // UiText
 UiText.DynamicString("Hello")
-UiText.StringResource(R.string.greeting, "Arun")
+UiText.StringResource(R.string.greeting, "David Lee Kolt")
 "Hello".toUiText()
 
 // UiImage

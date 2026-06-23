@@ -1,7 +1,7 @@
 package io.github.appspiriment.kolt.logutils
 
 internal actual fun platformLog(level: LogLevel, tag: String, message: String, throwable: Throwable?) {
-    val fullTag = if (tag.isBlank()) "Kolt" else "Kolt-$tag"
+    val fullTag = if (tag.isBlank() || tag == "Kolt") "Kolt" else "Kolt-$tag"
     val prefix = when (level) {
         LogLevel.VERBOSE -> "V"
         LogLevel.DEBUG   -> "D"
