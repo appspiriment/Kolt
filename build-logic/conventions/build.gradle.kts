@@ -48,8 +48,48 @@ group = "io.github.appspiriment.kolt"
 version = currentPluginVersion
 
 // ────────────────────────────────────────────────
-// 2. PER-ARTIFACT BUMP TASKS
+// 2. PER-ARTIFACT BUMP TASKS & README UPDATER
 // ────────────────────────────────────────────────
+
+fun updateReadmeVersions() {
+    val readmeFile = rootDir.parentFile.resolve("README.md")
+    if (!readmeFile.exists()) {
+        println("⚠️ README.md not found at ${readmeFile.absolutePath}")
+        return
+    }
+    val props = loadVersionProps()
+    val pluginVer       = computeVersion(props, "PLUGIN_MAJOR",        "PLUGIN_DEV")
+    val utilsVer        = computeVersion(props, "UTILS_MAJOR",         "UTILS_DEV")
+    val logutilsVer     = computeVersion(props, "LOGUTILS_MAJOR",      "LOGUTILS_DEV")
+    val composeUtilsVer = computeVersion(props, "COMPOSE_UTILS_MAJOR",  "COMPOSE_UTILS_DEV")
+    val composeKmpVer   = computeVersion(props, "COMPOSE_KMP_MAJOR",    "COMPOSE_KMP_DEV")
+    val updateUtilsVer  = computeVersion(props, "UPDATE_UTILS_MAJOR",   "UPDATE_UTILS_DEV")
+    val locationVer     = computeVersion(props, "LOCATION_MAJOR",       "LOCATION_DEV")
+    val bomVer          = props.getProperty("BOM_VERSION", "2026.06.0")
+
+    var content = readmeFile.readText()
+
+    // 1. Header Badges
+    content = content.replace(Regex("Plugin%20Version-[^?)]+"), "Plugin%20Version-$pluginVer-1a73e8")
+    content = content.replace(Regex("Library%20BOM-[^?)]+"), "Library%20BOM-$bomVer-0d47a1")
+
+    // 2. Table Badges
+    content = content.replace(Regex("/badge/BOM-[^?)]+"), "/badge/BOM-$bomVer-0d47a1")
+    content = content.replace(Regex("/badge/utils-[^?)]+"), "/badge/utils-$utilsVer-43a047")
+    content = content.replace(Regex("/badge/logutils-[^?)]+"), "/badge/logutils-$logutilsVer-43a047")
+    content = content.replace(Regex("/badge/compose%20utils-[^?)]+"), "/badge/compose%20utils-$composeUtilsVer-6200ea")
+    content = content.replace(Regex("/badge/compose%20kmp-[^?)]+"), "/badge/compose%20kmp-$composeKmpVer-6200ea")
+    content = content.replace(Regex("/badge/update%20utils-[^?)]+"), "/badge/update%20utils-$updateUtilsVer-f57c00")
+    content = content.replace(Regex("/badge/location-[^?)]+"), "/badge/location-$locationVer-00838f")
+
+    // 3. Quick Start Catalog/BOM References
+    content = content.replace(Regex("kolt-catalog:[0-9a-zA-Z.-]+"), "kolt-catalog:$pluginVer")
+    content = content.replace(Regex("kmp-catalog:[0-9a-zA-Z.-]+"), "kmp-catalog:$pluginVer")
+    content = content.replace(Regex("kolt-bom:[0-9a-zA-Z.-]+"), "kolt-bom:$bomVer")
+
+    readmeFile.writeText(content)
+    println("📝 README.md version badges and code snippets updated to match version.properties.")
+}
 
 /** Generic bump-task factory — increments the <prefix>_DEV counter. */
 fun registerBumpTask(
@@ -70,6 +110,7 @@ fun registerBumpTask(
         versionPropsFile.outputStream().use { props.store(it, null) }
         val newVersion = "$major.dev-${dev.toString().padStart(2, '0')}"
         logger.lifecycle("🚀 $displayName bumped to: $newVersion")
+        updateReadmeVersions()
     }
 }
 
@@ -96,8 +137,10 @@ val bumpBomVersion = tasks.register("bumpBomVersion") {
         props.setProperty("BOM_VERSION", newBom)
         versionPropsFile.outputStream().use { props.store(it, null) }
         logger.lifecycle("🚀 BOM version bumped to: $newBom")
+        updateReadmeVersions()
     }
 }
+
 
 /** Convenience: bump ALL DEV counters + BOM. Useful for initial releases or resets. */
 val bumpAllVersions = tasks.register("bumpAllVersions") {
@@ -114,6 +157,15 @@ tasks.register("bumpDevVersion") {
     description = "Deprecated alias for bumpAllVersions — prefer per-artifact bump tasks."
     dependsOn(bumpAllVersions)
 }
+
+val updateReadme = tasks.register("updateReadme") {
+    group = "documentation"
+    description = "Updates README.md version badges and code snippets to match version.properties."
+    doLast {
+        updateReadmeVersions()
+    }
+}
+
 
 // ────────────────────────────────────────────────
 // 3. CONSTANTS.KT GENERATOR (generic — used for both Android and KMP catalogs)

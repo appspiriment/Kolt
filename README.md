@@ -11,7 +11,10 @@
 
 **Unified convention Gradle plugins & lightweight runtime libraries for Android & Kotlin Multiplatform**
 
-[![Version](https://img.shields.io/badge/version-0.1.6-1a73e8?style=flat-square)](https://github.com/appspiriment/android-kmp-utils/releases)
+[![Plugin Version](https://img.shields.io/badge/Plugin%20Version-0.2.0.dev-00-1a73e8?style=for-the-badge&logo=gradle&logoColor=white)](https://github.com/appspiriment/android-kmp-utils/releases)
+
+[![Library BOM](https://img.shields.io/badge/Library%20BOM-2026.06.0-0d47a1?style=for-the-badge&logo=android&logoColor=white)](https://github.com/appspiriment/android-kmp-utils/releases)
+
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.3.10-7F52FF?style=flat-square&logo=kotlin&logoColor=white)](https://kotlinlang.org)
 [![Gradle](https://img.shields.io/badge/Gradle-8.12-02303A?style=flat-square&logo=gradle&logoColor=white)](https://gradle.org)
 [![AI-Agent Ready](https://img.shields.io/badge/AI--Agent-Ready-81c995?style=flat-square&logo=googlebard&logoColor=white)](#-ai-agent-readiness--steering)
@@ -89,10 +92,10 @@ dependencyResolutionManagement {
     }
     versionCatalogs {
         create("koltlibs") {
-            from("io.github.appspiriment.kolt:kolt-catalog:0.1.6")
+            from("io.github.appspiriment.kolt:kolt-catalog:0.2.0.dev-00")
         }
         create("kmplibs") {
-            from("io.github.appspiriment.kolt:kmp-catalog:0.1.6")
+            from("io.github.appspiriment.kolt:kmp-catalog:0.2.0.dev-00")
         }
     }
 }
@@ -123,7 +126,7 @@ To use runtime utilities directly in your modules without convention plugins, ap
 
 ```kotlin
 dependencies {
-    implementation(platform("io.github.appspiriment.kolt:kolt-bom:2026.06.4"))
+    implementation(platform("io.github.appspiriment.kolt:kolt-bom:2026.06.0"))
     implementation("io.github.appspiriment.kolt:utils")
     implementation("io.github.appspiriment.kolt:logutils")
     implementation("io.github.appspiriment.kolt:compose-kmp")
@@ -174,6 +177,23 @@ Kolt builds on outstanding open-source projects. We are grateful to the creators
 * **[Jetpack Compose / Compose Multiplatform](https://www.jetbrains.com/lp/compose-multiplatform/)**: Enforcing elegant declarative UI engineering.
 * **[Vanniktech Gradle Maven Publish Plugin](https://github.com/vanniktech/gradle-maven-publish-plugin)**: Isolating publishing workflows.
 * **[Dokka](https://github.com/Kotlin/dokka)**: Powering our standard KDoc API documentation engine.
+
+---
+
+## 📦 Library Versions
+
+All artifacts share the group `io.github.appspiriment.kolt`. Versions are independent — only the changed artifact is published on each release.
+
+| Artifact | Artifact ID | Version |
+|---|---|---|
+| Convention Plugins & Catalogs | `kolt-catalog` / `kmp-catalog` | ![Plugin Version](https://img.shields.io/badge/Plugin%20Version-0.2.0.dev-00-1a73e8?style=flat-square) |
+| Kolt BOM | `kolt-bom` | ![BOM](https://img.shields.io/badge/BOM-2026.06.0-0d47a1?style=flat-square) |
+| Core Utilities | `utils` | ![utils](https://img.shields.io/badge/utils-0.2.0.dev-00-43a047?style=flat-square) |
+| Logging Utilities | `logutils` | ![logutils](https://img.shields.io/badge/logutils-0.2.0.dev-00-43a047?style=flat-square) |
+| Compose Utilities (Android) | `compose-utils` | ![compose-utils](https://img.shields.io/badge/compose%20utils-0.2.0.dev-00-6200ea?style=flat-square) |
+| Compose KMP | `compose-kmp` | ![compose-kmp](https://img.shields.io/badge/compose%20kmp-0.2.0.dev-00-6200ea?style=flat-square) |
+| In-App Update | `update-utils` | ![update-utils](https://img.shields.io/badge/update%20utils-0.2.0.dev-00-f57c00?style=flat-square) |
+| Location | `location` | ![location](https://img.shields.io/badge/location-0.2.0.dev-00-00838f?style=flat-square) |
 
 ---
 

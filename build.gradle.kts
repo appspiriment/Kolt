@@ -171,6 +171,13 @@ tasks.register("bumpDevVersion") {
     dependsOn(gradle.includedBuild("build-logic").task(":conventions:bumpAllVersions"))
 }
 
+tasks.register("updateReadme") {
+    group = "documentation"
+    description = "Updates README.md version badges and code snippets to match version.properties."
+    dependsOn(gradle.includedBuild("build-logic").task(":conventions:updateReadme"))
+}
+
+
 // ── Dependency substitution ───────────────────────────────────────────────────
 // When convention plugins add utils/logutils/compose-utils as Maven coordinates
 // (io.github.appspiriment.kolt:*), substitute them with the local project during

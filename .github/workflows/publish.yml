@@ -38,3 +38,46 @@ jobs:
           ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_SIGNING_KEY }}
           ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.GPG_KEY_PASSWORD }}
         run: ./scripts/check-and-publish.sh --release
+
+  update_readme:
+    name: Update README Version Badge
+    runs-on: ubuntu-latest
+    # Only runs after the publish job succeeds
+    needs: publish
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          # Use a PAT so the push can trigger other workflows if needed,
+          # or use the default GITHUB_TOKEN (which won't trigger workflows).
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: main
+
+      - name: Extract release version
+        id: version
+        # GitHub release tag name (e.g. "0.2.0" or "v0.2.0") — strip leading 'v' if present.
+        run: |
+          VERSION="${{ github.event.release.tag_name }}"
+          VERSION="${VERSION#v}"
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Update version references in README.md
+        run: |
+          VERSION="${{ steps.version.outputs.VERSION }}"
+
+          # Update kolt-catalog and kmp-catalog version references
+          sed -i "s|kolt-catalog:[0-9]\+\.[0-9]\+\.[0-9]\+|kolt-catalog:${VERSION}|g" README.md
+          sed -i "s|kmp-catalog:[0-9]\+\.[0-9]\+\.[0-9]\+|kmp-catalog:${VERSION}|g" README.md
+
+      - name: Commit and push README changes
+        run: |
+          VERSION="${{ steps.version.outputs.VERSION }}"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          # Only commit if there are actual changes
+          git diff --cached --quiet || git commit -m "chore: bump README version references to ${VERSION} [skip ci]"
+          git push origin main
