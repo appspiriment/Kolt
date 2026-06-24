@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# ─────────────────────────────────────────────────────────────────────────────
+# ─────────────────────────────────────────────────────────────────[...]
 # check-and-publish.sh — Selective publisher for Kolt artifacts
 #
 # Checks Maven Central to see if each library/plugin version has already been
@@ -9,7 +9,7 @@
 #   ./scripts/check-and-publish.sh                  # Dry run (checks Central, does not publish)
 #   ./scripts/check-and-publish.sh --release        # Publishes releases (-PisRelease -PsignRelease)
 #   ./scripts/check-and-publish.sh --local          # Publishes locally (~/.m2)
-# ─────────────────────────────────────────────────────────────────────────────
+# ──────────────────────────────────────────────────────────────────[...]
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -87,7 +87,7 @@ run_publish() {
     
     info "Publishing $label..."
     if $DRY_RUN; then
-        warn "[Dry-Run] Would execute: ./gradlew ${project_dir:+-p $project_dir} $task ${IS_RELEASE:+-PisRelease} ${EXTRA_GRADLE_ARGS[*]:-} $extra"
+        warn "[Dry-Run] Would execute: ./gradlew ${project_dir:+-p $project_dir} $task ${IS_RELEASE:+-PisRelease} ${EXTRA_GRADLE_ARGS[@]:-} $extra"
         return 0
     fi
     
@@ -98,7 +98,7 @@ run_publish() {
     
     # Run in separate Gradle invocation
     # shellcheck disable=SC2086
-    ./gradlew ${project_dir:+-p $project_dir} "$task" $flags "${EXTRA_GRADLE_ARGS[@]}" $extra --no-parallel || fail "Failed to publish $label"
+    ./gradlew ${project_dir:+-p $project_dir} "$task" $flags "${EXTRA_GRADLE_ARGS[@]:-}" $extra --no-parallel || fail "Failed to publish $label"
     ok "Successfully published $label"
 }
 
