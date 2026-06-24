@@ -67,20 +67,29 @@ fun updateReadmeVersions() {
     val locationVer     = computeVersion(props, "LOCATION_MAJOR",       "LOCATION_DEV")
     val bomVer          = props.getProperty("BOM_VERSION", "2026.06.0")
 
+    val pluginVerBadge       = pluginVer.replace("-", "--")
+    val utilsVerBadge        = utilsVer.replace("-", "--")
+    val logutilsVerBadge     = logutilsVer.replace("-", "--")
+    val composeUtilsVerBadge = composeUtilsVer.replace("-", "--")
+    val composeKmpVerBadge   = composeKmpVer.replace("-", "--")
+    val updateUtilsVerBadge  = updateUtilsVer.replace("-", "--")
+    val locationVerBadge     = locationVer.replace("-", "--")
+    val bomVerBadge          = bomVer.replace("-", "--")
+
     var content = readmeFile.readText()
 
     // 1. Header Badges
-    content = content.replace(Regex("Plugin%20Version-[^?)]+"), "Plugin%20Version-$pluginVer-1a73e8")
-    content = content.replace(Regex("Library%20BOM-[^?)]+"), "Library%20BOM-$bomVer-0d47a1")
+    content = content.replace(Regex("Plugin%20Version-[^?)]+"), "Plugin%20Version-$pluginVerBadge-1a73e8")
+    content = content.replace(Regex("Library%20BOM-[^?)]+"), "Library%20BOM-$bomVerBadge-0d47a1")
 
     // 2. Table Badges
-    content = content.replace(Regex("/badge/BOM-[^?)]+"), "/badge/BOM-$bomVer-0d47a1")
-    content = content.replace(Regex("/badge/utils-[^?)]+"), "/badge/utils-$utilsVer-43a047")
-    content = content.replace(Regex("/badge/logutils-[^?)]+"), "/badge/logutils-$logutilsVer-43a047")
-    content = content.replace(Regex("/badge/compose%20utils-[^?)]+"), "/badge/compose%20utils-$composeUtilsVer-6200ea")
-    content = content.replace(Regex("/badge/compose%20kmp-[^?)]+"), "/badge/compose%20kmp-$composeKmpVer-6200ea")
-    content = content.replace(Regex("/badge/update%20utils-[^?)]+"), "/badge/update%20utils-$updateUtilsVer-f57c00")
-    content = content.replace(Regex("/badge/location-[^?)]+"), "/badge/location-$locationVer-00838f")
+    content = content.replace(Regex("/badge/BOM-[^?)]+"), "/badge/BOM-$bomVerBadge-0d47a1")
+    content = content.replace(Regex("/badge/utils-[^?)]+"), "/badge/utils-$utilsVerBadge-43a047")
+    content = content.replace(Regex("/badge/logutils-[^?)]+"), "/badge/logutils-$logutilsVerBadge-43a047")
+    content = content.replace(Regex("/badge/compose%20utils-[^?)]+"), "/badge/compose%20utils-$composeUtilsVerBadge-6200ea")
+    content = content.replace(Regex("/badge/compose%20kmp-[^?)]+"), "/badge/compose%20kmp-$composeKmpVerBadge-6200ea")
+    content = content.replace(Regex("/badge/update%20utils-[^?)]+"), "/badge/update%20utils-$updateUtilsVerBadge-f57c00")
+    content = content.replace(Regex("/badge/location-[^?)]+"), "/badge/location-$locationVerBadge-00838f")
 
     // 3. Quick Start Catalog/BOM References
     content = content.replace(Regex("kolt-catalog:[0-9a-zA-Z.-]+"), "kolt-catalog:$pluginVer")

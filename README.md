@@ -11,7 +11,7 @@
 
 **Unified convention Gradle plugins & lightweight runtime libraries for Android & Kotlin Multiplatform**
 
-[![Plugin Version](https://img.shields.io/badge/Plugin%20Version-0.2.0.dev-00-1a73e8?style=for-the-badge&logo=gradle&logoColor=white)](https://github.com/appspiriment/android-kmp-utils/releases)
+[![Plugin Version](https://img.shields.io/badge/Plugin%20Version-0.2.0.dev--00-1a73e8?style=for-the-badge&logo=gradle&logoColor=white)](https://github.com/appspiriment/android-kmp-utils/releases)
 
 [![Library BOM](https://img.shields.io/badge/Library%20BOM-2026.06.0-0d47a1?style=for-the-badge&logo=android&logoColor=white)](https://github.com/appspiriment/android-kmp-utils/releases)
 
@@ -186,14 +186,14 @@ All artifacts share the group `io.github.appspiriment.kolt`. Versions are indepe
 
 | Artifact | Artifact ID | Version |
 |---|---|---|
-| Convention Plugins & Catalogs | `kolt-catalog` / `kmp-catalog` | ![Plugin Version](https://img.shields.io/badge/Plugin%20Version-0.2.0.dev-00-1a73e8?style=flat-square) |
+| Convention Plugins & Catalogs | `kolt-catalog` / `kmp-catalog` | ![Plugin Version](https://img.shields.io/badge/Plugin%20Version-0.2.0.dev--00-1a73e8?style=flat-square) |
 | Kolt BOM | `kolt-bom` | ![BOM](https://img.shields.io/badge/BOM-2026.06.0-0d47a1?style=flat-square) |
-| Core Utilities | `utils` | ![utils](https://img.shields.io/badge/utils-0.2.0.dev-00-43a047?style=flat-square) |
-| Logging Utilities | `logutils` | ![logutils](https://img.shields.io/badge/logutils-0.2.0.dev-00-43a047?style=flat-square) |
-| Compose Utilities (Android) | `compose-utils` | ![compose-utils](https://img.shields.io/badge/compose%20utils-0.2.0.dev-00-6200ea?style=flat-square) |
-| Compose KMP | `compose-kmp` | ![compose-kmp](https://img.shields.io/badge/compose%20kmp-0.2.0.dev-00-6200ea?style=flat-square) |
-| In-App Update | `update-utils` | ![update-utils](https://img.shields.io/badge/update%20utils-0.2.0.dev-00-f57c00?style=flat-square) |
-| Location | `location` | ![location](https://img.shields.io/badge/location-0.2.0.dev-00-00838f?style=flat-square) |
+| Core Utilities | `utils` | ![utils](https://img.shields.io/badge/utils-0.2.0.dev--00-43a047?style=flat-square) |
+| Logging Utilities | `logutils` | ![logutils](https://img.shields.io/badge/logutils-0.2.0.dev--00-43a047?style=flat-square) |
+| Compose Utilities (Android) | `compose-utils` | ![compose-utils](https://img.shields.io/badge/compose%20utils-0.2.0.dev--00-6200ea?style=flat-square) |
+| Compose KMP | `compose-kmp` | ![compose-kmp](https://img.shields.io/badge/compose%20kmp-0.2.0.dev--00-6200ea?style=flat-square) |
+| In-App Update | `update-utils` | ![update-utils](https://img.shields.io/badge/update%20utils-0.2.0.dev--00-f57c00?style=flat-square) |
+| Location | `location` | ![location](https://img.shields.io/badge/location-0.2.0.dev--00-00838f?style=flat-square) |
 
 ---
 
