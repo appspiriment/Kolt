@@ -87,7 +87,7 @@ run_publish() {
     
     info "Publishing $label..."
     if $DRY_RUN; then
-        warn "[Dry-Run] Would execute: ./gradlew ${project_dir:+-p $project_dir} $task ${IS_RELEASE:+-PisRelease} ${EXTRA_GRADLE_ARGS[@]:-} $extra"
+        warn "[Dry-Run] Would execute: ./gradlew ${project_dir:+-p $project_dir} $task ${IS_RELEASE:+-PisRelease} ${EXTRA_GRADLE_ARGS[@]+"${EXTRA_GRADLE_ARGS[@]}"} $extra"
         return 0
     fi
     
@@ -98,7 +98,7 @@ run_publish() {
     
     # Run in separate Gradle invocation
     # shellcheck disable=SC2086
-    ./gradlew ${project_dir:+-p $project_dir} "$task" $flags "${EXTRA_GRADLE_ARGS[@]:-}" $extra --no-parallel || fail "Failed to publish $label"
+    ./gradlew ${project_dir:+-p $project_dir} "$task" $flags ${EXTRA_GRADLE_ARGS[@]+"${EXTRA_GRADLE_ARGS[@]}"} $extra --no-parallel || fail "Failed to publish $label"
     ok "Successfully published $label"
 }
 
