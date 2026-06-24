@@ -98,7 +98,11 @@ run_publish() {
     
     # Run in separate Gradle invocation
     # shellcheck disable=SC2086
-    ./gradlew ${project_dir:+-p $project_dir} "$task" $flags "${EXTRA_GRADLE_ARGS[@]:-}" $extra --no-parallel || fail "Failed to publish $label"
+    if [ ${#EXTRA_GRADLE_ARGS[@]} -gt 0 ]; then
+        ./gradlew ${project_dir:+-p $project_dir} "$task" $flags "${EXTRA_GRADLE_ARGS[@]}" $extra --no-parallel || fail "Failed to publish $label"
+    else
+        ./gradlew ${project_dir:+-p $project_dir} "$task" $flags $extra --no-parallel || fail "Failed to publish $label"
+    fi
     ok "Successfully published $label"
 }
 
