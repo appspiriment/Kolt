@@ -24,6 +24,7 @@ buildscript {
 
 plugins {
     alias(libs.plugins.dokka)
+    id("io.github.appspiriment.kolt.publish") apply false
 }
 
 // Root aggregator for the UtilsLibs composite build.

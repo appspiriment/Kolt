@@ -25,19 +25,6 @@ dependencies {
     "commonMainImplementation"("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2")
 }
 
-afterEvaluate {
-    kotlin {
-        sourceSets {
-            val iosMain by creating {
-                dependsOn(commonMain.get())
-            }
-            val iosArm64Main by getting { dependsOn(iosMain) }
-            val iosSimulatorArm64Main by getting { dependsOn(iosMain) }
-            val iosX64Main by getting { dependsOn(iosMain) }
-        }
-    }
-}
-
 mavenPublishing {
     coordinates(artifactId = "location")
     pom {

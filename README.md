@@ -193,7 +193,7 @@ All artifacts share the group `io.github.appspiriment.kolt`. Versions are indepe
 | Compose Utilities (Android) | `compose-utils` | ![compose-utils](https://img.shields.io/badge/compose%20utils-0.2.0.dev--00-6200ea?style=flat-square) |
 | Compose KMP | `compose-kmp` | ![compose-kmp](https://img.shields.io/badge/compose%20kmp-0.2.0.dev--00-6200ea?style=flat-square) |
 | In-App Update | `update-utils` | ![update-utils](https://img.shields.io/badge/update%20utils-0.2.0.dev--00-f57c00?style=flat-square) |
-| Location | `location` | ![location](https://img.shields.io/badge/location-0.2.0.dev--00-00838f?style=flat-square) |
+| Location | `location` | ![location](https://img.shields.io/badge/location-0.2.0.dev--01-00838f?style=flat-square) |
 
 ---
 
