@@ -1,9 +1,9 @@
 <div align="center">
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="demo-web/img/logo_name_dark.png">
-  <source media="(prefers-color-scheme: light)" srcset="demo-web/img/logo_name_light.png">
-  <img alt="Kolt Brand Logo" src="demo-web/img/logo_name_light.png" width="360">
+  <source media="(prefers-color-scheme: dark)" srcset="demo-web/public/img/logo_name_dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="demo-web/public/img/logo_name_light.png">
+  <img alt="Kolt Brand Logo" src="demo-web/public/img/logo_name_light.png" width="360">
 </picture>
 
 <br>
