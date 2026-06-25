@@ -35,9 +35,12 @@ jobs:
         env:
           ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
           ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
-          ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.GPG_SIGNING_KEY }}
           ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.GPG_KEY_PASSWORD }}
-        run: ./scripts/check-and-publish.sh --release
+          GPG_SIGNING_KEY_BASE64: ${{ secrets.GPG_SIGNING_KEY }}
+        run: |
+          ORG_GRADLE_PROJECT_signingInMemoryKey=$(echo -n "$GPG_SIGNING_KEY_BASE64" | base64 -d)
+          export ORG_GRADLE_PROJECT_signingInMemoryKey
+          ./scripts/check-and-publish.sh --release
 
   update_readme:
     name: Update README Version Badge
