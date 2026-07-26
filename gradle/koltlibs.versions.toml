@@ -63,6 +63,9 @@ retrofitSerialization = "2.11.0"
 # Image loading
 coil = "2.7.0"
 
+# Maps
+osmdroid = "6.1.20"
+
 # Tools & Test
 lottie = "6.6.0"
 firebaseBom = "33.14.0"

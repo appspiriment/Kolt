@@ -9,6 +9,7 @@ kmp {
     enableUtils.set(false)
     enableDesktop.set(true)
     enableIos.set(true)
+    enableWasm.set(true)
 }
 
 android {
@@ -30,7 +31,7 @@ mavenPublishing {
     pom {
         name = "Kolt Location"
         description = "Cross-platform current-location fetching: native GPS + reverse " +
-            "geocoding on Android/iOS, IP-based geolocation on Desktop."
+            "geocoding on Android/iOS, IP-based geolocation on Desktop, browser Geolocation API on Web."
         url = "https://github.com/appspiriment/UtilsLibs"
     }
 }

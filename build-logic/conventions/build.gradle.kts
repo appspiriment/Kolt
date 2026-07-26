@@ -130,6 +130,7 @@ val bumpComposeUtilsVersion = registerBumpTask("bumpComposeUtilsVersion", "COMPO
 val bumpComposeKmpVersion   = registerBumpTask("bumpComposeKmpVersion",   "COMPOSE_KMP_DEV",  "COMPOSE_KMP_MAJOR",  "compose-kmp")
 val bumpUpdateUtilsVersion  = registerBumpTask("bumpUpdateUtilsVersion",  "UPDATE_UTILS_DEV", "UPDATE_UTILS_MAJOR", "update-utils")
 val bumpLocationVersion     = registerBumpTask("bumpLocationVersion",     "LOCATION_DEV",     "LOCATION_MAJOR",     "location")
+val bumpLocationPickerVersion = registerBumpTask("bumpLocationPickerVersion", "LOCATION_PICKER_DEV", "LOCATION_PICKER_MAJOR", "location-picker")
 
 /** Bumps the BOM calendar patch counter (e.g. 2025.06.1 → 2025.06.2). */
 val bumpBomVersion = tasks.register("bumpBomVersion") {
@@ -157,7 +158,7 @@ val bumpAllVersions = tasks.register("bumpAllVersions") {
     description = "Bumps ALL per-artifact DEV counters and the BOM version."
     dependsOn(bumpPluginVersion, bumpUtilsVersion, bumpLogutilsVersion,
               bumpComposeUtilsVersion, bumpComposeKmpVersion, bumpUpdateUtilsVersion,
-              bumpLocationVersion, bumpBomVersion)
+              bumpLocationVersion, bumpLocationPickerVersion, bumpBomVersion)
 }
 
 // Backward-compat alias
@@ -396,7 +397,6 @@ val generateSteeringTemplates = tasks.register<Sync>("generateSteeringTemplates"
         include("docs/CODING_STANDARDS.md")
         include("docs/ARCHITECTURE.md")
         include("docs/TESTING.md")
-        include("docs/KOLT.md")
         include("templates/android-project/**")
         include("templates/kmp-project/**")
         into("appspiriment/steering")

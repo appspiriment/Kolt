@@ -30,6 +30,11 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import android.Manifest
+import io.github.appspiriment.kolt.composeutils.utils.AppPermission
+import io.github.appspiriment.kolt.composeutils.utils.rememberPermissionRequest
+import io.github.appspiriment.kolt.locationpicker.LocationPicker
+import io.github.appspiriment.kolt.locationpicker.LocationPickerConfig
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,6 +78,40 @@ fun AndroidShowcaseContent() {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        // --- 0. Location Picker (libs/location-picker) ---
+        TextTitledCardView(
+            title = "Location Picker (Activity)".toUiText(),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            var lastResult by remember { mutableStateOf("No location picked yet") }
+            val launchPicker = LocationPicker.rememberLauncher(
+                config = LocationPickerConfig(title = "Pick a location"),
+            ) { result ->
+                lastResult = if (result != null) {
+                    "${result.label}: ${result.latitude}, ${result.longitude} (${result.timezoneId})"
+                } else {
+                    "Cancelled"
+                }
+            }
+            val requestLocationPermission = rememberPermissionRequest(
+                permissions = listOf(AppPermission(Manifest.permission.ACCESS_FINE_LOCATION, "Location")),
+                onActionGranted = { launchPicker() },
+            )
+
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(8.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                Text(lastResult, style = MaterialTheme.typography.bodySmall)
+                TextButton(
+                    text = "Open Location Picker".toUiText(),
+                    onClick = { requestLocationPermission() },
+                    buttonStyle = ButtonStyle.primary(),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+        }
+
         // --- 1. Dialogs & Sheet ---
         TextTitledCardView(
             title = "Native Overlay Controllers".toUiText(),

@@ -163,8 +163,8 @@ Log.init(enabled = BuildConfig.DEBUG) // sets Log.enabled directly`,
         id: 'location',
         title: 'location',
         coordinate: 'io.github.appspiriment.kolt:location',
-        platforms: 'KMP (commonMain + androidMain + desktopMain + iosMain)',
-        summary: 'Geolocation, timezone lookup, and place search behind a common interface with per-platform actuals.',
+        platforms: 'KMP (commonMain + androidMain + desktopMain + iosMain + wasmJsMain)',
+        summary: 'Geolocation, timezone lookup, and place search behind a common interface with per-platform actuals, including browser Geolocation API on Web.',
         intro: 'This geolocation library provides timezone lookup, place search, and coordinate tracking through a common KMP contract. It simplifies requesting permission and fetching location coordinates by exposing a unified platform-agnostic facade. Note that this library is currently speculative and is not yet published as a final artifact.',
         sections: [
             {
@@ -199,6 +199,66 @@ suspend fun handlePlaceSearch(query: String) {
         println("Found: \${place.displayName} at \${place.location}")
     }
 }`,
+            },
+        ],
+    },
+    {
+        id: 'location-picker',
+        title: 'location-picker',
+        coordinate: 'io.github.appspiriment.kolt:location-picker',
+        platforms: 'KMP (commonMain + androidMain + desktopMain + iosMain + wasmJsMain)',
+        summary: 'An all-in-one location picker component with search, map selection, current location fetching, and manual input tabs.',
+        intro: 'This library provides a complete, customisable Location Picker dialog and screen for Kotlin Multiplatform. It integrates the underlying geolocation services in `libs/location` with Compose Multiplatform UI layouts. The picker features autocomplete search, an interactive map picker, current location fetching, and manual coordinate entry, adapting natively to Android, iOS, Desktop, and Web (WasmJS) environments.',
+        sections: [
+            {
+                heading: 'Expect/Actual Entry Point',
+                path: 'libs/location-picker/src/commonMain/kotlin/.../LocationPicker.kt',
+                code: `// Launch the picker on each platform:
+// - Android: LocationPicker.rememberLauncher(config) { result -> ... } (Compose)
+// - iOS: LocationPicker.present(fromViewController, config) { result -> ... }
+// - Desktop: LocationPicker.showDialog(config) { result -> ... } (Compose)
+// - Web/Wasm: LocationPicker.Embed(config) { result -> ... } (Compose)`,
+            },
+            {
+                heading: 'Embedding LocationPickerScreen',
+                path: 'libs/location-picker/src/commonMain/kotlin/.../LocationPickerScreen.kt',
+                code: `// Or embed the screen directly in your Composable tree:
+@Composable
+fun AddLocationView(onConfirmed: (LocationPickerResult) -> Unit) {
+    LocationPickerScreen(
+        config = LocationPickerConfig(
+            showMap = true,
+            showSearch = true,
+            title = "Select Address"
+        ),
+        onCancel = { /* close screen */ },
+        onResult = { result ->
+            onConfirmed(result)
+        }
+    )
+}`,
+            },
+            {
+                heading: 'Configuration & Results',
+                path: 'libs/location-picker/src/commonMain/kotlin/.../LocationPickerModels.kt',
+                code: `// Customize tabs and fallback labels:
+data class LocationPickerConfig(
+    val showSearch: Boolean = true,
+    val showMap: Boolean = true,
+    val showCurrentLocation: Boolean = true,
+    val showManualEntry: Boolean = true,
+    val title: String = "Add location",
+    val initialLatitude: Double = 20.5937,
+    val initialLongitude: Double = 78.9629,
+)
+
+// Returned confirmed location result:
+data class LocationPickerResult(
+    val label: String,      // place name / label
+    val latitude: Double,
+    val longitude: Double,
+    val timezoneId: String,  // e.g. "America/New_York"
+)`,
             },
         ],
     },

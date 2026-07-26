@@ -6,7 +6,6 @@
 **Read on demand** (don't load unless the task needs it):
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — layering, DI, offline-first, layer wiring, Android/KMP deltas, abstractions catalog. Read when designing or structuring.
 - [`docs/TESTING.md`](docs/TESTING.md) — what to test + patterns. Read when writing tests.
-- [`docs/KOLT.md`](docs/KOLT.md) — plugin catalog, DSL options (`kolt {}` / `kmp {}` / `dataLayer {}`), library APIs (logutils / utils / compose-utils / update-utils), catalog aliases, scaffolding. Read when using or configuring the Kolt suite.
 <!-- KOLT:END -->
 
 ## Project facts (fill in)

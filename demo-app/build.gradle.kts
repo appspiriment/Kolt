@@ -11,9 +11,9 @@ kotlin {
             jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17)
         }
     }
-    
+
     jvm("desktop")
-    
+
     sourceSets {
         val commonMain by getting {
             dependencies {
@@ -26,19 +26,21 @@ kotlin {
                 implementation("org.jetbrains.compose.material:material-icons-core:1.7.3")
             }
         }
-        
+
         val androidMain by getting {
             dependencies {
                 implementation("androidx.activity:activity-compose:1.9.0")
                 implementation("androidx.appcompat:appcompat:1.6.1")
                 implementation(project(":libs:compose-utils"))
                 implementation(project(":libs:update-utils"))
+                implementation(project(":libs:location-picker"))
             }
         }
-        
+
         val desktopMain by getting {
             dependencies {
                 implementation(compose.desktop.currentOs)
+                implementation(project(":libs:location-picker"))
             }
         }
     }

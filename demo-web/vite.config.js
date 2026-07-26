@@ -4,7 +4,7 @@ import { readdirSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 
 const root = fileURLToPath(new URL('.', import.meta.url));
-const IGNORED_DIRS = new Set(['node_modules', 'dist', '.git']);
+const IGNORED_DIRS = new Set(['node_modules', 'dist', '.git', 'build']);
 
 function findHtmlFiles(dir, results = []) {
     for (const entry of readdirSync(dir)) {

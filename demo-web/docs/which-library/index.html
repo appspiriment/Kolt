@@ -48,9 +48,14 @@
                         <td><code>io.github.appspiriment.kolt:compose</code></td>
                     </tr>
                     <tr>
-                        <td>Query and prompt device location coordinates (GPS tracking) in common code.</td>
-                        <td><strong><a href="../utilities/detail.html?id=location">location</a></strong> <span class="badge" style="font-size: 10px; background: var(--border-color); padding: 2px 6px; border-radius: 4px;">Coming Soon</span></td>
-                        <td>Speculative / Not published</td>
+                        <td>Query and track device location coordinates (GPS tracking) across Android, iOS, Desktop, and browser Geolocation API on Web.</td>
+                        <td><strong><a href="../utilities/detail.html?id=location">location</a></strong></td>
+                        <td><code>io.github.appspiriment.kolt:location</code></td>
+                    </tr>
+                    <tr>
+                        <td>Show an interactive location picker screen or dialog (autocomplete search, map pin drop, current location, manual entry) in Compose.</td>
+                        <td><strong><a href="../utilities/detail.html?id=location-picker">location-picker</a></strong></td>
+                        <td><code>io.github.appspiriment.kolt:location-picker</code></td>
                     </tr>
                     <tr>
                         <td>Check for update availability and trigger immediate/flexible update flows via Play Store APIs (Android-only).</td>
@@ -73,9 +78,11 @@
             <h2>Quick Flowchart</h2>
             <pre><code>Are you styling UI?
   ├── YES ──► Need custom shapes/buttons? ──► Use compose-kmp
-  │        └── Need Android permissions/picker? ─► Use compose-utils
+  │        ├── Need Android permissions/picker? ─► Use compose-utils
+  │        └── Need a map/search location picker dialog? ─► Use location-picker
   └── NO ───► Need to write logs? ──────────► Use logutils
-        └───► Need date/string helpers? ────► Use utils
+        ├───► Need date/string helpers? ────► Use utils
+        ├───► Need device coordinates? ─────► Use location
         └───► Need in-app updates? ─────────► Use update-utils</code></pre>
         </article>
     </div>

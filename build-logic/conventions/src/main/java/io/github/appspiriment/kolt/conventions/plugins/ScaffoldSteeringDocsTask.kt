@@ -21,7 +21,6 @@ import java.io.File
  *   docs/CODING_STANDARDS.md   ← binding coding rules                  (plugin-owned, auto-updates)
  *   docs/ARCHITECTURE.md       ← layering, DI, offline-first patterns  (plugin-owned, auto-updates)
  *   docs/TESTING.md            ← test patterns, fakes, coverage        (plugin-owned, auto-updates)
- *   docs/KOLT.md       ← plugin & library API reference        (plugin-owned, auto-updates)
  * ```
  *
  * ## Ownership model
@@ -90,11 +89,6 @@ abstract class ScaffoldSteeringDocsTask : DefaultTask() {
         copyDoc(
             resource    = "appspiriment/steering/docs/TESTING.md",
             destination = File(rootDir, "docs/TESTING.md"),
-            overwrite   = true,
-        )
-        copyDoc(
-            resource    = "appspiriment/steering/docs/KOLT.md",
-            destination = File(rootDir, "docs/KOLT.md"),
             overwrite   = true,
         )
 
@@ -199,7 +193,6 @@ abstract class ScaffoldSteeringDocsTask : DefaultTask() {
         "CODING_STANDARDS.md" -> "Binding coding rules — auto-updated on plugin version change."
         "ARCHITECTURE.md"     -> "Read on demand: layering, DI, offline-first — auto-updated on plugin version change."
         "TESTING.md"          -> "Read on demand: test patterns, fakes, coverage — auto-updated on plugin version change."
-        "KOLT.md"     -> "Read on demand: plugin & library API reference — auto-updated on plugin version change."
         else                  -> "Edit as needed."
     }
 }

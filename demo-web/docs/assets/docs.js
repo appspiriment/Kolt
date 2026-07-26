@@ -54,6 +54,7 @@ const DOCS_NAV = [
             { label: 'utils: Date, Time & Timing', href: 'utilities/utils-time-timing.html' },
             { label: 'logutils: Logging APIs', href: 'utilities/detail.html?id=logutils' },
             { label: 'location: Timezones & Places', href: 'utilities/detail.html?id=location' },
+            { label: 'location-picker: Map & Search dialogs', href: 'utilities/detail.html?id=location-picker' },
         ],
     },
     {

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="location_picker_title">Add location</string>
+    <string name="location_picker_search_tab">Search</string>
+    <string name="location_picker_map_tab">Map</string>
+    <string name="location_picker_current_tab">Current</string>
+    <string name="location_picker_manual_tab">Manual</string>
+    <string name="location_picker_search_field">Search place</string>
+    <string name="location_picker_searching">Searching…</string>
+    <string name="location_picker_search_no_results">No matches</string>
+    <string name="location_picker_use_current_location">Use current location</string>
+    <string name="location_picker_fetching_location">Fetching current location…</string>
+    <string name="location_picker_resolving_timezone">Detecting timezone…</string>
+    <string name="location_picker_map_hint">Tap the map to drop a pin</string>
+    <string name="location_picker_name_field">Name</string>
+    <string name="location_picker_latitude_field">Latitude</string>
+    <string name="location_picker_longitude_field">Longitude</string>
+    <string name="location_picker_timezone_field">Timezone</string>
+    <string name="location_picker_confirm">Add</string>
+    <string name="location_picker_cancel">Cancel</string>
+    <string name="location_picker_back">Back</string>
+    <string name="location_picker_permission_denied">Location permission denied</string>
+    <string name="location_picker_location_unavailable">Location unavailable</string>
+    <string name="location_picker_timezone_detect_failed">Couldn\'t detect timezone — please pick one</string>
+    <string name="location_picker_invalid_latitude">Latitude must be between -90 and 90</string>
+    <string name="location_picker_invalid_longitude">Longitude must be between -180 and 180</string>
+</resources>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!--
+      Default theme for LocationPickerActivity. The content is 100% Compose (Material3), so
+      this only needs to cover window chrome — no AppCompat/Material XML attrs required.
+      Override by declaring the same <activity> with your own android:theme in your app's
+      manifest; the app's value wins during manifest merging.
+    -->
+    <style name="Theme.LocationPicker" parent="android:Theme.Material.Light.NoActionBar" />
+
+</resources>

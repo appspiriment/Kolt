@@ -51,6 +51,7 @@ val composeUtilsVersion by lazy { computeVersion("COMPOSE_UTILS_MAJOR",  "COMPOS
 val composeKmpVersion   by lazy { computeVersion("COMPOSE_KMP_MAJOR",    "COMPOSE_KMP_DEV")   }
 val updateUtilsVersion  by lazy { computeVersion("UPDATE_UTILS_MAJOR",   "UPDATE_UTILS_DEV")  }
 val locationVersion     by lazy { computeVersion("LOCATION_MAJOR",       "LOCATION_DEV")      }
+val locationPickerVersion by lazy { computeVersion("LOCATION_PICKER_MAJOR", "LOCATION_PICKER_DEV") }
 val bomVersion          by lazy { versionProps.getProperty("BOM_VERSION", "2025.06.1")       }
 
 allprojects {
@@ -65,6 +66,7 @@ extra["composeUtilsVersion"] = composeUtilsVersion
 extra["composeKmpVersion"]   = composeKmpVersion
 extra["updateUtilsVersion"]  = updateUtilsVersion
 extra["locationVersion"]     = locationVersion
+extra["locationPickerVersion"] = locationPickerVersion
 extra["bomVersion"]          = bomVersion
 extra["pluginVersion"]       = pluginVersion
 
@@ -76,6 +78,7 @@ subprojects {
         "compose-kmp"   -> composeKmpVersion
         "update-utils"  -> updateUtilsVersion
         "location"      -> locationVersion
+        "location-picker" -> locationPickerVersion
         "bom"           -> bomVersion
         else            -> pluginVersion
     }
@@ -117,6 +120,7 @@ tasks.register("publishAllToMavenLocal") {
     dependsOn(":libs:compose-utils:publishToMavenLocal")
     dependsOn(":libs:update-utils:publishToMavenLocal")
     dependsOn(":libs:location:publishToMavenLocal")
+    dependsOn(":libs:location-picker:publishToMavenLocal")
 }
 
 // ── Version bump tasks (delegate to build-logic) ──────────────────────────────
@@ -157,6 +161,12 @@ tasks.register("bumpLocationVersion") {
     group = "versioning"
     description = "Bumps the LOCATION_DEV counter — libs:location."
     dependsOn(gradle.includedBuild("build-logic").task(":conventions:bumpLocationVersion"))
+}
+
+tasks.register("bumpLocationPickerVersion") {
+    group = "versioning"
+    description = "Bumps the LOCATION_PICKER_DEV counter — libs:location-picker."
+    dependsOn(gradle.includedBuild("build-logic").task(":conventions:bumpLocationPickerVersion"))
 }
 
 tasks.register("bumpBomVersion") {

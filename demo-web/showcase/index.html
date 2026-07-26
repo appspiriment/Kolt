@@ -2358,6 +2358,45 @@
                         </div>
                     </div>
 
+                    <!-- Location Picker (location-picker) -->
+                    <div id="demo-locationpicker-map-search-coords" class="showcase-card full-width">
+                        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <h3>LocationPicker (Map, Search &amp; Coordinates)</h3>
+                            <span class="platform-badge" style="background-color: rgba(99, 102, 241, 0.15); color: #6366f1; border-color: rgba(99, 102, 241, 0.25);">KMP</span>
+                        </div>
+                        <p class="card-desc">All-in-one location picker component with autocomplete search, maps selection pin, current location tracking, and manual coordinates entry tabs.</p>
+                        
+                        <div class="playground-container" style="display: flex; flex-direction: column; align-items: center; padding: 20px;">
+                            <div class="component-demo-wrapper" style="width: 100%; display: flex; flex-direction: column; align-items: center; gap: 16px;">
+                                <div style="display: flex; gap: 24px; width: 100%; align-items: center; justify-content: center; flex-wrap: wrap;">
+                                    <!-- Image Preview -->
+                                    <div style="max-width: 320px; border-radius: 16px; border: 1px solid var(--border-color); overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.15); background-color: var(--surface-color);">
+                                        <img src="../img/location_picker_preview.jpg" alt="Location Picker UI Mockup" style="width: 100%; height: auto; display: block;">
+                                    </div>
+                                    <!-- Details & Code Snippet -->
+                                    <div style="flex: 1; min-width: 280px; display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; line-height: 1.6;">
+                                        <div style="background-color: rgba(26, 115, 232, 0.05); border-left: 4px solid var(--primary-color); padding: 12px; border-radius: 6px;">
+                                            <strong>✨ Key Features:</strong>
+                                            <ul style="margin: 6px 0 0 0; padding-left: 18px; color: var(--text-main);">
+                                                <li><strong>Search Tab:</strong> Autocomplete location query search via place APIs.</li>
+                                                <li><strong>Map Tab:</strong> Drop map pins directly and resolve addresses (Reverse Geocoding).</li>
+                                                <li><strong>Current Location:</strong> GPS coordinates resolution (with browser Geolocation on Web).</li>
+                                                <li><strong>Manual Entry:</strong> Validation checks for latitude, longitude, and custom labels.</li>
+                                            </ul>
+                                        </div>
+                                        <pre style="margin: 0; background: #151618; padding: 12px; border-radius: 8px; font-family: monospace; font-size: 11.5px; color: #e8eaed; border: 1px solid var(--border-color); overflow-x: auto; width: 100%; box-sizing: border-box;"><code style="color: inherit;">// Launch via Platform Expect/Actual API
+LocationPicker.rememberLauncher(config) { result ->
+    val latitude = result.latitude
+    val longitude = result.longitude
+    val address = result.label
+    val timezoneId = result.timezoneId
+}</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </section>
         </main>
