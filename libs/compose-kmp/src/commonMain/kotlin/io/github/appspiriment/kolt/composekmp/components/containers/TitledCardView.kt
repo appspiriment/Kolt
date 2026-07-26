@@ -42,7 +42,7 @@ fun TextTitledCardView(
     title: UiText,
     titleStyle: TitledCardViewTitleStyle = TitleCardViewDefaults.titleAtStart(),
     cardElevation: Dp = sizes.noPadding,
-    borderStroke: BorderStroke = BorderStroke(sizes.noPadding, Color.Transparent),
+    border: BorderStroke? = null,
     contentModifier: Modifier = Modifier.padding(
         start = sizes.paddingMedium, end = sizes.paddingMedium,
         bottom = sizes.paddingMedium, top = sizes.paddingSmall
@@ -57,7 +57,7 @@ fun TextTitledCardView(
         background = background,
         shape = shape,
         cardElevation = cardElevation,
-        borderStroke = borderStroke,
+        border = border,
         contentModifier = contentModifier,
         titleAlignment = titleAlignment,
         contentHorizontalAlignment = contentHorizontalAlignment,
@@ -83,7 +83,7 @@ fun TitledCardView(
     background: Color = Kolt.colors.primaryCardContainer,
     shape: Shape = SmoothCornerShape(sizes.cornerRadiusNormal),
     cardElevation: Dp = sizes.noPadding,
-    borderStroke: BorderStroke = BorderStroke(sizes.noPadding, Color.Transparent),
+    border: BorderStroke? = null,
     contentModifier: Modifier = Modifier.padding(
         start = sizes.paddingMedium, end = sizes.paddingMedium,
         bottom = sizes.paddingMedium, top = sizes.paddingSmall
@@ -97,7 +97,7 @@ fun TitledCardView(
     Card(
         modifier = modifier,
         shape = shape,
-        border = borderStroke,
+        border = border,
         elevation = CardDefaults.cardElevation(defaultElevation = cardElevation),
         colors = CardDefaults.cardColors(containerColor = background)
     ) {
