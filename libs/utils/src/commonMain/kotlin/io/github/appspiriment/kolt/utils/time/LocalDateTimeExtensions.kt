@@ -1,5 +1,17 @@
+@file:OptIn(ExperimentalTime::class)
+
 package io.github.appspiriment.kolt.utils.time
 
+import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.LocalTime
+import kotlinx.datetime.Month
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.format.DateTimeFormat
+import kotlinx.datetime.format.byUnicodePattern
+import kotlinx.datetime.toInstant
+import kotlinx.datetime.toLocalDateTime
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.descriptors.PrimitiveKind
@@ -7,40 +19,26 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
-import java.time.DayOfWeek
-import java.time.Duration
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.Month
-import java.time.Year
-import java.time.ZoneId
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeFormatterBuilder
-import java.time.temporal.ChronoUnit
-import java.time.temporal.IsoFields
-import java.time.temporal.TemporalAdjusters
-import java.util.Locale
+import kotlin.jvm.JvmInline
+import kotlin.time.Clock
+import kotlin.time.Duration
+import kotlin.time.ExperimentalTime
 
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Factory Helpers
 // ─────────────────────────────────────────────────────────────────────────────
 
-/** Current local date-time in the system default zone. */
-fun nowLocal(): LocalDateTime = LocalDateTime.now(ZoneId.systemDefault())
-
-/** Current local date-time in a specific zone. */
-fun nowLocal(zoneId: ZoneId): LocalDateTime = LocalDateTime.now(zoneId)
+/** Current local date-time in [timeZone] (defaults to the system default zone). */
+fun nowLocal(timeZone: TimeZone = TimeZone.currentSystemDefault()): LocalDateTime =
+    Clock.System.now().toLocalDateTime(timeZone)
 
 /**
  * Converts absolute UTC millis to LocalDateTime in the given zone.
- * Best for timestamps from backend or System.currentTimeMillis().
+ * Best for timestamps from backend or Clock.System.now().
  */
-fun fromUtcMillisToLocalDateTime(millis: Long, zoneId: ZoneId = ZoneId.systemDefault()): LocalDateTime =
-    LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), zoneId)
+fun fromUtcMillisToLocalDateTime(millis: Long, timeZone: TimeZone = TimeZone.currentSystemDefault()): LocalDateTime =
+    Instant.fromEpochMilliseconds(millis).toLocalDateTime(timeZone)
 
 /** Legacy name from old implementation */
 fun millisToLocalDateTime(millis: Long): LocalDateTime =
@@ -51,18 +49,26 @@ fun millisToLocalDateTime(millis: Long): LocalDateTime =
  * Useful for time pickers.
  */
 fun fromWallClockMillisToLocalDateTime(millis: Long): LocalDateTime =
-    LocalDateTime.ofInstant(Instant.ofEpochMilli(millis), ZoneOffset.UTC)
+    Instant.fromEpochMilliseconds(millis).toLocalDateTime(TimeZone.UTC)
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Formatting (Old popular formats + new style)
 // ─────────────────────────────────────────────────────────────────────────────
 
+// ponytail: plain (non-thread-safe) cache — see localDateFormatterCache for rationale.
+private val localDateTimeFormatterCache = mutableMapOf<String, DateTimeFormat<LocalDateTime>>()
+
+/** Returns a [DateTimeFormat] for [pattern], built with English month/weekday names. */
+fun localDateTimeFormatterFor(pattern: String): DateTimeFormat<LocalDateTime> =
+    localDateTimeFormatterCache.getOrPut(pattern) {
+        LocalDateTime.Format { byUnicodePattern(pattern) }
+    }
+
 /** Formats with pattern using English locale. */
-fun LocalDateTime.format(pattern: String): String =
-    DateTimeFormatterBuilder().appendPattern(pattern).toFormatter(Locale.ENGLISH).format(this)
+fun LocalDateTime.format(pattern: String): String = localDateTimeFormatterFor(pattern).format(this)
 
 /** Formats using a pre-built formatter. */
-fun LocalDateTime.format(formatter: DateTimeFormatter): String = formatter.format(this)
+fun LocalDateTime.format(formatter: DateTimeFormat<LocalDateTime>): String = formatter.format(this)
 
 // === Old popular format extensions (kept for backward compatibility) ===
 val LocalDateTime.time_hhmm_a: String get() = format("hh:mm a")
@@ -87,13 +93,11 @@ val LocalDateTime.weekName: String get() = format("EEEE")
 
 /** Parses string with pattern, returns null on failure. */
 fun String.toLocalDateTimeOrNull(pattern: String): LocalDateTime? =
-    runCatching {
-        LocalDateTime.parse(this, DateTimeFormatter.ofPattern(pattern, Locale.ENGLISH))
-    }.getOrNull()
+    runCatching { localDateTimeFormatterFor(pattern).parse(this) }.getOrNull()
 
 /** Parses ISO local date-time string (yyyy-MM-ddTHH:mm:ss). */
 fun String.toLocalDateTimeIsoOrNull(): LocalDateTime? =
-    runCatching { LocalDateTime.parse(this, DateTimeFormatter.ISO_LOCAL_DATE_TIME) }.getOrNull()
+    runCatching { LocalDateTime.parse(this) }.getOrNull()
 
 /** Legacy convenience from old code */
 fun String.toLocalDateTimeOrNow(pattern: String): LocalDateTime =
@@ -104,16 +108,16 @@ fun String.toLocalDateTimeOrNow(pattern: String): LocalDateTime =
 // ─────────────────────────────────────────────────────────────────────────────
 
 /** Converts this LocalDateTime to UTC millis using the given zone. */
-fun LocalDateTime.toUtcMillis(zoneId: ZoneId = ZoneId.systemDefault()): Long =
-    this.atZone(zoneId).toInstant().toEpochMilli()
+fun LocalDateTime.toUtcMillis(timeZone: TimeZone = TimeZone.currentSystemDefault()): Long =
+    this.toInstant(timeZone).toEpochMilliseconds()
 
 /** Wall-clock millis (treats this local time as if it were in UTC). */
 val LocalDateTime.wallClockMillis: Long
-    get() = this.toInstant(ZoneOffset.UTC).toEpochMilli()
+    get() = this.toInstant(TimeZone.UTC).toEpochMilliseconds()
 
 /** Midnight (00:00:00) of this date in the given zone, as UTC millis. */
-fun LocalDateTime.midnightMillis(zoneId: ZoneId = ZoneId.systemDefault()): Long =
-    this.toLocalDate().atStartOfDay(zoneId).toInstant().toEpochMilli()
+fun LocalDateTime.midnightMillis(timeZone: TimeZone = TimeZone.currentSystemDefault()): Long =
+    this.date.toUtcMillis(timeZone)
 
 // Legacy properties from old code
 val LocalDateTime.midnightMillis: Long get() = midnightMillis()
@@ -123,79 +127,78 @@ val LocalDateTime.noonMillis: Long get() = noonInstance.toUtcMillis()
 // Component Accessors
 // ─────────────────────────────────────────────────────────────────────────────
 
-val LocalDateTime.date: LocalDate get() = toLocalDate()
-val LocalDateTime.time: LocalTime get() = toLocalTime()
+// Note: LocalDateTime already exposes native `date`/`time` properties in kotlinx-datetime.
 
 /** Month as enum */
 val LocalDateTime.monthEnum: Month get() = month
 
 /** Quarter of the year (1-4) */
-val LocalDateTime.quarter: Int get() = (monthValue - 1) / 3 + 1
+val LocalDateTime.quarter: Int get() = (monthNumber - 1) / 3 + 1
 
 /** ISO Week of year (1-53) */
-val LocalDateTime.weekOfYear: Int get() = get(IsoFields.WEEK_OF_WEEK_BASED_YEAR)
+val LocalDateTime.weekOfYear: Int get() = date.weekOfYear
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Navigation
 // ─────────────────────────────────────────────────────────────────────────────
 
-val LocalDateTime.nextDay: LocalDateTime get() = plusDays(1)
-val LocalDateTime.previousDay: LocalDateTime get() = minusDays(1)
-val LocalDateTime.nextWeek: LocalDateTime get() = plusWeeks(1)
-val LocalDateTime.previousWeek: LocalDateTime get() = minusWeeks(1)
-val LocalDateTime.nextMonth: LocalDateTime get() = plusMonths(1)
-val LocalDateTime.previousMonth: LocalDateTime get() = minusMonths(1)
-val LocalDateTime.nextYear: LocalDateTime get() = plusYears(1)
-val LocalDateTime.previousYear: LocalDateTime get() = minusYears(1)
+val LocalDateTime.nextDay: LocalDateTime get() = LocalDateTime(date.nextDay, time)
+val LocalDateTime.previousDay: LocalDateTime get() = LocalDateTime(date.previousDay, time)
+val LocalDateTime.nextWeek: LocalDateTime get() = LocalDateTime(date.nextWeek, time)
+val LocalDateTime.previousWeek: LocalDateTime get() = LocalDateTime(date.previousWeek, time)
+val LocalDateTime.nextMonth: LocalDateTime get() = LocalDateTime(date.nextMonth, time)
+val LocalDateTime.previousMonth: LocalDateTime get() = LocalDateTime(date.previousMonth, time)
+val LocalDateTime.nextYear: LocalDateTime get() = LocalDateTime(date.nextYear, time)
+val LocalDateTime.previousYear: LocalDateTime get() = LocalDateTime(date.previousYear, time)
 
-fun LocalDateTime.next(dayOfWeek: DayOfWeek): LocalDateTime = with(TemporalAdjusters.next(dayOfWeek))
-fun LocalDateTime.nextOrSame(dayOfWeek: DayOfWeek): LocalDateTime = with(TemporalAdjusters.nextOrSame(dayOfWeek))
-fun LocalDateTime.previous(dayOfWeek: DayOfWeek): LocalDateTime = with(TemporalAdjusters.previous(dayOfWeek))
-fun LocalDateTime.previousOrSame(dayOfWeek: DayOfWeek): LocalDateTime = with(TemporalAdjusters.previousOrSame(dayOfWeek))
+fun LocalDateTime.next(dayOfWeek: DayOfWeek): LocalDateTime = LocalDateTime(date.next(dayOfWeek), time)
+fun LocalDateTime.nextOrSame(dayOfWeek: DayOfWeek): LocalDateTime = LocalDateTime(date.nextOrSame(dayOfWeek), time)
+fun LocalDateTime.previous(dayOfWeek: DayOfWeek): LocalDateTime = LocalDateTime(date.previous(dayOfWeek), time)
+fun LocalDateTime.previousOrSame(dayOfWeek: DayOfWeek): LocalDateTime = LocalDateTime(date.previousOrSame(dayOfWeek), time)
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Boundaries
 // ─────────────────────────────────────────────────────────────────────────────
 
-val LocalDateTime.startOfDay: LocalDateTime get() = toLocalDate().atStartOfDay()
-val LocalDateTime.endOfDay: LocalDateTime get() = toLocalDate().atTime(LocalTime.MAX)
+val LocalDateTime.startOfDay: LocalDateTime get() = date.atMidnight
+val LocalDateTime.endOfDay: LocalDateTime get() = date.atEndOfDay
 
 // Legacy name
 val LocalDateTime.end_of_day: LocalDateTime get() = endOfDay
 
 val LocalDateTime.midnightInstance: LocalDateTime
-    get() = withHour(0).withMinute(0).withSecond(0).withNano(0)
+    get() = LocalDateTime(date, LocalTime(0, 0))
 
 val LocalDateTime.noonInstance: LocalDateTime
-    get() = withHour(12).withMinute(0).withSecond(0).withNano(0)
+    get() = LocalDateTime(date, LocalTime(12, 0))
 
 val LocalDateTime.nextWholeHour: LocalDateTime
-    get() = plusHours(1).withMinute(0).withSecond(0).withNano(0)
+    get() = if (hour == 23) LocalDateTime(date.nextDay, LocalTime(0, 0)) else LocalDateTime(date, LocalTime(hour + 1, 0))
 
 val LocalDateTime.currentWholeHour: LocalDateTime
-    get() = withMinute(0).withSecond(0).withNano(0)
+    get() = LocalDateTime(date, LocalTime(hour, 0))
 
-val LocalDateTime.truncatedToMinute: LocalDateTime get() = truncatedTo(ChronoUnit.MINUTES)
-val LocalDateTime.truncatedToSecond: LocalDateTime get() = truncatedTo(ChronoUnit.SECONDS)
+val LocalDateTime.truncatedToMinute: LocalDateTime get() = LocalDateTime(date, LocalTime(hour, minute))
+val LocalDateTime.truncatedToSecond: LocalDateTime get() = LocalDateTime(date, LocalTime(hour, minute, second))
 
-val LocalDateTime.startOfMonth: LocalDateTime get() = with(TemporalAdjusters.firstDayOfMonth())
-val LocalDateTime.endOfMonth: LocalDateTime get() = with(TemporalAdjusters.lastDayOfMonth())
-val LocalDateTime.startOfYear: LocalDateTime get() = with(TemporalAdjusters.firstDayOfYear())
-val LocalDateTime.endOfYear: LocalDateTime get() = with(TemporalAdjusters.lastDayOfYear())
+val LocalDateTime.startOfMonth: LocalDateTime get() = LocalDateTime(date.startOfMonth, time)
+val LocalDateTime.endOfMonth: LocalDateTime get() = LocalDateTime(date.endOfMonth, time)
+val LocalDateTime.startOfYear: LocalDateTime get() = LocalDateTime(date.startOfYear, time)
+val LocalDateTime.endOfYear: LocalDateTime get() = LocalDateTime(date.endOfYear, time)
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Comparisons & Helpers
 // ─────────────────────────────────────────────────────────────────────────────
 
-val LocalDateTime.isToday: Boolean get() = toLocalDate() == LocalDate.now(ZoneId.systemDefault())
-val LocalDateTime.isYesterday: Boolean get() = toLocalDate() == LocalDate.now(ZoneId.systemDefault()).minusDays(1)
-val LocalDateTime.isTomorrow: Boolean get() = toLocalDate() == LocalDate.now(ZoneId.systemDefault()).plusDays(1)
+val LocalDateTime.isToday: Boolean get() = date == today()
+val LocalDateTime.isYesterday: Boolean get() = date == today().previousDay
+val LocalDateTime.isTomorrow: Boolean get() = date == today().nextDay
 
 val LocalDateTime.isWeekend: Boolean get() = dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY
 val LocalDateTime.isWeekday: Boolean get() = !isWeekend
 
 fun LocalDateTime.isBetween(start: LocalDateTime, end: LocalDateTime): Boolean =
-    !isBefore(start) && !isAfter(end)
+    this >= start && this <= end
 
 val LocalDateTime.relativeDay: String
     get() = when {
@@ -217,7 +220,7 @@ val LocalDateTime.decimalTime: Double get() = decimalHours  // alias
 
 /** Old decimalYears (approximate) */
 val LocalDateTime.decimalYears: Double
-    get() = year.toDouble() + (monthValue.toDouble() / 12) + (dayOfMonth.toDouble() / 365.25) - 1.086
+    get() = year.toDouble() + (monthNumber.toDouble() / 12) + (dayOfMonth.toDouble() / 365.25) - 1.086
 
 /**
  * Replaces the time component with decimal hours, preserving date.
@@ -226,23 +229,28 @@ val LocalDateTime.decimalYears: Double
 fun LocalDateTime.withDecimalHours(decimalHours: Double): LocalDateTime {
     require(decimalHours in 0.0..24.0) { "decimalHours must be between 0.0 and 24.0" }
     val totalSeconds = (decimalHours * 3600).toLong()
-    return withHour((totalSeconds / 3600).toInt())
-        .withMinute(((totalSeconds % 3600) / 60).toInt())
-        .withSecond((totalSeconds % 60).toInt())
-        .withNano(0)
+    return LocalDateTime(
+        date,
+        LocalTime(
+            (totalSeconds / 3600).toInt(),
+            ((totalSeconds % 3600) / 60).toInt(),
+            (totalSeconds % 60).toInt(),
+        )
+    )
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Duration Helpers
 // ─────────────────────────────────────────────────────────────────────────────
 
-/** Duration between this and another LocalDateTime */
-fun LocalDateTime.durationUntil(other: LocalDateTime): Duration = Duration.between(this, other)
+/** Duration between this and another LocalDateTime (naive, zone-agnostic — same as java.time). */
+fun LocalDateTime.durationUntil(other: LocalDateTime): Duration =
+    other.toInstant(TimeZone.UTC) - this.toInstant(TimeZone.UTC)
 
-fun LocalDateTime.secondsUntil(other: LocalDateTime): Long = ChronoUnit.SECONDS.between(this, other)
-fun LocalDateTime.minutesUntil(other: LocalDateTime): Long = ChronoUnit.MINUTES.between(this, other)
-fun LocalDateTime.hoursUntil(other: LocalDateTime): Long = ChronoUnit.HOURS.between(this, other)
-fun LocalDateTime.daysUntil(other: LocalDateTime): Long = ChronoUnit.DAYS.between(this, other)
+fun LocalDateTime.secondsUntil(other: LocalDateTime): Long = durationUntil(other).inWholeSeconds
+fun LocalDateTime.minutesUntil(other: LocalDateTime): Long = durationUntil(other).inWholeMinutes
+fun LocalDateTime.hoursUntil(other: LocalDateTime): Long = durationUntil(other).inWholeHours
+fun LocalDateTime.daysUntil(other: LocalDateTime): Long = durationUntil(other).inWholeDays
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Serialization Support (unchanged — good!)
@@ -253,11 +261,11 @@ object LocalDateTimeSerializer : KSerializer<LocalDateTimeJson> {
         PrimitiveSerialDescriptor("LocalDateTime", PrimitiveKind.STRING)
 
     override fun serialize(encoder: Encoder, value: LocalDateTimeJson) {
-        encoder.encodeString(DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(value.value))
+        encoder.encodeString(value.value.toString())
     }
 
     override fun deserialize(decoder: Decoder): LocalDateTimeJson =
-        LocalDateTimeJson(LocalDateTime.parse(decoder.decodeString(), DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+        LocalDateTimeJson(LocalDateTime.parse(decoder.decodeString()))
 }
 
 @JvmInline

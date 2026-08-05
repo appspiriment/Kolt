@@ -1,15 +1,16 @@
+@file:OptIn(ExperimentalTime::class)
+
 package io.github.appspiriment.kolt.utils.time
 
-import java.time.*
-import java.time.format.DateTimeFormatter
-import java.time.temporal.ChronoUnit
-import java.util.Locale
-import java.util.concurrent.ConcurrentHashMap
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import kotlin.math.roundToLong
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 /**
  * Enterprise-grade Timing, Epoch, Vedic (Nazhika) & Coordinate Utilities.
- * Optimized for performance with formatter caching.
  */
 
 /* ******************************************************
@@ -23,25 +24,6 @@ const val MILLIS_IN_DAY = 86_400_000L
 
 /** Conversion factor: 1 Hour = 2.5 Nazhika (traditional Vedic time unit) */
 private const val HOURS_TO_NAZHIKA = 2.5
-
-private val formatterCache = ConcurrentHashMap<String, DateTimeFormatter>()
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Internal constants (shared style with other time files)
-// ─────────────────────────────────────────────────────────────────────────────
-
-internal val LOCALE_EN: Locale = Locale.ENGLISH
-internal val UTC: ZoneOffset = ZoneOffset.UTC
-
-// ─────────────────────────────────────────────────────────────────────────────
-// Formatter factory (consistent with LocalDate / LocalDateTime)
-// ─────────────────────────────────────────────────────────────────────────────
-
-/** Returns a [DateTimeFormatter] for the pattern using English locale. */
-fun formatterFor(pattern: String): DateTimeFormatter =
-    formatterCache.getOrPut(pattern) {
-        DateTimeFormatter.ofPattern(pattern, LOCALE_EN)
-    }
 
 /* ******************************************************
  * Decimal & Millis Conversions
@@ -90,12 +72,10 @@ fun Double.nazhikatoNazhikaVinazhikaString(): String =
  * ******************************************************/
 
 /** Formats epoch millis with any pattern and timezone. Returns null on error. */
-fun Long?.millisToDateTime(format: String, timeZone: ZoneId = ZoneId.systemDefault()): String? {
+fun Long?.millisToDateTime(format: String, timeZone: TimeZone = TimeZone.currentSystemDefault()): String? {
     return this?.let {
         try {
-            formatterFor(format)
-                .withZone(timeZone)
-                .format(Instant.ofEpochMilli(it))
+            localDateTimeFormatterFor(format).format(Instant.fromEpochMilliseconds(it).toLocalDateTime(timeZone))
         } catch (e: Exception) {
             null
         }
@@ -103,11 +83,11 @@ fun Long?.millisToDateTime(format: String, timeZone: ZoneId = ZoneId.systemDefau
 }
 
 /** Formats to "hh:mm a" (e.g. 02:30 PM) */
-fun Long?.millisToHmaTime(timeZone: ZoneId = ZoneId.systemDefault()): String? =
+fun Long?.millisToHmaTime(timeZone: TimeZone = TimeZone.currentSystemDefault()): String? =
     this.millisToDateTime("hh:mm a", timeZone)
 
 /** Formats to "MMM dd hh:mm a" (e.g. Jan 15 02:30 PM) */
-fun Long?.millisToMMddHmaTime(timeZone: ZoneId = ZoneId.systemDefault()): String? =
+fun Long?.millisToMMddHmaTime(timeZone: TimeZone = TimeZone.currentSystemDefault()): String? =
     this.millisToDateTime("MMM dd hh:mm a", timeZone)
 
 // Short convenient aliases (new)
@@ -137,20 +117,16 @@ fun Double.toDMSString(): String = dms.run { "$first° $second' $third\"" }
  * Additional Common Utilities
  * ******************************************************/
 
-fun Long.isToday(zoneId: ZoneId = ZoneId.systemDefault()): Boolean =
-    Instant.ofEpochMilli(this).atZone(zoneId).toLocalDate() == LocalDate.now(zoneId)
+fun Long.isToday(timeZone: TimeZone = TimeZone.currentSystemDefault()): Boolean =
+    Instant.fromEpochMilliseconds(this).toLocalDateTime(timeZone).date == today(timeZone)
 
-fun Long.isExpired(): Boolean = this < System.currentTimeMillis()
+fun Long.isExpired(): Boolean = this < Clock.System.now().toEpochMilliseconds()
 
-fun getDaysBetween(startMillis: Long, endMillis: Long): Long =
-    ChronoUnit.DAYS.between(
-        Instant.ofEpochMilli(startMillis),
-        Instant.ofEpochMilli(endMillis)
-    )
+fun getDaysBetween(startMillis: Long, endMillis: Long): Long = (endMillis - startMillis) / MILLIS_IN_DAY
 
 /** Relative time string (e.g. "3m ago", "Yesterday", "15 Jan 2025") */
 fun Long.toRelativeTime(): String {
-    val now = System.currentTimeMillis()
+    val now = Clock.System.now().toEpochMilliseconds()
     val diff = now - this
     return when {
         diff < MILLIS_IN_MINUTE -> "Just now"
@@ -166,14 +142,16 @@ fun Long.toDurationString(): String {
     val h = this / MILLIS_IN_HOUR
     val m = (this % MILLIS_IN_HOUR) / MILLIS_IN_MINUTE
     val s = (this % MILLIS_IN_MINUTE) / MILLIS_IN_SECOND
-    return "%02d:%02d:%02d".format(h, m, s)
+    return "${h.pad2()}:${m.pad2()}:${s.pad2()}"
 }
+
+private fun Long.pad2(): String = if (this < 10) "0$this" else "$this"
 
 fun Long.minusDays(days: Long): Long = this - (days * MILLIS_IN_DAY)
 fun Long.plusDays(days: Long): Long = this + (days * MILLIS_IN_DAY)
 
-fun isSameDay(millis1: Long, millis2: Long, zoneId: ZoneId = ZoneId.systemDefault()): Boolean {
-    val d1 = Instant.ofEpochMilli(millis1).atZone(zoneId).toLocalDate()
-    val d2 = Instant.ofEpochMilli(millis2).atZone(zoneId).toLocalDate()
+fun isSameDay(millis1: Long, millis2: Long, timeZone: TimeZone = TimeZone.currentSystemDefault()): Boolean {
+    val d1 = Instant.fromEpochMilliseconds(millis1).toLocalDateTime(timeZone).date
+    val d2 = Instant.fromEpochMilliseconds(millis2).toLocalDateTime(timeZone).date
     return d1 == d2
 }

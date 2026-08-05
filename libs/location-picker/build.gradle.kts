@@ -23,7 +23,7 @@ compose.resources {
 dependencies {
     "commonMainApi"(project(":libs:location"))
     "commonMainImplementation"("org.jetbrains.compose.material:material-icons-core:1.7.3")
-    "commonMainImplementation"("org.jetbrains.kotlinx:kotlinx-datetime:0.6.2")
+    "commonMainImplementation"("org.jetbrains.kotlinx:kotlinx-datetime:${kmplibs.versions.kotlinxDatetime.get()}")
     "commonMainImplementation"("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.1")
     "commonMainImplementation"("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.8")
     "commonMainImplementation"(compose.components.resources)

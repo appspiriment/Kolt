@@ -1,10 +1,11 @@
 package io.github.appspiriment.kolt.utils.time
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
-import org.junit.Test
-import java.time.ZoneId
-import java.util.TimeZone
+import kotlinx.datetime.TimeZone
+import kotlin.math.abs
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class TimingExtensionsTest {
 
@@ -70,40 +71,33 @@ class TimingExtensionsTest {
     @Test
     fun testMillisToDecimalHour() {
         val millis = 5400000L
-        assertEquals(1.5, millis.millisToDecimalHour(), 0.0001)
+        assertTrue(abs(1.5 - millis.millisToDecimalHour()) < 0.0001)
     }
 
     @Test
     fun testMillisToDays() {
         val millis = 172800000L // 2 days
-        assertEquals(2.0, millis.millisToDays(), 0.0001)
+        assertTrue(abs(2.0 - millis.millisToDays()) < 0.0001)
     }
 
     @Test
     fun testMillisToHmaTime() {
-        // Use UTC for consistent testing of formatting
-        TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
-        
         val millis = 1768059540000L // 2025-01-01 00:00:00 UTC
-        assertEquals("03:39 PM", millis.millisToHmaTime())
-        
+        assertEquals("03:39 PM", millis.millisToHmaTime(TimeZone.UTC))
+
         val nullMillis: Long? = null
         assertNull(nullMillis.millisToHmaTime())
     }
 
     @Test
     fun testMillisToMMddHmaTime() {
-        TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
-        
         val millis = 1735689600000L // 2025-01-01 00:00:00 UTC
-        assertEquals("Jan 01 12:00 AM", millis.millisToMMddHmaTime())
+        assertEquals("Jan 01 12:00 AM", millis.millisToMMddHmaTime(TimeZone.UTC))
     }
 
     @Test
     fun testMillisToDateTime() {
-        TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
-        
         val millis = 1735689600000L
-        assertEquals("2025-01-01", millis.millisToDateTime("yyyy-MM-dd"))
+        assertEquals("2025-01-01", millis.millisToDateTime("yyyy-MM-dd", TimeZone.UTC))
     }
 }
