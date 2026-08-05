@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalTime::class)
+
 package io.github.appspiriment.kolt.locationpicker
 
 // Plain Material3 — the documented exception to kolt-libs.md's mandatory compose-kmp reuse:
@@ -47,9 +49,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import io.github.appspiriment.kolt.location.PlaceSearchResult
-import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.offsetAt
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 /**
  * Maps the picker's small [LocationPickerColors] surface onto Material3's full [ColorScheme] —

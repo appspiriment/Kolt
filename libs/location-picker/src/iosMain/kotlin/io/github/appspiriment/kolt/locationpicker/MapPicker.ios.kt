@@ -21,14 +21,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.UIKitView
+import kotlinx.cinterop.BetaInteropApi
 import kotlinx.cinterop.ExperimentalForeignApi
+import kotlinx.cinterop.ObjCAction
 import kotlinx.cinterop.useContents
 import kotlinx.coroutines.launch
 import platform.CoreLocation.CLLocationCoordinate2DMake
 import platform.MapKit.MKCoordinateRegionMakeWithDistance
 import platform.MapKit.MKMapView
 import platform.MapKit.MKPointAnnotation
-import platform.UIKit.UIGestureRecognizerState
+import platform.UIKit.UIGestureRecognizerStateEnded
 import platform.UIKit.UITapGestureRecognizer
 import platform.darwin.NSObject
 import platform.darwin.sel_registerName
@@ -43,12 +45,13 @@ private class MapTapHandler(
     private val onTap: (Double, Double) -> Unit,
 ) : NSObject() {
     @Suppress("unused")
-    @kotlin.native.ObjCAction
+    @OptIn(BetaInteropApi::class)
+    @ObjCAction
     fun handleTap(recognizer: UITapGestureRecognizer) {
-        if (recognizer.state != UIGestureRecognizerState.UIGestureRecognizerStateEnded) return
+        if (recognizer.state != UIGestureRecognizerStateEnded) return
         val point = recognizer.locationInView(mapView)
         val coordinate = mapView.convertPoint(point, toCoordinateFromView = mapView)
-        annotation.coordinate = coordinate
+        annotation.setCoordinate(coordinate)
         coordinate.useContents { onTap(latitude, longitude) }
     }
 }
@@ -73,7 +76,7 @@ actual fun MapPickerContent(
             factory = {
                 val mapView = MKMapView()
                 val startCoordinate = CLLocationCoordinate2DMake(initialLatitude, initialLongitude)
-                val annotation = MKPointAnnotation().apply { coordinate = startCoordinate }
+                val annotation = MKPointAnnotation().apply { setCoordinate(startCoordinate) }
                 mapView.addAnnotation(annotation)
                 mapView.setRegion(
                     MKCoordinateRegionMakeWithDistance(startCoordinate, 2_000_000.0, 2_000_000.0),

@@ -17,11 +17,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.input.InputTransformation
+import androidx.compose.foundation.text.input.OutputTransformation
 import androidx.compose.foundation.text.input.TextFieldLineLimits
 import androidx.compose.foundation.text.input.maxLength
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,8 +40,12 @@ import io.github.appspiriment.kolt.composekmp.theme.Kolt
 import io.github.appspiriment.kolt.composekmp.theme.medium
 import io.github.appspiriment.kolt.composekmp.theme.normal
 import io.github.appspiriment.kolt.composekmp.theme.semiBold
+import io.github.appspiriment.kolt.composekmp.wrappers.FieldError
 import io.github.appspiriment.kolt.composekmp.wrappers.UiText
 import io.github.appspiriment.kolt.composekmp.wrappers.asString
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 @Composable
 fun AppsValidatedTextField(
@@ -63,6 +70,9 @@ fun AppsValidatedTextField(
         unselectedTextStyle = Kolt.typography.textMedium.normal
     ),
     helperStyle: TextFieldItemStyle = AppsTextFieldDefaults.defaultHelper(),
+    errorConfig: FieldError = FieldError.Default,
+    outputTransformation: OutputTransformation? = null,
+    onValueChange: ((String) -> Unit)? = null,
     leadingIcon: (@Composable () -> Unit)? = null,
     trailingIcon: (@Composable () -> Unit)? = null,
 ) {
@@ -70,6 +80,19 @@ fun AppsValidatedTextField(
     val isFocused by interactionSource.collectIsFocusedAsState()
     val isError = state.error != null
     val errorDescription = state.error?.asString() ?: ""
+
+    // Observe value changes and forward to external callback + validation
+    if (onValueChange != null) {
+        LaunchedEffect(state.textFieldState) {
+            snapshotFlow { state.value }
+                .drop(1)
+                .onEach { text ->
+                    state.onValueChange(text)
+                    onValueChange(text)
+                }
+                .launchIn(this)
+        }
+    }
 
     Column(modifier = modifier) {
         // Label Section
@@ -108,6 +131,7 @@ fun AppsValidatedTextField(
             interactionSource = interactionSource,
             cursorBrush = SolidColor(colors.cursorColor),
             inputTransformation = inputTransformation,
+            outputTransformation = outputTransformation,
             decorator = { innerTextField ->
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -150,7 +174,7 @@ fun AppsValidatedTextField(
                         AppspirimentText(
                             text = it,
                             style = if (isError) Kolt.typography.textSmall else helperStyle.unselectedTextStyle,
-                            color = if (isError) colors.errorColor else helperStyle.unselectedColor,
+                            color = if (isError) (errorConfig.color ?: colors.errorColor) else helperStyle.unselectedColor,
                             modifier = helperStyle.modifier
                         )
                     }

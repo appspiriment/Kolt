@@ -51,6 +51,7 @@ datastore = "1.1.4"
 
 # Serialization
 kotlinxSerialization = "1.8.1"
+kotlinxDatetime = "0.7.1"
 
 # Retrofit (Android-only; usable in androidMainImplementation of KMP modules)
 retrofit = "2.11.0"

@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalTime::class)
+
 package io.github.appspiriment.kolt.locationpicker
 
 // Uses compose-kmp's theme + component library (Kolt.colors/typography, AppsButton,
@@ -62,9 +64,10 @@ import io.github.appspiriment.kolt.composekmp.theme.getDarkColors
 import io.github.appspiriment.kolt.composekmp.theme.getLightColors
 import io.github.appspiriment.kolt.composekmp.wrappers.toUiText
 import io.github.appspiriment.kolt.location.PlaceSearchResult
-import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.offsetAt
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
 /**
  * Maps the picker's small [LocationPickerColors] surface onto compose-kmp's full [BaseColors]

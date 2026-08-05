@@ -17,11 +17,13 @@ android {
 }
 
 dependencies {
-    // Time extensions in androidMain use kotlinx.serialization custom serializers.
-    "androidMainImplementation"(
+    // Time extensions in commonMain use kotlinx-datetime and kotlinx.serialization custom serializers.
+    "commonMainImplementation"(
         "org.jetbrains.kotlinx:kotlinx-serialization-json:${kmplibs.versions.kotlinxSerialization.get()}"
     )
-    "androidUnitTestImplementation"("junit:junit:4.13.2")
+    "commonMainImplementation"(
+        "org.jetbrains.kotlinx:kotlinx-datetime:${kmplibs.versions.kotlinxDatetime.get()}"
+    )
 }
 
 mavenPublishing {
