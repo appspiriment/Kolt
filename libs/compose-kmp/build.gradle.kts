@@ -19,6 +19,7 @@ dependencies {
     // Requires AsyncState from :utils for AsyncStateBox
     "commonMainImplementation"(project(":libs:utils"))
     "commonMainImplementation"("org.jetbrains.compose.material:material-icons-core:1.7.3")
+    "commonMainImplementation"("org.jetbrains.compose.material:material-icons-extended:1.7.3")
     "commonMainImplementation"("org.jetbrains.compose.material:material:1.7.3")
 
     "androidMainImplementation"("io.coil-kt:coil-compose:${koltlibs.versions.coil.get()}")
