@@ -11,20 +11,20 @@
 
 **Unified convention Gradle plugins & lightweight runtime libraries for Android & Kotlin Multiplatform**
 
-[![Plugin Version](https://img.shields.io/badge/Plugin%20Version-0.2.1.dev--00-1a73e8?style=for-the-badge&logo=gradle&logoColor=white)](https://github.com/appspiriment/android-kmp-utils/releases)
+[![Plugin Version](https://img.shields.io/badge/Plugin%20Version-0.2.1.dev--00-1a73e8?style=for-the-badge&logo=gradle&logoColor=white)](https://github.com/appspiriment/Kolt/releases)
 
-[![Library BOM](https://img.shields.io/badge/Library%20BOM-2026.06.1-0d47a1?style=for-the-badge&logo=android&logoColor=white)](https://github.com/appspiriment/android-kmp-utils/releases)
+[![Library BOM](https://img.shields.io/badge/Library%20BOM-2026.06.1-0d47a1?style=for-the-badge&logo=android&logoColor=white)](https://github.com/appspiriment/Kolt/releases)
 
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.3.10-7F52FF?style=flat-square&logo=kotlin&logoColor=white)](https://kotlinlang.org)
 [![Gradle](https://img.shields.io/badge/Gradle-8.12-02303A?style=flat-square&logo=gradle&logoColor=white)](https://gradle.org)
 [![AI-Agent Ready](https://img.shields.io/badge/AI--Agent-Ready-81c995?style=flat-square&logo=googlebard&logoColor=white)](#-ai-agent-readiness--steering)
 [![License](https://img.shields.io/badge/License-Apache%202.0-orange?style=flat-square)](LICENSE)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)](https://github.com/appspiriment/android-kmp-utils/pulls)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen?style=flat-square)](https://github.com/appspiriment/Kolt/pulls)
 
 <h3>
-  <a href="https://appspiriment.github.io/android-kmp-utils/">Explore Documentation Portal</a>
+  <a href="https://kolt-kmp.web.app/">Explore Documentation Portal</a>
   <span> &bull; </span>
-  <a href="https://appspiriment.github.io/android-kmp-utils/docs/api/index.html">KDoc API Reference</a>
+  <a href="https://kolt-kmp.web.app/docs/api/index.html">KDoc API Reference</a>
 </h3>
 
 </div>
@@ -75,7 +75,10 @@ Once generated, attach these templates to your AI session inputs to instantly al
 | [`libs/compose-kmp`](libs/compose-kmp/README.md) | Library (KMP) | `compose-kmp` | Core cross-platform Compose UI components and HSL token structures |
 | [`libs/update-utils`](libs/update-utils/README.md) | Library (Android) | `update-utils` | Firebase-steered Play Store in-app update sheets |
 | [`libs/location`](libs/location/README.md) | Library (KMP) | `location` | Location geolocator wrappers and reverse-geocoding systems |
+| [`libs/location-picker`](libs/location-picker/README.md) | Library (KMP) | `location-picker` | All-in-one, themeable location-picker UI (search / map / current-location / manual entry) for Android, iOS, Desktop and Web |
 | [`intellij-plugin/`](intellij-plugin/README.md) | IDE Plugin | *Plugin* | Project creation wizards, version bumping, and publishing tools for Android Studio |
+| [`demo-app/`](demo-app/) | Demo (KMP) | — | Sample app exercising `compose-kmp` and `utils` on Android + Desktop |
+| [`demo-web/`](demo-web/) | Demo (Web) | — | Standalone wasmJs demo verifying `location-picker`'s Web target in-browser; also builds and deploys the [documentation portal](https://kolt-kmp.web.app/) |
 
 ---
 
@@ -194,6 +197,7 @@ All artifacts share the group `io.github.appspiriment.kolt`. Versions are indepe
 | Compose KMP | `compose-kmp` | ![compose-kmp](https://img.shields.io/badge/compose%20kmp-0.2.1.dev--00-6200ea?style=flat-square) |
 | In-App Update | `update-utils` | ![update-utils](https://img.shields.io/badge/update%20utils-0.2.1.dev--00-f57c00?style=flat-square) |
 | Location | `location` | ![location](https://img.shields.io/badge/location-0.2.1.dev--02-00838f?style=flat-square) |
+| Location Picker | `location-picker` | ![location-picker](https://img.shields.io/badge/location--picker-0.1.0.dev--01-00838f?style=flat-square) |
 
 ---
 
