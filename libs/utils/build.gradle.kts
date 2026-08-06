@@ -10,6 +10,7 @@ kmp {
     enableUtils.set(false)
     enableDesktop.set(true)
     enableIos.set(true)
+    enableWasm.set(true)
 }
 
 android {
