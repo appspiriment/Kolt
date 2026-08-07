@@ -3,6 +3,7 @@
 [![Maven Central](https://img.shields.io/badge/Maven%20Central-0.1.0-blue?style=flat-square)](https://central.sonatype.com/artifact/io.github.appspiriment.kolt/utils)
 [![Kotlin Multiplatform](https://img.shields.io/badge/KMP-commonMain%20%2B%20androidMain-7F52FF?style=flat-square&logo=kotlin)](https://kotlinlang.org/docs/multiplatform.html)
 [![License](https://img.shields.io/badge/License-Apache%202.0-orange?style=flat-square)](../../LICENSE)
+[![Changelog](https://img.shields.io/badge/Changelog-view-lightgrey?style=flat-square)](CHANGELOG.md)
 
 Pure-Kotlin and Android utility extensions. `commonMain` code runs on any KMP target; `androidMain` code relies on Android SDK or `java.time`.
 

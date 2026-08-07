@@ -3,6 +3,7 @@
 [![Maven Central](https://img.shields.io/badge/Maven%20Central-0.1.0.dev--01-blue?style=flat-square)](https://central.sonatype.com/artifact/io.github.appspiriment.kolt/location-picker)
 [![KMP](https://img.shields.io/badge/Platform-Android%20%7C%20iOS%20%7C%20Desktop%20%7C%20Web-7F52FF?style=flat-square&logo=kotlin)](https://kotlinlang.org/docs/multiplatform.html)
 [![License](https://img.shields.io/badge/License-Apache%202.0-orange?style=flat-square)](../../LICENSE)
+[![Changelog](https://img.shields.io/badge/Changelog-view-lightgrey?style=flat-square)](CHANGELOG.md)
 
 All-in-one, configurable, themeable location-picker UI — Search / Map / Current-location / Manual-entry tabs — for Android, iOS, Desktop and Web. Built on top of [`libs/location`](../location).
 

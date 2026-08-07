@@ -9,6 +9,7 @@ const DOCS_NAV = [
             { label: 'Documentation Home', href: 'index.html' },
             { label: 'Getting Started', href: 'getting-started/index.html' },
             { label: 'Which library do I need?', href: 'which-library/index.html' },
+            { label: 'Release Notes', href: 'changelog/index.html' },
         ],
     },
     {
