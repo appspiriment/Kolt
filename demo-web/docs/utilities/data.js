@@ -1,4 +1,4 @@
-// Utility library reference — source: project-templates/docs/KOLT.md §6 + direct source inspection.
+// Utility library reference — source: Standards/KOLT.md §6 + direct source inspection.
 export const UTILITIES = [
     {
         id: 'utils',

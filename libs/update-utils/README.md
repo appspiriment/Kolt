@@ -1,6 +1,6 @@
 # libs/update-utils — Play Store In-App Updates
 
-[![Maven Central](https://img.shields.io/badge/Maven%20Central-0.1.0-blue?style=flat-square)](https://central.sonatype.com/artifact/io.github.appspiriment.kolt/update-utils)
+[![Maven Central](https://img.shields.io/badge/Maven%20Central-0.2.1.dev--00-blue?style=flat-square)](https://central.sonatype.com/artifact/io.github.appspiriment.kolt/update-utils)
 [![Android](https://img.shields.io/badge/Android-only-green?style=flat-square&logo=android)](https://developer.android.com)
 [![License](https://img.shields.io/badge/License-Apache%202.0-orange?style=flat-square)](../../LICENSE)
 [![Changelog](https://img.shields.io/badge/Changelog-view-lightgrey?style=flat-square)](CHANGELOG.md)
@@ -13,7 +13,7 @@ A thin wrapper around the [Play Core In-App Updates API](https://developer.andro
 
 ```kotlin
 dependencies {
-    implementation("io.github.appspiriment.kolt:update-utils:0.1.0")
+    implementation("io.github.appspiriment.kolt:update-utils:0.2.1.dev-00")
 }
 ```
 

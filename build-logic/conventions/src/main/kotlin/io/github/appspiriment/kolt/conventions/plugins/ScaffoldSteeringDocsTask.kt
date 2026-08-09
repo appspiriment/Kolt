@@ -35,7 +35,7 @@ import java.io.File
  * ## Source
  *
  * Files are bundled inside the plugin JAR as classpath resources under `appspiriment/steering/`.
- * The canonical source is `build-logic/conventions/src/steering-templates/` — edit there, then
+ * The canonical source is `Standards/` — edit there, then
  * publish a new plugin version. Standards and plugin code always ship together.
  */
 abstract class ScaffoldSteeringDocsTask : DefaultTask() {
@@ -75,20 +75,25 @@ abstract class ScaffoldSteeringDocsTask : DefaultTask() {
             destination = File(rootDir, "AGENTS.md"),
         )
 
-        // Plugin-owned reference docs — overwritten on every plugin version change
+        // Plugin-owned reference docs from Standards/ — overwritten on every plugin version change
         copyDoc(
-            resource    = "appspiriment/steering/docs/CODING_STANDARDS.md",
+            resource    = "appspiriment/steering/steering/kmp/presentation-mvi.md",
             destination = File(rootDir, "docs/CODING_STANDARDS.md"),
             overwrite   = true,
         )
         copyDoc(
-            resource    = "appspiriment/steering/docs/ARCHITECTURE.md",
+            resource    = "appspiriment/steering/steering/kmp/architecture.md",
             destination = File(rootDir, "docs/ARCHITECTURE.md"),
             overwrite   = true,
         )
         copyDoc(
-            resource    = "appspiriment/steering/docs/TESTING.md",
+            resource    = "appspiriment/steering/steering/kmp/testing.md",
             destination = File(rootDir, "docs/TESTING.md"),
+            overwrite   = true,
+        )
+        copyDoc(
+            resource    = "appspiriment/steering/KOLT.md",
+            destination = File(rootDir, "docs/KOLT.md"),
             overwrite   = true,
         )
 
@@ -193,6 +198,7 @@ abstract class ScaffoldSteeringDocsTask : DefaultTask() {
         "CODING_STANDARDS.md" -> "Binding coding rules — auto-updated on plugin version change."
         "ARCHITECTURE.md"     -> "Read on demand: layering, DI, offline-first — auto-updated on plugin version change."
         "TESTING.md"          -> "Read on demand: test patterns, fakes, coverage — auto-updated on plugin version change."
+        "KOLT.md"             -> "Read on demand: plugin catalog, DSL options, library APIs — auto-updated on plugin version change."
         else                  -> "Edit as needed."
     }
 }

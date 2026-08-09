@@ -1,4 +1,4 @@
-// Plugin catalog data — source: project-templates/docs/KOLT.md §2-§5
+// Plugin catalog data — source: Standards/KOLT.md §2-§5
 export const PLUGINS = [
     {
         id: 'android-application',

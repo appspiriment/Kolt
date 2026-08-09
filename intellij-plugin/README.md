@@ -49,7 +49,7 @@ cd intellij-plugin
 
 ## Updating templates
 
-Templates are bundled from `build-logic/conventions/src/steering-templates/templates/` at build time.
+Templates are bundled from `project-templates/` at build time.
 Edit the templates there (they're the single source of truth for both the shell script and this plugin),
 then rebuild the plugin.
 

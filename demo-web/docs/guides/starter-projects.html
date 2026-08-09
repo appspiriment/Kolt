@@ -143,12 +143,11 @@
             <p>You can also copy a template folder directly if you prefer not to run the script:</p>
             <pre><code># Android project
 cp -r project-templates/templates/android-project/ ../MyNewApp
-cp -r project-templates/docs/ ../MyNewApp/docs
-# then fill in &lt;placeholder&gt; values in CLAUDE.md and AGENTS.md
+./Standards/scripts/link-standards.sh android ../MyNewApp
 
 # KMP project
 cp -r project-templates/templates/kmp-project/ ../MyNewApp
-cp -r project-templates/docs/ ../MyNewApp/docs</code></pre>
+./Standards/scripts/link-standards.sh kmp ../MyNewApp</code></pre>
 
             <h2>Related</h2>
             <div class="docs-tile-grid">

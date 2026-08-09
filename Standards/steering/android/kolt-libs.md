@@ -33,7 +33,7 @@ never silently default:**
 
 1. **Composite build / direct link from disk** — `includeBuild("/Users/arunshankar/Projects/KMP/Kolt/libs")` in `settings.gradle.kts`. Not a copy: a live reference to the same files on this machine, edits in Kolt show up immediately with no publish step. Only works on this machine, at this path.
 2. **Copy the module(s) in** — vendor the source into this project's tree. Portable across machines/CI, but you own drift from the source from that point on; no free updates.
-3. **Gradle dependency on a published artifact** — `implementation("io.appspiriment:<module>:<version>")`. Requires Kolt actually published (Maven local or remote) under that coordinate. Most portable/CI-friendly option, if publishing is set up.
+3. **Gradle dependency on a published artifact** — `implementation("io.github.appspiriment.kolt:<module>:<version>")` (note: `compose-utils` is published under artifact ID `compose`, i.e. `io.github.appspiriment.kolt:compose:<version>`). Requires Kolt actually published (Maven local or remote) under that coordinate. Most portable/CI-friendly option, if publishing is set up.
 
 Once answered, treat it as decided for the life of the project — don't
 re-ask on later tasks; re-check the project state above instead.

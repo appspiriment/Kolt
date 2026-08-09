@@ -1,6 +1,6 @@
 # libs/compose-utils — Compose UI Component Library
 
-[![Maven Central](https://img.shields.io/badge/Maven%20Central-0.1.0-blue?style=flat-square)](https://central.sonatype.com/artifact/io.github.appspiriment.kolt/compose)
+[![Maven Central](https://img.shields.io/badge/Maven%20Central-0.2.1.dev--00-blue?style=flat-square)](https://central.sonatype.com/artifact/io.github.appspiriment.kolt/compose)
 [![Android](https://img.shields.io/badge/Android-only-green?style=flat-square&logo=android)](https://developer.android.com)
 [![Compose](https://img.shields.io/badge/Jetpack%20Compose-2.3.10-4285F4?style=flat-square&logo=jetpackcompose)](https://developer.android.com/jetpack/compose)
 [![License](https://img.shields.io/badge/License-Apache%202.0-orange?style=flat-square)](../../LICENSE)
@@ -14,7 +14,7 @@ A production-ready Compose UI component library and theme system for Kolt Androi
 
 ```kotlin
 dependencies {
-    implementation("io.github.appspiriment.kolt:compose:0.1.0")
+    implementation("io.github.appspiriment.kolt:compose:0.2.1.dev-00")
     // Kolt convention plugins add this automatically — opt out with `kolt { enableUtils.set(false) }`
 }
 ```

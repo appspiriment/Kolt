@@ -389,22 +389,23 @@ val generatedSteeringResourcesDir = layout.buildDirectory.dir("generated-steerin
 
 val generateSteeringTemplates = tasks.register<Sync>("generateSteeringTemplates") {
     group = "appspiriment"
-    description = "Packs AI-agent steering docs from project-templates/ into the plugin JAR."
+    description = "Packs AI-agent steering docs from Standards/ and templates from project-templates/ into the plugin JAR."
 
-    from(rootProject.projectDir.parentFile.resolve("project-templates")) {
-        include("CLAUDE.md")
+    from(rootProject.projectDir.parentFile.resolve("Standards")) {
         include("AGENTS.md")
-        include("docs/CODING_STANDARDS.md")
-        include("docs/ARCHITECTURE.md")
-        include("docs/TESTING.md")
-        include("templates/android-project/**")
-        include("templates/kmp-project/**")
+        include("CLAUDE.md")
+        include("GEMINI.md")
+        include("KOLT.md")
+        include("steering/**")
         into("appspiriment/steering")
+    }
+    from(rootProject.projectDir.parentFile.resolve("project-templates/templates")) {
+        into("appspiriment/steering/templates")
     }
 
     into(generatedSteeringResourcesDir)
 
-    doLast { logger.lifecycle("✅ Steering docs packed from project-templates/.") }
+    doLast { logger.lifecycle("✅ Steering docs packed from Standards/ and project-templates/.") }
 }
 
 // ────────────────────────────────────────────────

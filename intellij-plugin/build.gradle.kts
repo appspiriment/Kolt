@@ -19,31 +19,32 @@ repositories {
     }
 }
 
-// ── Bundle steering-templates into the plugin JAR ──────────────────────────
-// Reads from the sibling steering-templates directory so the plugin always
-// ships the latest templates without manual copying.
-val steeringTemplatesDir = rootDir.parentFile
-    .resolve("build-logic/conventions/src/steering-templates")
-
 val syncTemplates = tasks.register<Sync>("syncTemplates") {
     group = "kolt"
     description = "Copies project templates and docs into plugin resources."
 
     // Project scaffold templates
-    from(steeringTemplatesDir.resolve("templates/android-project")) {
+    from(rootDir.parentFile.resolve("project-templates/templates/android-project")) {
         into("templates/android-project")
     }
-    from(steeringTemplatesDir.resolve("templates/kmp-project")) {
+    from(rootDir.parentFile.resolve("project-templates/templates/kmp-project")) {
         into("templates/kmp-project")
     }
-    // Steering docs (scaffolded into consumer project on creation)
-    from(steeringTemplatesDir.resolve("docs")) {
+    // Steering standards (single source of truth: Standards/)
+    from(rootDir.parentFile.resolve("Standards")) {
         into("templates/docs")
-        include("CODING_STANDARDS.md", "ARCHITECTURE.md", "TESTING.md", "KOLT.md")
+        include("KOLT.md")
+    }
+    from(rootDir.parentFile.resolve("Standards/steering/kmp")) {
+        into("templates/docs")
+        include("architecture.md", "presentation-mvi.md", "testing.md")
+        rename("architecture.md", "ARCHITECTURE.md")
+        rename("presentation-mvi.md", "CODING_STANDARDS.md")
+        rename("testing.md", "TESTING.md")
     }
     // Root entry stubs
-    from(steeringTemplatesDir) {
-        include("CLAUDE.md", "AGENTS.md")
+    from(rootDir.parentFile.resolve("Standards")) {
+        include("CLAUDE.md", "AGENTS.md", "GEMINI.md")
         into("templates")
     }
     into(layout.buildDirectory.dir("generated-resources"))

@@ -18,7 +18,7 @@
 #
 # WHAT IT DOES:
 #   1. Copies the chosen template (templates/android-project/ or templates/kmp-project/)
-#      from this repo's steering-templates into the destination directory.
+#      from this repo's project-templates into the destination directory.
 #   2. Substitutes <AppName>, <Company>.<AppName>, and namespace placeholders.
 #   3. Copies the Gradle wrapper from this repo so the project is immediately buildable.
 #   4. Prints next steps.
@@ -28,7 +28,7 @@ set -euo pipefail
 # ── Locate repo root (script lives in <repo>/scripts/) ─────────────────────
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-TEMPLATES_DIR="${REPO_ROOT}/build-logic/conventions/src/steering-templates/templates"
+TEMPLATES_DIR="${REPO_ROOT}/project-templates/templates"
 
 # ── Colour helpers ───────────────────────────────────────────────────────────
 RED='\033[0;31m'; GREEN='\033[0;32m'; YELLOW='\033[1;33m'; CYAN='\033[0;36m'; NC='\033[0m'
@@ -175,17 +175,23 @@ else
     warn "Gradle wrapper not found in repo root — skipping. Run 'gradle wrapper' in the new project to add it."
 fi
 
-# ── Copy docs/ steering files ────────────────────────────────────────────────
+# ── Symlink Standards steering files ─────────────────────────────────────────
 echo ""
-info "Copying AI-agent steering docs..."
-DOCS_SRC="${REPO_ROOT}/build-logic/conventions/src/steering-templates/docs"
-mkdir -p "${OUTPUT_DIR}/docs"
-for f in CODING_STANDARDS.md ARCHITECTURE.md TESTING.md APPSPIRIMENT.md; do
-    if [[ -f "${DOCS_SRC}/${f}" ]]; then
-        cp "${DOCS_SRC}/${f}" "${OUTPUT_DIR}/docs/${f}"
-        success "  docs/${f}"
-    fi
-done
+info "Linking AI-agent steering standards from Standards/..."
+if [[ -f "${REPO_ROOT}/Standards/scripts/link-standards.sh" ]]; then
+    "${REPO_ROOT}/Standards/scripts/link-standards.sh" "$PROJECT_TYPE" "$OUTPUT_DIR"
+    success "  Symlinked .standards -> Standards/steering/${PROJECT_TYPE}"
+    success "  Symlinked AGENTS.md, CLAUDE.md, GEMINI.md -> .standards/AGENTS.md"
+else
+    DOCS_SRC="${REPO_ROOT}/Standards"
+    mkdir -p "${OUTPUT_DIR}/docs"
+    for f in CODING_STANDARDS.md ARCHITECTURE.md TESTING.md KOLT.md APPSPIRIMENT.md; do
+        if [[ -f "${DOCS_SRC}/${f}" ]]; then
+            cp "${DOCS_SRC}/${f}" "${OUTPUT_DIR}/docs/${f}"
+            success "  docs/${f}"
+        fi
+    done
+fi
 
 # ── Create initial source directory structure ────────────────────────────────
 echo ""

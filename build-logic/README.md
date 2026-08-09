@@ -45,7 +45,7 @@ plugins {
 
 The plugin sets:
 - `compileSdk`, `targetSdk`, `minSdk` from the catalog
-- Kotlin JVM target to 17
+- Kotlin JVM target to 21
 - Compose compiler (via Kotlin 2.x plugin)
 - KSP for annotation processing where applicable
 - Sensible `buildFeatures` defaults
@@ -62,19 +62,18 @@ The plugin sets:
 
 ---
 
-## Project Templates
+## Project Templates & Steering Standards
 
-`src/steering-templates/templates/` contains ready-to-use project templates copied by `scripts/new-project.sh`:
+`project-templates/templates/` contains ready-to-use project templates copied by `scripts/new-project.sh`:
 
 - `android-project/` — Compose + Hilt Android app scaffold
 - `kmp-project/` — KMP app with shared + data modules
 
-`src/steering-templates/docs/` contains AI-agent steering documents scaffolded into new projects:
-- `CLAUDE.md` / `AGENTS.md` — AI agent working instructions
-- `ARCHITECTURE.md` — Architecture decision records template
-- `CODING_STANDARDS.md` — Project coding standards
-- `TESTING.md` — Testing strategy template
-- `KOLT.md` — Library reference for AI agents
+`Standards/` contains canonical AI-agent steering documents scaffolded into new projects:
+- `CLAUDE.md` / `AGENTS.md` / `GEMINI.md` — AI agent working instructions
+- `Standards/steering/android/` — Android-only steering set
+- `Standards/steering/kmp/` — KMP steering set
+- `Standards/KOLT.md` — Library reference for AI agents
 
 ---
 

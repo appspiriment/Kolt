@@ -99,7 +99,7 @@ cd intellij-plugin
             <p>Click <strong>Create</strong>. The IDE opens the generated project, which is immediately buildable.</p>
 
             <h2>How templates stay current</h2>
-            <p>The wizard bundles its project templates from <code>build-logic/conventions/src/steering-templates/</code> at plugin build time. This is the <strong>same source</strong> used by the <code>scripts/new-project.sh</code> CLI script — there is no duplication. Editing the templates in that directory and rebuilding the plugin ensures both tools stay in sync.</p>
+            <p>The wizard bundles its project templates from <code>project-templates/</code> at plugin build time. This is the <strong>same source</strong> used by the <code>scripts/new-project.sh</code> CLI script — there is no duplication. Editing the templates in that directory and rebuilding the plugin ensures both tools stay in sync.</p>
             <p>The <code>docs/</code> files inside every generated project (<code>CODING_STANDARDS.md</code>, <code>KOLT.md</code>, etc.) are <strong>plugin-owned</strong> — they are automatically overwritten whenever the consumer project updates its Kolt plugin version, so AI agents in downstream projects always read current rules.</p>
 
             <h2>Target IDE versions</h2>
