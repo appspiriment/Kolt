@@ -3,6 +3,7 @@
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.3.10-7F52FF?style=flat-square&logo=kotlin&logoColor=white)](https://kotlinlang.org)
 [![AGP](https://img.shields.io/badge/AGP-8.13.1-green?style=flat-square&logo=android)](https://developer.android.com/build)
 [![License](https://img.shields.io/badge/License-Apache%202.0-orange?style=flat-square)](../LICENSE)
+[![Changelog](https://img.shields.io/badge/Changelog-view-lightgrey?style=flat-square)](CHANGELOG.md)
 
 Gradle convention plugins for Android and Kotlin Multiplatform projects. Applied via the composite build — no `publishToMavenLocal` needed during development.
 

@@ -3,6 +3,7 @@
 [![Maven Central](https://img.shields.io/badge/Maven%20Central-0.2.1.dev--02-blue?style=flat-square)](https://central.sonatype.com/artifact/io.github.appspiriment.kolt/location)
 [![KMP](https://img.shields.io/badge/Platform-Android%20%7C%20iOS%20%7C%20Desktop%20%7C%20Web-7F52FF?style=flat-square&logo=kotlin)](https://kotlinlang.org/docs/multiplatform.html)
 [![License](https://img.shields.io/badge/License-Apache%202.0-orange?style=flat-square)](../../LICENSE)
+[![Changelog](https://img.shields.io/badge/Changelog-view-lightgrey?style=flat-square)](CHANGELOG.md)
 
 Cross-platform current-location fetching and place lookup, no UI attached — pair it with [`libs/location-picker`](../location-picker) for a ready-made picker screen, or use it standalone.
 

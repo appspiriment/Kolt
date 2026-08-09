@@ -4,6 +4,7 @@
 [![Android](https://img.shields.io/badge/Android-only-green?style=flat-square&logo=android)](https://developer.android.com)
 [![Compose](https://img.shields.io/badge/Jetpack%20Compose-2.3.10-4285F4?style=flat-square&logo=jetpackcompose)](https://developer.android.com/jetpack/compose)
 [![License](https://img.shields.io/badge/License-Apache%202.0-orange?style=flat-square)](../../LICENSE)
+[![Changelog](https://img.shields.io/badge/Changelog-view-lightgrey?style=flat-square)](CHANGELOG.md)
 
 A production-ready Compose UI component library and theme system for Kolt Android apps. Provides 100+ composables, a fully customisable design token system, ViewModel base classes, and a rich set of utility wrappers.
 

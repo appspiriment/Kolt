@@ -3,6 +3,7 @@
 [![Maven Central](https://img.shields.io/badge/Maven%20Central-0.1.0-blue?style=flat-square)](https://central.sonatype.com/artifact/io.github.appspiriment.kolt/logutils)
 [![Kotlin Multiplatform](https://img.shields.io/badge/KMP-commonMain%20%2B%20androidMain-7F52FF?style=flat-square&logo=kotlin)](https://kotlinlang.org/docs/multiplatform.html)
 [![License](https://img.shields.io/badge/License-Apache%202.0-orange?style=flat-square)](../../LICENSE)
+[![Changelog](https://img.shields.io/badge/Changelog-view-lightgrey?style=flat-square)](CHANGELOG.md)
 
 A thin KMP logging wrapper using `expect`/`actual` to switch between a full debug logger (dev) and a silent no-op (prod) — with zero runtime overhead in release builds.
 

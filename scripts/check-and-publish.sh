@@ -118,6 +118,7 @@ ARTIFACTS=(
     "compose-kmp:compose-kmp::COMPOSE_KMP_MAJOR:COMPOSE_KMP_DEV:false"
     "update-utils:update-utils::UPDATE_UTILS_MAJOR:UPDATE_UTILS_DEV:false"
     "location:location::LOCATION_MAJOR:LOCATION_DEV:false"
+    "location-picker:location-picker::LOCATION_PICKER_MAJOR:LOCATION_PICKER_DEV:false"
     "bom:kolt-bom::BOM_VERSION::true"
     "conventions:koltlibs:build-logic:PLUGIN_MAJOR:PLUGIN_DEV:false"
 )

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Release Notes — Kolt Docs</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/docs.css">
+</head>
+<body class="light-mode docs-body">
+    <script>window.docsBasePath = '../';</script>
+    <nav class="docs-sidebar" id="docs-sidebar"></nav>
+    <div class="docs-main">
+        <header class="docs-topbar" id="docs-topbar"></header>
+        <article class="docs-article" id="changelog-article">
+            <p>Loading…</p>
+        </article>
+    </div>
+    <script type="module">
+        import { CHANGELOGS, getChangelogById, RAW_BASE } from './data.js';
+
+        const article = document.getElementById('changelog-article');
+        const id = new URLSearchParams(window.location.search).get('id');
+
+        // Renders our constrained CHANGELOG.md dialect only — a "# Changelog" title,
+        // an intro paragraph, then repeated "## [version] - date" sections each
+        // followed by "- bullet" lines. Not a general markdown parser on purpose:
+        // scripts/release.sh is the only writer of these files, so the format is
+        // fixed. Swap for a real markdown lib if that ever stops being true.
+        function renderChangelogMarkdown(md) {
+            const lines = md.split('\n');
+            let html = '';
+            let inList = false;
+            const closeList = () => { if (inList) { html += '</ul>'; inList = false; } };
+            for (const raw of lines) {
+                const line = raw.trim();
+                if (line.startsWith('## ')) {
+                    closeList();
+                    html += `<h2>${inline(line.slice(3))}</h2>`;
+                } else if (line.startsWith('# ')) {
+                    // Title is already shown via the page header — skip it here.
+                } else if (line.startsWith('- ')) {
+                    if (!inList) { html += '<ul>'; inList = true; }
+                    html += `<li>${inline(line.slice(2))}</li>`;
+                } else if (line.length === 0) {
+                    closeList();
+                } else {
+                    closeList();
+                    html += `<p>${inline(line)}</p>`;
+                }
+            }
+            closeList();
+            return html;
+        }
+
+        function escapeHtml(s) {
+            return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        // Renders `[text](url)` links after escaping — the only inline markdown
+        // this constrained dialect needs (see the note on renderChangelogMarkdown).
+        function inline(s) {
+            return escapeHtml(s).replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+        }
+
+        function renderOverview() {
+            document.title = 'Release Notes — Kolt Docs';
+            const tiles = CHANGELOGS.map(c => `
+                <a class="docs-tile" href="index.html?id=${c.id}">
+                    <span class="docs-tile-icon">📋</span>
+                    <h3>${c.title}</h3>
+                    <p>${c.coordinate}</p>
+                </a>
+            `).join('');
+            article.innerHTML = `
+                <span class="docs-eyebrow">Release Notes</span>
+                <h1>Changelogs</h1>
+                <p class="docs-lede">Every Kolt artifact is versioned and published independently. Pick a library below for its full release history — the same content lives at <code>libs/&lt;name&gt;/CHANGELOG.md</code> in the repo.</p>
+                <div class="docs-tile-grid">${tiles}</div>
+                <p><a href="https://github.com/appspiriment/Kolt/releases" target="_blank" rel="noopener">GitHub Releases &rarr;</a></p>
+            `;
+        }
+
+        async function renderChangelog(entry) {
+            document.title = `${entry.title} Changelog — Kolt Docs`;
+            article.innerHTML = `
+                <span class="docs-eyebrow">Release Notes</span>
+                <h1>${entry.title}</h1>
+                <p class="docs-source-link">${entry.coordinate}</p>
+                <p>Loading from <code>${entry.path}</code>…</p>
+            `;
+            try {
+                const res = await fetch(RAW_BASE + entry.path, { cache: 'no-store' });
+                if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+                const md = await res.text();
+                article.innerHTML = `
+                    <span class="docs-eyebrow">Release Notes</span>
+                    <h1>${entry.title}</h1>
+                    <p class="docs-source-link">${entry.coordinate} — <a href="https://github.com/appspiriment/Kolt/blob/main/${entry.path}" target="_blank" rel="noopener">${entry.path}</a></p>
+                    ${renderChangelogMarkdown(md)}
+                    <p><a href="index.html">&larr; All changelogs</a></p>
+                `;
+            } catch (e) {
+                article.innerHTML = `
+                    <h1>${entry.title}</h1>
+                    <p>Couldn't load the changelog from GitHub (${escapeHtml(String(e))}). View it directly:
+                    <a href="https://github.com/appspiriment/Kolt/blob/main/${entry.path}" target="_blank" rel="noopener">${entry.path}</a></p>
+                    <p><a href="index.html">&larr; All changelogs</a></p>
+                `;
+            }
+        }
+
+        if (!id) {
+            renderOverview();
+        } else {
+            const entry = getChangelogById(id);
+            if (!entry) {
+                article.innerHTML = `<h1>Not found</h1><p>No changelog with id "<code>${escapeHtml(id)}</code>". <a href="index.html">Back to release notes</a>.</p>`;
+            } else {
+                renderChangelog(entry);
+            }
+        }
+    </script>
+    <script type="module" src="../assets/docs.js"></script>
+</body>
+</html>
