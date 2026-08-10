@@ -24,4 +24,16 @@
     <string name="location_picker_timezone_detect_failed">Couldn\'t detect timezone — please pick one</string>
     <string name="location_picker_invalid_latitude">Latitude must be between -90 and 90</string>
     <string name="location_picker_invalid_longitude">Longitude must be between -180 and 180</string>
+    <string name="location_picker_permission_rationale_title">Location permission needed</string>
+    <string name="location_picker_permission_rationale_message">We use your location to prefill this field. Grant location access to continue.</string>
+    <string name="location_picker_permission_rationale_confirm">Continue</string>
+    <string name="location_picker_permission_rationale_dismiss">Not now</string>
+    <string name="location_picker_services_disabled_title">Turn on location services</string>
+    <string name="location_picker_services_disabled_message">Location services are off. Turn them on to use your current location.</string>
+    <string name="location_picker_services_disabled_confirm">Open settings</string>
+    <string name="location_picker_services_disabled_dismiss">Not now</string>
+    <string name="location_picker_permission_settings_title">Location permission needed</string>
+    <string name="location_picker_permission_settings_message">Location access was permanently denied. Enable it from app settings to use your current location.</string>
+    <string name="location_picker_permission_settings_confirm">Open settings</string>
+    <string name="location_picker_permission_settings_dismiss">Not now</string>
 </resources>

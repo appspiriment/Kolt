@@ -44,6 +44,36 @@ Platform behavior is intentionally not unified into one flow:
 
 `PlatformLocationContext` is an `expect class`: on Android it wraps `android.content.Context` (`PlatformLocationContext(context)`), on iOS/Desktop/Web it takes no arguments.
 
+`getCurrentLocation()` also fails with `Unavailable("Location services are turned off")` on Android if the device's GPS/network positioning is off (independent of permission). Check `isLocationServicesEnabled(context)` upfront if you want to prompt the user to turn services on before calling `getCurrentLocation()` — `libs/location-picker`'s Android flow does exactly this (see its README).
+
+```kotlin
+val servicesOn: Boolean = isLocationServicesEnabled(PlatformLocationContext(/* Android: context */))
+```
+
+`isLocationServicesEnabled` is `true` unconditionally on iOS (`CLLocationManager.locationServicesEnabled()`), Desktop, and Web — only Android has a separate services toggle to check.
+
+For the Android in-app "and let the user turn it on" step, use `rememberLocationSettingsResolver`
+instead of a raw `isLocationServicesEnabled` check + a `Settings` deep-link — it wraps Google Play
+Services' `SettingsClient`, which shows the system's own "Turn on location" dialog in the current
+`Activity`, no navigation out to the Settings app:
+
+```kotlin
+val resolveLocationSettings = rememberLocationSettingsResolver(
+    context = PlatformLocationContext(/* Android: context */),
+    onResolved = { /* settings were already on, or the user just turned them on */ },
+    onUnresolvable = { message -> /* rare — a device Play Services can't resolve automatically */ },
+    onDeclined = { /* user dismissed the system dialog without enabling */ },
+)
+// call resolveLocationSettings() to trigger the check-then-resolve flow, e.g. from a button onClick
+```
+
+`isLocationServicesEnabled` and `rememberLocationSettingsResolver` are complementary, not
+alternatives: the former is a plain synchronous check usable anywhere including
+`CurrentLocationProvider`'s own suspend fast-fail path (no `Activity`/launcher needed); the latter
+needs both and is Compose-only, for the UI layer that can act on the answer. Requires
+`com.google.android.gms:play-services-location` on the device (bundled by Play Services, which
+`location-picker`'s Android target already pulls in).
+
 ---
 
 ## Place search & reverse geocoding

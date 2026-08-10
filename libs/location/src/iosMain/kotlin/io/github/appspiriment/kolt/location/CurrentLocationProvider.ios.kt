@@ -21,6 +21,9 @@ import kotlin.coroutines.resume
 
 actual class PlatformLocationContext
 
+actual fun isLocationServicesEnabled(context: PlatformLocationContext): Boolean =
+    CLLocationManager.locationServicesEnabled()
+
 /**
  * Self-contained: requests `CLLocationManager` "when in use" authorization itself
  * (iOS bundles the permission prompt into the location-request flow), then fetches

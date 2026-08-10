@@ -66,6 +66,9 @@ coil = "2.7.0"
 # Maps
 osmdroid = "6.1.20"
 
+# Google Play services
+playServicesLocation = "21.4.0"
+
 # Tools & Test
 lottie = "6.6.0"
 firebaseBom = "33.14.0"

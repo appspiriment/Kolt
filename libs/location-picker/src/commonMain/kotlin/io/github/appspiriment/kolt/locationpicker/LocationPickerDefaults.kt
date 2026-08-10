@@ -17,7 +17,19 @@ import io.github.appspiriment.kolt.locationpicker.generated.resources.location_p
 import io.github.appspiriment.kolt.locationpicker.generated.resources.location_picker_map_tab
 import io.github.appspiriment.kolt.locationpicker.generated.resources.location_picker_name_field
 import io.github.appspiriment.kolt.locationpicker.generated.resources.location_picker_permission_denied
+import io.github.appspiriment.kolt.locationpicker.generated.resources.location_picker_permission_rationale_confirm
+import io.github.appspiriment.kolt.locationpicker.generated.resources.location_picker_permission_rationale_dismiss
+import io.github.appspiriment.kolt.locationpicker.generated.resources.location_picker_permission_rationale_message
+import io.github.appspiriment.kolt.locationpicker.generated.resources.location_picker_permission_rationale_title
+import io.github.appspiriment.kolt.locationpicker.generated.resources.location_picker_permission_settings_confirm
+import io.github.appspiriment.kolt.locationpicker.generated.resources.location_picker_permission_settings_dismiss
+import io.github.appspiriment.kolt.locationpicker.generated.resources.location_picker_permission_settings_message
+import io.github.appspiriment.kolt.locationpicker.generated.resources.location_picker_permission_settings_title
 import io.github.appspiriment.kolt.locationpicker.generated.resources.location_picker_resolving_timezone
+import io.github.appspiriment.kolt.locationpicker.generated.resources.location_picker_services_disabled_confirm
+import io.github.appspiriment.kolt.locationpicker.generated.resources.location_picker_services_disabled_dismiss
+import io.github.appspiriment.kolt.locationpicker.generated.resources.location_picker_services_disabled_message
+import io.github.appspiriment.kolt.locationpicker.generated.resources.location_picker_services_disabled_title
 import io.github.appspiriment.kolt.locationpicker.generated.resources.location_picker_search_field
 import io.github.appspiriment.kolt.locationpicker.generated.resources.location_picker_search_no_results
 import io.github.appspiriment.kolt.locationpicker.generated.resources.location_picker_search_tab
@@ -72,6 +84,18 @@ fun defaultLocationPickerConfig(
     timezoneDetectFailedLabel: String? = null,
     invalidLatitudeLabel: String? = null,
     invalidLongitudeLabel: String? = null,
+    locationPermissionRationaleTitle: String? = null,
+    locationPermissionRationaleMessage: String? = null,
+    locationPermissionRationaleConfirmLabel: String? = null,
+    locationPermissionRationaleDismissLabel: String? = null,
+    locationServicesDisabledTitle: String? = null,
+    locationServicesDisabledMessage: String? = null,
+    locationServicesDisabledConfirmLabel: String? = null,
+    locationServicesDisabledDismissLabel: String? = null,
+    locationPermissionSettingsTitle: String? = null,
+    locationPermissionSettingsMessage: String? = null,
+    locationPermissionSettingsConfirmLabel: String? = null,
+    locationPermissionSettingsDismissLabel: String? = null,
 ): LocationPickerConfig = LocationPickerConfig(
     showSearch = showSearch,
     showMap = showMap,
@@ -107,4 +131,28 @@ fun defaultLocationPickerConfig(
         ?: stringResource(Res.string.location_picker_timezone_detect_failed),
     invalidLatitudeLabel = invalidLatitudeLabel ?: stringResource(Res.string.location_picker_invalid_latitude),
     invalidLongitudeLabel = invalidLongitudeLabel ?: stringResource(Res.string.location_picker_invalid_longitude),
+    locationPermissionRationaleTitle = locationPermissionRationaleTitle
+        ?: stringResource(Res.string.location_picker_permission_rationale_title),
+    locationPermissionRationaleMessage = locationPermissionRationaleMessage
+        ?: stringResource(Res.string.location_picker_permission_rationale_message),
+    locationPermissionRationaleConfirmLabel = locationPermissionRationaleConfirmLabel
+        ?: stringResource(Res.string.location_picker_permission_rationale_confirm),
+    locationPermissionRationaleDismissLabel = locationPermissionRationaleDismissLabel
+        ?: stringResource(Res.string.location_picker_permission_rationale_dismiss),
+    locationServicesDisabledTitle = locationServicesDisabledTitle
+        ?: stringResource(Res.string.location_picker_services_disabled_title),
+    locationServicesDisabledMessage = locationServicesDisabledMessage
+        ?: stringResource(Res.string.location_picker_services_disabled_message),
+    locationServicesDisabledConfirmLabel = locationServicesDisabledConfirmLabel
+        ?: stringResource(Res.string.location_picker_services_disabled_confirm),
+    locationServicesDisabledDismissLabel = locationServicesDisabledDismissLabel
+        ?: stringResource(Res.string.location_picker_services_disabled_dismiss),
+    locationPermissionSettingsTitle = locationPermissionSettingsTitle
+        ?: stringResource(Res.string.location_picker_permission_settings_title),
+    locationPermissionSettingsMessage = locationPermissionSettingsMessage
+        ?: stringResource(Res.string.location_picker_permission_settings_message),
+    locationPermissionSettingsConfirmLabel = locationPermissionSettingsConfirmLabel
+        ?: stringResource(Res.string.location_picker_permission_settings_confirm),
+    locationPermissionSettingsDismissLabel = locationPermissionSettingsDismissLabel
+        ?: stringResource(Res.string.location_picker_permission_settings_dismiss),
 )

@@ -1,6 +1,7 @@
 package io.github.appspiriment.kolt.location
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Geocoder
@@ -17,6 +18,12 @@ import java.util.TimeZone
 import kotlin.coroutines.resume
 
 actual class PlatformLocationContext(val context: Context)
+
+actual fun isLocationServicesEnabled(context: PlatformLocationContext): Boolean {
+    val locationManager = context.context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+    return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
+        locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+}
 
 /**
  * Assumes the caller has already requested `ACCESS_FINE_LOCATION` /
@@ -38,11 +45,14 @@ actual class CurrentLocationProvider actual constructor(
 
         if (!hasPermission) return LocationResult.PermissionDenied
 
+        if (!isLocationServicesEnabled(PlatformLocationContext(context))) {
+            return LocationResult.Unavailable("Location services are turned off")
+        }
+
         val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
         val provider = when {
             locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) -> LocationManager.GPS_PROVIDER
-            locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER) -> LocationManager.NETWORK_PROVIDER
-            else -> return LocationResult.Unavailable("Location services are turned off")
+            else -> LocationManager.NETWORK_PROVIDER
         }
 
         val location = requestSingleLocation(locationManager, provider)
@@ -59,6 +69,10 @@ actual class CurrentLocationProvider actual constructor(
         )
     }
 
+    // Permission is already checked (and an early PermissionDenied returned) in
+    // getCurrentLocation() above — lint can't trace that guard across the method boundary into
+    // this suspend private fun, hence the explicit suppress rather than a real gap.
+    @SuppressLint("MissingPermission")
     @Suppress("DEPRECATION")
     private suspend fun requestSingleLocation(
         locationManager: LocationManager,

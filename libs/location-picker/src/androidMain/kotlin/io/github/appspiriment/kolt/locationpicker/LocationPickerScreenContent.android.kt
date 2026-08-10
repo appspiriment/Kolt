@@ -133,12 +133,20 @@ internal actual fun LocationPickerScreenContent(
                     onPicked = { onIntent(LocationPickerIntent.MapPicked(it)) },
                 )
 
-                LocationPickerTab.CURRENT -> CurrentLocationTabContent(
-                    config = config,
-                    isFetching = state.isFetchingLocation,
-                    error = state.locationError,
-                    onTrigger = { onIntent(LocationPickerIntent.TriggerCurrentLocation) },
-                )
+                LocationPickerTab.CURRENT -> {
+                    // Android needs an explicit permission-then-services gate in front of the
+                    // intent — see rememberLocationAccessGate's doc for why this isn't needed
+                    // on iOS/Desktop.
+                    val requestLocationAccess = rememberLocationAccessGate(config) {
+                        onIntent(LocationPickerIntent.TriggerCurrentLocation)
+                    }
+                    CurrentLocationTabContent(
+                        config = config,
+                        isFetching = state.isFetchingLocation,
+                        error = state.locationError,
+                        onTrigger = requestLocationAccess,
+                    )
+                }
 
                 LocationPickerTab.MANUAL -> ManualEntryForm(
                     config = config,

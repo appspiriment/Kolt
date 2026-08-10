@@ -48,6 +48,26 @@ data class LocationPickerConfig(
     val backLabel: String = "Back",
     val permissionDeniedLabel: String = "Location permission denied",
     val locationUnavailableLabel: String = "Location unavailable",
+    /** Android only — shown in a bottomsheet before the system permission prompt, when needed. */
+    val locationPermissionRationaleTitle: String = "Location permission needed",
+    val locationPermissionRationaleMessage: String = "We use your location to prefill this field. Grant location access to continue.",
+    val locationPermissionRationaleConfirmLabel: String = "Continue",
+    val locationPermissionRationaleDismissLabel: String = "Not now",
+    /**
+     * Android only — fallback bottomsheet, deep-linking to the device's location settings
+     * screen. Shown only when `rememberLocationSettingsResolver`'s Play Services check can't
+     * resolve the device's location settings automatically (rare) — the common "services are
+     * off" case shows Play Services' own in-app dialog instead, without this sheet.
+     */
+    val locationServicesDisabledTitle: String = "Turn on location services",
+    val locationServicesDisabledMessage: String = "Location services are off. Turn them on to use your current location.",
+    val locationServicesDisabledConfirmLabel: String = "Open settings",
+    val locationServicesDisabledDismissLabel: String = "Not now",
+    /** Android only — shown in a bottomsheet when location permission was permanently denied ("Don't ask again"), deep-linking to the app's settings screen instead of the system permission prompt (which won't reappear). */
+    val locationPermissionSettingsTitle: String = "Location permission needed",
+    val locationPermissionSettingsMessage: String = "Location access was permanently denied. Enable it from app settings to use your current location.",
+    val locationPermissionSettingsConfirmLabel: String = "Open settings",
+    val locationPermissionSettingsDismissLabel: String = "Not now",
     val timezoneDetectFailedLabel: String = "Couldn't detect timezone — please pick one",
     val invalidLatitudeLabel: String = "Latitude must be between -90 and 90",
     val invalidLongitudeLabel: String = "Longitude must be between -180 and 180",

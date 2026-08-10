@@ -12,6 +12,9 @@ import kotlinx.serialization.json.Json
 
 actual class PlatformLocationContext
 
+/** Desktop has no OS-level location-services toggle to check. */
+actual fun isLocationServicesEnabled(context: PlatformLocationContext): Boolean = true
+
 private val ipGeoJson = Json { ignoreUnknownKeys = true }
 
 private val ipGeoClient = HttpClient(CIO)

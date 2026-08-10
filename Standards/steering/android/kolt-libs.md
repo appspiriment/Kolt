@@ -65,6 +65,21 @@ has test coverage (`LocationPickerViewModelTest` in `commonTest`, via a
 unfakeable `CurrentLocationProvider`/`searchPlaces`/etc.). Safe to treat as a
 reference example here, not just a black box.
 
+It also handles its own runtime-permission flow — `rememberLocationAccessGate`
+gates "use current location" behind a permission check, showing a
+`compose-kmp` `AppsBottomSheet` rationale (not a dialog), falling back to an
+"open app settings" bottomsheet if permanently denied. Once permission is
+granted, it resolves "location services off" via `libs/location`'s own
+`rememberLocationSettingsResolver` — a Google Play Services `SettingsClient`
+check that, in the common case, shows the system's in-app "Turn on location"
+dialog directly (no bottomsheet, no navigation out to Settings); only a
+device Play Services can't resolve automatically falls back to a bottomsheet
+deep-linking to the device's location settings. Every title/message/button
+label across all of this is configurable via `LocationPickerConfig`. You do
+**not** need to request `ACCESS_FINE_LOCATION`/`ACCESS_COARSE_LOCATION`
+yourself before using this module — it's the one caller `libs/location`'s own
+doc defers that responsibility to.
+
 **Don't import `compose-utils`' `AppsBanner`/`AppsBottomSheet`/`AppsSnackbar`/
 `DialogButtonStyle`/`MessageDialog`/`ColorUtils`** even though those
 filenames exist there too — they're 10-line backward-compat `typealias`

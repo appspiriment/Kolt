@@ -39,6 +39,9 @@ private external val navigator: NavigatorWithGeolocation
 
 actual class PlatformLocationContext
 
+/** The browser has no separate services toggle — permission and services are the same prompt. */
+actual fun isLocationServicesEnabled(context: PlatformLocationContext): Boolean = true
+
 /**
  * Wraps the browser's `navigator.geolocation.getCurrentPosition` callback API. There is no
  * upfront permission check like Android's — calling `getCurrentPosition` is what triggers the
