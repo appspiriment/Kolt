@@ -18,6 +18,11 @@ import io.github.appspiriment.kolt.conventions.extensions.kmpBasePluginList
 import io.github.appspiriment.kolt.conventions.extensions.kmpComposePluginList
 import io.github.appspiriment.kolt.conventions.extensions.kmpKoinPluginList
 import io.github.appspiriment.kolt.conventions.extensions.kmpLibs
+import io.github.appspiriment.kolt.conventions.extensions.minAgpVersion
+import io.github.appspiriment.kolt.conventions.extensions.minComposeMultiplatformVersion
+import io.github.appspiriment.kolt.conventions.extensions.minJavaVersion
+import io.github.appspiriment.kolt.conventions.extensions.minKotlinVersion
+import io.github.appspiriment.kolt.conventions.extensions.requireAtLeast
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.kotlin.dsl.configure
@@ -36,6 +41,18 @@ abstract class KmpBaseConventionPlugin : Plugin<Project> {
 
     override fun apply(target: Project) {
         with(target) {
+            // 0. Hard-fail fast if this project's catalog has been downgraded below what
+            // Kolt's convention plugins are built and tested against. Consumers are always
+            // free to raise these — only downgrading is rejected. See VersionFloor.kt.
+            requireAtLeast(kmpLibs, "agp", minAgpVersion, target.name)
+            requireAtLeast(kmpLibs, "kotlin", minKotlinVersion, target.name)
+            requireAtLeast(kmpLibs, "javaVersion", minJavaVersion, target.name)
+            if (KmpPluginCapability.COMPOSE in capabilities) {
+                requireAtLeast(
+                    kmpLibs, "composeMultiplatform", minComposeMultiplatformVersion, target.name
+                )
+            }
+
             // 1. Register kmp { } extension early
             extensions.create(KMP_EXTENSION_NAME, KmpExtension::class.java)
 

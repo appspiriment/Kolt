@@ -22,6 +22,10 @@ import io.github.appspiriment.kolt.conventions.extensions.utilDependencies
 import io.github.appspiriment.kolt.conventions.extensions.DEFAULT_DEBUG_VERSION_TIMESTAMP_PATTERN
 import io.github.appspiriment.kolt.conventions.extensions.buildDateSuffix
 import io.github.appspiriment.kolt.conventions.extensions.libVersion
+import io.github.appspiriment.kolt.conventions.extensions.minAgpVersion
+import io.github.appspiriment.kolt.conventions.extensions.minJavaVersion
+import io.github.appspiriment.kolt.conventions.extensions.minKotlinVersion
+import io.github.appspiriment.kolt.conventions.extensions.requireAtLeast
 import com.google.devtools.ksp.gradle.KspExtension
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -57,6 +61,13 @@ abstract class AndroidBaseConventionPlugin : Plugin<Project> {
 
     override fun apply(target: Project) {
         with(target) {
+            // 0. Hard-fail fast if this project's catalog has been downgraded below what
+            // Kolt's convention plugins are built and tested against. Consumers are always
+            // free to raise these — only downgrading is rejected. See VersionFloor.kt.
+            requireAtLeast(koltLibs, "agp", minAgpVersion, target.name)
+            requireAtLeast(koltLibs, "kotlin", minKotlinVersion, target.name)
+            requireAtLeast(koltLibs, "javaVersion", minJavaVersion, target.name)
+
             // 1. Create extension early so user can configure it immediately
             extensions.create(KOLT_EXTENSION_NAME, KoltExtension::class.java)
 

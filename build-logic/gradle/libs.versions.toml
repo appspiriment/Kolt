@@ -3,7 +3,9 @@
 # Be careful changing these — they are the API surface the plugins compile against.
 
 [versions]
-javaVersion = "17"     # plugin compilation — must match available JDK on build machine
+# javaVersion here is a fallback only — the authoritative value is BUILD_JAVA_VERSION in
+# the repo-root version.properties, read (and range-validated to 21-25) by build.gradle.kts.
+javaVersion = "21"
 agp = "8.13.1"
 kotlin = "2.3.10"
 ksp = "2.3.6"

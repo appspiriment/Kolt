@@ -313,6 +313,19 @@ fun registerConstantsGenerator(
     }
 }
 
+// Authoritative source: BUILD_JAVA_VERSION in the repo-root version.properties — this is the
+// JDK build-logic itself compiles against (independent of the consumer-facing `javaVersion`
+// key in gradle/koltlibs.versions.toml, which each consumer project owns and can set freely).
+// Falls back to the version catalog's `javaVersion` if the property is absent.
+// Range is enforced: 21 is the floor (17 is no longer supported), 25 is the current ceiling
+// until a newer JDK has been validated against AGP/KGP/D8.
+val javaVersion = versionProps.getProperty("BUILD_JAVA_VERSION", libs.versions.javaVersion.get()).toInt()
+require(javaVersion in 21..25) {
+    "BUILD_JAVA_VERSION=$javaVersion in version.properties is out of range. " +
+        "Kolt requires 21-25 (17 and below are no longer supported; versions above 25 are " +
+        "not yet validated against AGP/KGP/D8 — bump the ceiling deliberately once verified)."
+}
+
 val catalogDir = rootDir.parentFile.resolve("gradle")
 
 val updateLibFileVersion = registerConstantsGenerator(
@@ -332,6 +345,12 @@ val updateLibFileVersion = registerConstantsGenerator(
         "composeKmpVersion"    to currentComposeKmpVersion,
         "updateUtilsVersion"   to currentUpdateVersion,
         "bomVersion"           to currentBomVersion,
+        // Floors enforced at plugin-apply time (see VersionFloor.kt) — the versions
+        // Kolt's convention plugins are actually built and tested against. Consumers may
+        // raise agp/kotlin/javaVersion in their own catalog; going below these hard-fails.
+        "minAgpVersion"        to libs.versions.agp.get(),
+        "minKotlinVersion"     to libs.versions.kotlin.get(),
+        "minJavaVersion"       to javaVersion.toString(),
     ),
 )
 
@@ -344,6 +363,12 @@ val updateKmpLibFileVersion = registerConstantsGenerator(
     versionConst = "kmpLibVersion",
     contentsConst = "kmpTomlContents",
     refsConst = "kmpLibRefs",
+    extraConstants = mapOf(
+        // minAgpVersion / minKotlinVersion / minJavaVersion are already generated into this
+        // same package by updateLibFileVersion above (Constants.kt) — reused as-is for KMP
+        // validation to avoid a duplicate top-level declaration in the shared package.
+        "minComposeMultiplatformVersion" to libs.versions.composeMultiplatform.get(),
+    ),
 )
 
 // ────────────────────────────────────────────────
@@ -502,7 +527,6 @@ kotlin {
     }
 }
 
-val javaVersion = libs.versions.javaVersion.get().toInt()
 java { toolchain { languageVersion.set(JavaLanguageVersion.of(javaVersion)) } }
 
 tasks.withType<KotlinJvmCompile>().configureEach {
