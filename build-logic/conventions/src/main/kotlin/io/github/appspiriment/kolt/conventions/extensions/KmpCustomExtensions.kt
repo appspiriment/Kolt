@@ -62,7 +62,7 @@ abstract class KmpExtension @Inject constructor(objects: ObjectFactory) {
 
     /**
      * [java.time.format.DateTimeFormatter] pattern for the debug `versionName` timestamp
-     * when [appendTimestampToDebugVersion] is enabled. Default: `yyyyMMdd-HHmm`. An invalid
+     * when [appendTimestampToDebugVersion] is enabled. Default: `yyyyMMdd.HHmm`. An invalid
      * or blank pattern falls back to the default. KMP application module only.
      */
     abstract val debugVersionTimestampPattern: Property<String>

@@ -25,7 +25,7 @@ internal const val DATA_LAYER_EXTENSION_NAME = "dataLayer"
  *     addDevSuffixToDebug.set(false)    // default: true (app modules only)
  *     debugApplicationIdSuffix.set(".qa")          // default: ".dev"
  *     appendTimestampToDebugVersion.set(false)     // default: true
- *     debugVersionTimestampPattern.set("ddMMyy-HHmm") // default: "yyyyMMdd-HHmm"
+ *     debugVersionTimestampPattern.set("ddMMyy-HHmm") // default: "yyyyMMdd.HHmm"
  *     scaffoldThemeResources.set(false) // default: true (app + compose modules only)
  * }
  * ```
@@ -54,12 +54,12 @@ abstract class KoltExtension @Inject constructor(objects: ObjectFactory) {
     /**
      * Whether to append a build timestamp to `versionName` in debug builds.
      * Default: true. Format is controlled by [debugVersionTimestampPattern].
-     * Example: versionName `1.0.0.20260613-1430`. Application modules only.
+     * Example: versionName `1.0.0.20260613.1430`. Application modules only.
      */
     abstract val appendTimestampToDebugVersion: Property<Boolean>
     /**
      * The [java.time.format.DateTimeFormatter] pattern used for the debug `versionName`
-     * timestamp when [appendTimestampToDebugVersion] is enabled. Default: `yyyyMMdd-HHmm`.
+     * timestamp when [appendTimestampToDebugVersion] is enabled. Default: `yyyyMMdd.HHmm`.
      * An invalid or blank pattern falls back to the default. Application modules only.
      */
     abstract val debugVersionTimestampPattern: Property<String>

@@ -196,8 +196,8 @@ All artifacts share the group `io.github.appspiriment.kolt`. Versions are indepe
 | Compose Utilities (Android) | `compose-utils` | ![compose-utils](https://img.shields.io/badge/compose%20utils-0.2.1.dev--00-6200ea?style=flat-square) | [libs/compose-utils/CHANGELOG.md](libs/compose-utils/CHANGELOG.md) |
 | Compose KMP | `compose-kmp` | ![compose-kmp](https://img.shields.io/badge/compose%20kmp-0.2.1.dev--00-6200ea?style=flat-square) | [libs/compose-kmp/CHANGELOG.md](libs/compose-kmp/CHANGELOG.md) |
 | In-App Update | `update-utils` | ![update-utils](https://img.shields.io/badge/update%20utils-0.2.1.dev--00-f57c00?style=flat-square) | [libs/update-utils/CHANGELOG.md](libs/update-utils/CHANGELOG.md) |
-| Location | `location` | ![location](https://img.shields.io/badge/location-0.2.1.dev--02-00838f?style=flat-square) | [libs/location/CHANGELOG.md](libs/location/CHANGELOG.md) |
-| Location Picker | `location-picker` | ![location-picker](https://img.shields.io/badge/location--picker-0.1.0.dev--01-00838f?style=flat-square) | [libs/location-picker/CHANGELOG.md](libs/location-picker/CHANGELOG.md) |
+| Location | `location` | ![location](https://img.shields.io/badge/location-0.2.1.dev--07-00838f?style=flat-square) | [libs/location/CHANGELOG.md](libs/location/CHANGELOG.md) |
+| Location Picker | `location-picker` | ![location-picker](https://img.shields.io/badge/location-0.2.1.dev--07-00838f?style=flat-square) | [libs/location-picker/CHANGELOG.md](libs/location-picker/CHANGELOG.md) |
 
 Full release history across every artifact, with links to each GitHub release: see [docs/RELEASE_MANAGEMENT.md](docs/RELEASE_MANAGEMENT.md).
 

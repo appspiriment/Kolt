@@ -26,7 +26,9 @@ val Project.projectConfigs: ProjectConfiguration
                     minSdk = getVersion("minSdk").toInt(),
                     targetSdk = getVersion("targetSdk").toInt(),
                     compileSdk = getVersion("compileSdk").toInt(),
-                    javaVersion = JavaVersion.toVersion(getVersion("javaVersion").toInt())
+                    javaVersion = JavaVersion.toVersion(getVersion("javaVersion").toInt()),
+                    versionCode = getVersion("versionCode").toInt(),
+                    versionName = getVersion("versionName"),
                 )
             }
             extensions.extraProperties.set(key, config)
@@ -38,5 +40,9 @@ data class ProjectConfiguration(
     val minSdk: Int,
     val targetSdk: Int,
     val compileSdk: Int,
-    val javaVersion: JavaVersion
+    val javaVersion: JavaVersion,
+    /** Application modules only — read from `versionCode` in the catalog. */
+    val versionCode: Int,
+    /** Application modules only — read from `versionName` in the catalog. */
+    val versionName: String,
 )

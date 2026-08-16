@@ -38,7 +38,7 @@ import org.gradle.kotlin.dsl.getByType
  * - addDevSuffixToDebug + debugApplicationIdSuffix: appends a suffix (default `.dev`)
  *   to the debug applicationId so it installs alongside release (default: true)
  * - appendTimestampToDebugVersion + debugVersionTimestampPattern: appends a build
- *   timestamp (default `yyyyMMdd-HHmm`) to the debug versionName (default: true)
+ *   timestamp (default `yyyyMMdd.HHmm`) to the debug versionName (default: true)
  */
 class KmpApplicationConventionPlugin : Plugin<Project> {
 
@@ -57,6 +57,8 @@ class KmpApplicationConventionPlugin : Plugin<Project> {
                 defaultConfig {
                     minSdk = kmpProjectConfigs.minSdk
                     targetSdk = kmpProjectConfigs.compileSdk
+                    versionCode = kmpLibs.getVersion("versionCode").toInt()
+                    versionName = kmpLibs.getVersion("versionName")
                 }
                 compileOptions {
                     sourceCompatibility = kmpProjectConfigs.javaVersion

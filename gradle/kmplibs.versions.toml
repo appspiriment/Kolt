@@ -13,6 +13,8 @@ minSdk = "26"
 targetSdk = "36"
 javaVersion = "21"
 agp = "8.13.1"
+versionCode = "1"
+versionName = "1.0.0"
 
 # Plugin version — replaced by the Constants generator at build time
 kmpKolt = "PLUGIN_VERSION"

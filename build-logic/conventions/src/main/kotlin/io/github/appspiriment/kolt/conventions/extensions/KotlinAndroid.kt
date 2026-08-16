@@ -26,6 +26,8 @@ internal fun Project.configureAndroidEarly(commonExtension: CommonExtension<*, *
 
         if (this is ApplicationExtension) {
             defaultConfig.targetSdk = projectConfigs.targetSdk
+            defaultConfig.versionCode = projectConfigs.versionCode
+            defaultConfig.versionName = projectConfigs.versionName
         }
 
         compileOptions {
@@ -57,10 +59,10 @@ internal fun Project.configureAndroidLate(
 
 
 /** Default timestamp pattern appended to debug versionName. */
-internal const val DEFAULT_DEBUG_VERSION_TIMESTAMP_PATTERN = "yyyyMMdd-HHmm"
+internal const val DEFAULT_DEBUG_VERSION_TIMESTAMP_PATTERN = "yyyyMMdd.HHmm"
 
 /**
- * Generates a version name suffix from the current time, e.g. `.20260613-1430`.
+ * Generates a version name suffix from the current time, e.g. `.20260613.1430`.
  *
  * @param pattern a [DateTimeFormatter] pattern; defaults to [DEFAULT_DEBUG_VERSION_TIMESTAMP_PATTERN].
  *   Falls back to the default if the supplied pattern is blank or invalid.

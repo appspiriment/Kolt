@@ -92,8 +92,23 @@ internal fun Project.configureDesktopTarget(kotlinExtension: KotlinMultiplatform
     // Idempotent: skip if KmpLibraryKoinComposeConventionPlugin already added the target early
     if (kotlinExtension.targets.findByName("desktop") != null) return
 
+    val configs = kmpProjectConfigs
     kotlinExtension.apply {
-        jvm("desktop")
+        jvm("desktop") {
+            // Unlike the Android target (configureKmpEarly, above), this was previously left
+            // unset — the desktop compile task silently floated to whatever bytecode version
+            // the toolchain machinery resolved by default (observed: matching whichever JDK
+            // happened to be newest/visible to Gradle, not the consumer's declared
+            // `javaVersion` floor, and not even reliably the daemon's own JDK). Pin it
+            // explicitly, same as Android.
+            compilations.all {
+                compileTaskProvider.configure {
+                    compilerOptions {
+                        jvmTarget.set(JvmTarget.fromTarget(configs.javaVersion.majorVersion))
+                    }
+                }
+            }
+        }
     }
 }
 
