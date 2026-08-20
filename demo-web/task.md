@@ -5,4 +5,8 @@
 - [x] Finish the AI Steering / AI Ready page (`docs/guides/ai-steering.html`).
 - [x] Highlight in guides overview (`docs/guides/index.html`).
 - [x] Highlight in homepage documentation hub (`index.html`).
+- [x] Audit all 8 runtime libraries in `libs/` (`bom`, `utils`, `logutils`, `compose-kmp`, `compose-utils`, `update-utils`, `location`, `location-picker`).
+- [x] Create `libs/bom/README.md` and align version badges across all library READMEs (`location`, `location-picker`, `logutils`).
+- [x] Synchronize decision matrix and documentation data files in `@demo-web/docs` (`utilities/data.js`, `which-library/index.html`).
 - [x] Run `npm run build` to verify clean build.
+

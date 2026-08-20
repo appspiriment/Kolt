@@ -1,6 +1,6 @@
 # libs/location-picker — Location Picker UI
 
-[![Maven Central](https://img.shields.io/badge/Maven%20Central-0.1.0.dev--01-blue?style=flat-square)](https://central.sonatype.com/artifact/io.github.appspiriment.kolt/location-picker)
+[![Maven Central](https://img.shields.io/badge/Maven%20Central-0.1.0.dev--04-blue?style=flat-square)](https://central.sonatype.com/artifact/io.github.appspiriment.kolt/location-picker)
 [![KMP](https://img.shields.io/badge/Platform-Android%20%7C%20iOS%20%7C%20Desktop%20%7C%20Web-7F52FF?style=flat-square&logo=kotlin)](https://kotlinlang.org/docs/multiplatform.html)
 [![License](https://img.shields.io/badge/License-Apache%202.0-orange?style=flat-square)](../../LICENSE)
 [![Changelog](https://img.shields.io/badge/Changelog-view-lightgrey?style=flat-square)](CHANGELOG.md)
@@ -15,7 +15,7 @@ Try it live in the [Web demo](https://kolt-kmp.web.app/) (see [`demo-web`](../..
 
 ```kotlin
 dependencies {
-    implementation("io.github.appspiriment.kolt:location-picker:0.1.0.dev-01")
+    implementation("io.github.appspiriment.kolt:location-picker:0.1.0.dev-04")
 }
 ```
 

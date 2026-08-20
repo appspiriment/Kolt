@@ -1,6 +1,31 @@
 // Utility library reference — source: Standards/KOLT.md §6 + direct source inspection.
 export const UTILITIES = [
     {
+        id: 'bom',
+        title: 'kolt-bom',
+        coordinate: 'io.github.appspiriment.kolt:kolt-bom',
+        platforms: 'Gradle BOM (Calendar Versioned)',
+        summary: 'Bill of Materials (BOM) pinning consistent versions across all Kolt runtime libraries.',
+        intro: 'The Kolt Bill of Materials manages consistent version alignment across all Kolt runtime libraries (utils, logutils, compose-utils, compose-kmp, update-utils, location, and location-picker). Using the BOM ensures zero version conflicts across multi-module projects.',
+        sections: [
+            {
+                heading: 'Gradle BOM Integration',
+                path: 'libs/bom/README.md',
+                code: `// Apply the Kolt BOM platform in dependencies:
+dependencies {
+    implementation(platform("io.github.appspiriment.kolt:kolt-bom:2026.06.1"))
+
+    // Add Kolt libraries without explicit versions:
+    implementation("io.github.appspiriment.kolt:utils")
+    implementation("io.github.appspiriment.kolt:logutils")
+    implementation("io.github.appspiriment.kolt:compose-kmp")
+    implementation("io.github.appspiriment.kolt:location")
+    implementation("io.github.appspiriment.kolt:location-picker")
+}`,
+            },
+        ],
+    },
+    {
         id: 'utils',
         title: 'utils',
         coordinate: 'io.github.appspiriment.kolt:utils',

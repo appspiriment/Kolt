@@ -69,9 +69,10 @@ Once generated, attach these templates to your AI session inputs to instantly al
 | Directory | Type | Artifact ID | Description |
 |-----------|------|-------------|-------------|
 | [`build-logic/`](build-logic/README.md) | Conventions | *Included Build* | Android & KMP convention Gradle plugins, catalog generation, publish tasks |
+| [`libs/bom`](libs/bom/README.md) | Library (BOM) | `kolt-bom` | Bill of Materials pinning consistent versions across all Kolt runtime libraries |
 | [`libs/utils`](libs/utils/README.md) | Library (KMP) | `utils` | Pure-Kotlin utilities: `UiText`, `AsyncState`, string formatting, time, and timezone utilities |
 | [`libs/logutils`](libs/logutils/README.md) | Library (KMP) | `logutils` | expect/actual logging; silences output automatically in production builds |
-| [`libs/compose-utils`](libs/compose-utils/README.md) | Library (Android) | `compose-utils` | 100+ Material3 Compose elements, form fields, wizards, and ViewModel helpers |
+| [`libs/compose-utils`](libs/compose-utils/README.md) | Library (Android) | `compose` | 100+ Material3 Compose elements, form fields, wizards, and ViewModel helpers |
 | [`libs/compose-kmp`](libs/compose-kmp/README.md) | Library (KMP) | `compose-kmp` | Core cross-platform Compose UI components and HSL token structures |
 | [`libs/update-utils`](libs/update-utils/README.md) | Library (Android) | `update-utils` | Firebase-steered Play Store in-app update sheets |
 | [`libs/location`](libs/location/README.md) | Library (KMP) | `location` | Location geolocator wrappers and reverse-geocoding systems |
@@ -193,11 +194,11 @@ All artifacts share the group `io.github.appspiriment.kolt`. Versions are indepe
 | Kolt BOM | `kolt-bom` | ![BOM](https://img.shields.io/badge/BOM-2026.06.1-0d47a1?style=flat-square) | [libs/bom/CHANGELOG.md](libs/bom/CHANGELOG.md) |
 | Core Utilities | `utils` | ![utils](https://img.shields.io/badge/utils-0.2.1.dev--00-43a047?style=flat-square) | [libs/utils/CHANGELOG.md](libs/utils/CHANGELOG.md) |
 | Logging Utilities | `logutils` | ![logutils](https://img.shields.io/badge/logutils-0.2.1.dev--00-43a047?style=flat-square) | [libs/logutils/CHANGELOG.md](libs/logutils/CHANGELOG.md) |
-| Compose Utilities (Android) | `compose-utils` | ![compose-utils](https://img.shields.io/badge/compose%20utils-0.2.1.dev--00-6200ea?style=flat-square) | [libs/compose-utils/CHANGELOG.md](libs/compose-utils/CHANGELOG.md) |
+| Compose Utilities (Android) | `compose` | ![compose-utils](https://img.shields.io/badge/compose%20utils-0.2.1.dev--00-6200ea?style=flat-square) | [libs/compose-utils/CHANGELOG.md](libs/compose-utils/CHANGELOG.md) |
 | Compose KMP | `compose-kmp` | ![compose-kmp](https://img.shields.io/badge/compose%20kmp-0.2.1.dev--00-6200ea?style=flat-square) | [libs/compose-kmp/CHANGELOG.md](libs/compose-kmp/CHANGELOG.md) |
 | In-App Update | `update-utils` | ![update-utils](https://img.shields.io/badge/update%20utils-0.2.1.dev--00-f57c00?style=flat-square) | [libs/update-utils/CHANGELOG.md](libs/update-utils/CHANGELOG.md) |
 | Location | `location` | ![location](https://img.shields.io/badge/location-0.2.1.dev--07-00838f?style=flat-square) | [libs/location/CHANGELOG.md](libs/location/CHANGELOG.md) |
-| Location Picker | `location-picker` | ![location-picker](https://img.shields.io/badge/location-0.2.1.dev--07-00838f?style=flat-square) | [libs/location-picker/CHANGELOG.md](libs/location-picker/CHANGELOG.md) |
+| Location Picker | `location-picker` | ![location-picker](https://img.shields.io/badge/location-0.1.0.dev--04-00838f?style=flat-square) | [libs/location-picker/CHANGELOG.md](libs/location-picker/CHANGELOG.md) |
 
 Full release history across every artifact, with links to each GitHub release: see [docs/RELEASE_MANAGEMENT.md](docs/RELEASE_MANAGEMENT.md).
 

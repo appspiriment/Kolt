@@ -8,13 +8,17 @@ const IGNORED_DIRS = new Set(['node_modules', 'dist', '.git', 'build']);
 
 function findHtmlFiles(dir, results = []) {
     for (const entry of readdirSync(dir)) {
-        if (IGNORED_DIRS.has(entry)) continue;
+        if (IGNORED_DIRS.has(entry) || entry.startsWith('.')) continue;
         const full = join(dir, entry);
-        const stats = statSync(full);
-        if (stats.isDirectory()) {
-            findHtmlFiles(full, results);
-        } else if (entry.endsWith('.html')) {
-            results.push(full);
+        try {
+            const stats = statSync(full);
+            if (stats.isDirectory()) {
+                findHtmlFiles(full, results);
+            } else if (entry.endsWith('.html')) {
+                results.push(full);
+            }
+        } catch (_) {
+            // Ignore broken symlinks or unreadable files
         }
     }
     return results;
